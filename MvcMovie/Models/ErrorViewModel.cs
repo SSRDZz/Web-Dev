@@ -1,4 +1,4 @@
-namespace MvcMovie.Models;
+namespace KMITL_WebDev_MiniProject.Models;
 
 public class ErrorViewModel
 {
