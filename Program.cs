@@ -1,5 +1,6 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
@@ -15,6 +16,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+// Seed the database with mockup data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    DbInitializer.Initialize(services, userManager).Wait();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
