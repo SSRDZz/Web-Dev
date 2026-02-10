@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionStrings = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionStrings));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionStrings));
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 

@@ -35,7 +35,7 @@ namespace KMITL_WebDev_MiniProject.Data
 				};
 
 				await userManager.CreateAsync(user, "1234");
-				await userManager.CreateAsync(admin, "2005");
+				await userManager.CreateAsync(admin, "Admin@1234");
 			}
 		}
 	}
