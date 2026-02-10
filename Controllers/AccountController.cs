@@ -2,12 +2,21 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 
 namespace KMITL_WebDev_MiniProject.Controllers
 {
     public class AccountController : Controller
     {
-        // private readonly SignInManager   
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
+        public AccountController(SignInManager<ApplicationUser> signInManager)
+        {
+            this._signInManager = signInManager;
+        }
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -20,27 +29,22 @@ namespace KMITL_WebDev_MiniProject.Controllers
         {
             if(ModelState.IsValid)
             {
-                // var result = await SignInManager
+                var result = await this._signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if(result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
             return View(model);
         }
 
-        [HttpGet]
-        public IActionResult About()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
         {
-            return View();
-        }
-
-        [HttpGet]
-        public int GetNum(int num)
-        {
-            return (num)*(num+1)/2;
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            await this._signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
         }
     }
 }
