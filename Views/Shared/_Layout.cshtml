@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="~/KMITL_WebDev_MiniProject.styles.css" asp-append-version="true" /> *@
 </head>
 <body>
-    @if(User.Identity.IsAuthenticated){<div>You gonna see this if you were logged in</div>}
+    @if(User.Identity.IsAuthenticated){
+        <div>You gonna see this if you were logged in</div>
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    }
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
