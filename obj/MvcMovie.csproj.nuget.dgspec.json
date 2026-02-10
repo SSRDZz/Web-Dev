@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Program\\WebApp\\ASP\\MvcMovie\\MvcMovie.csproj": {}
+    "/home/sanstales/Coding/Project/Web-Dev/MvcMovie.csproj": {}
   },
   "projects": {
-    "D:\\Program\\WebApp\\ASP\\MvcMovie\\MvcMovie.csproj": {
+    "/home/sanstales/Coding/Project/Web-Dev/MvcMovie.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Program\\WebApp\\ASP\\MvcMovie\\MvcMovie.csproj",
+        "projectUniqueName": "/home/sanstales/Coding/Project/Web-Dev/MvcMovie.csproj",
         "projectName": "MvcMovie",
-        "projectPath": "D:\\Program\\WebApp\\ASP\\MvcMovie\\MvcMovie.csproj",
-        "packagesPath": "C:\\Users\\Asus\\.nuget\\packages\\",
-        "outputPath": "D:\\Program\\WebApp\\ASP\\MvcMovie\\obj\\",
+        "projectPath": "/home/sanstales/Coding/Project/Web-Dev/MvcMovie.csproj",
+        "packagesPath": "/home/sanstales/.nuget/packages/",
+        "outputPath": "/home/sanstales/Coding/Project/Web-Dev/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Asus\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/sanstales/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -43,6 +43,26 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.2, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[10.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[10.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -62,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "/home/sanstales/.dotnet/sdk/10.0.100/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

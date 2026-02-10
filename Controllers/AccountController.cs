@@ -1,44 +1,46 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using KMITL_WebDev_MiniProject.Models;
+using Microsoft.AspNetCore.Identity;
 
-namespace KMITL_WebDev_MiniProject.Controllers;
-
-public class AccountController : Controller
+namespace KMITL_WebDev_MiniProject.Controllers
 {
-    [HttpGet]
-    public IActionResult Login()
+    public class AccountController : Controller
     {
-        return View();
-    }
+        // private readonly SignInManager   
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
 
-    [HttpPost]
-    public IActionResult Login(LoginViewModel model)
-    {
-        Console.WriteLine(model.Email);
-        Console.WriteLine(model.Password);
-        Console.WriteLine(model.RememberMe);
-        return RedirectToAction("Login");
-    }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                // var result = await SignInManager
+            }
+            return View(model);
+        }
 
-    public IActionResult About()
-    {
-        return View();
-    }
+        [HttpGet]
+        public IActionResult About()
+        {
+            return View();
+        }
 
-	public int GetNum(int num)
-	{
-		int sum = 0;
-		for(int i = 1; i <= num; i++)
-		{
-			sum += i;
-		}
-		return sum;
-	}
+        [HttpGet]
+        public int GetNum(int num)
+        {
+            return (num)*(num+1)/2;
+        }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }
