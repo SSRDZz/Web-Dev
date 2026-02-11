@@ -7,9 +7,10 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionStrings = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionStrings = builder.Configuration.GetConnectionString("dbConnection");
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionStrings));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
 builder.Services.AddDefaultIdentity<UserAccount>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
