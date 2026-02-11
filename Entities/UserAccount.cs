@@ -24,6 +24,6 @@ namespace KMITL_WebDev_MiniProject.Entites
 		public string Email {get; set;}
 
 		[Required]
-		public string Username {get; set;}
+		public override string UserName {get; set;}
 	}
 };
