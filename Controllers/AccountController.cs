@@ -27,7 +27,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if(ModelState.IsValid)
             {
@@ -37,22 +37,17 @@ namespace KMITL_WebDev_MiniProject.Controllers
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    EmailConfirmed = true
+                    EmailConfirmed = false
                 };
 
-                try
-                {
-                    this._userManager.CreateAsync(account, model.Password);
-
-                    ModelState.Clear();
-                    ViewBag.Message = $"{account.FirstName} {account.LastName} registered successfully. Please Login.";    
-                }
-                catch
+                var result = await this._userManager.CreateAsync(account, model.Password);
+                if(!result.Succeeded)
                 {
                     ModelState.AddModelError("", "Please enter unique Email or Password");
                     return View(model);
                 }
-                // Console.WriteLine("Register complete");
+                ModelState.Clear();
+                ViewBag.Message = $"{account.FirstName} {account.LastName} registered successfully. Please Login.";    
                 return RedirectToAction("Login", "Account");
             }
             return View(model);
@@ -70,7 +65,6 @@ namespace KMITL_WebDev_MiniProject.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            Console.WriteLine(model.Email + " " + model.Password + " " + model.RememberMe.ToString());
             if(ModelState.IsValid)
             {
                 var result = await this._signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
