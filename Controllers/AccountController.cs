@@ -94,13 +94,28 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public async Task<IActionResult> Profile()
 		{
 			if(!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Account");
-			var curUserIDString = this._userManager.GetUserId(User).ToString();
+			string curUserIDString = this._userManager.GetUserId(User).ToString();
 			Console.WriteLine(curUserIDString);
 			var account = this._dbContext.Users.Where(r => r.Id.ToString() == curUserIDString).ToList()[0];
 			ProfileViewModel profileObj = new ProfileViewModel()
 			{
 				FirstName = account.FirstName,
-				LsatName = account.LastName
+				LastName = account.LastName
+			};
+			return View(profileObj);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> ProfileEdit()
+		{
+			if(!User.Identity.IsAuthenticated) return RedirectToAction("Login", "Account");
+			string curUserIDString = this._userManager.GetUserId(User).ToString();
+			Console.WriteLine(curUserIDString);
+			var account = this._dbContext.Users.Where(r => r.Id.ToString() == curUserIDString).ToList()[0];
+			ProfileViewModel profileObj = new ProfileViewModel()
+			{
+				FirstName = account.FirstName,
+				LastName = account.LastName
 			};
 			return View(profileObj);
 		}
