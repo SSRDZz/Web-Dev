@@ -1,20 +1,18 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Models
 {
 	public class ProfileViewModel
 	{
-		[Required]
+		[Required(ErrorMessage="FirstName Error")]
 		public string FirstName {get; set;}
 
-		[Required]
+		[Required(ErrorMessage="LastName Error")]
 		public string LastName {get; set;}
 
-		[Required]
+		[Required(ErrorMessage="Reputation Error")]
 		public int Reputation {get; set;}
 		
-		public string ImageURL {get; set;}
+		public string? ImageURL {get; set;}
 	}
 }
