@@ -31,6 +31,9 @@ namespace KMITL_WebDev_MiniProject.Data
 					UserName = "Testuser@example.com",
 					Email = "Testuser@example.com",
 					Reputation = 0,
+					PhoneNumber = "0811112222",
+					DateOfBirth = new DateOnly(2000, 10, 10),
+					ImageURL = "",
 					EmailConfirmed = false
 				};
 
@@ -38,11 +41,14 @@ namespace KMITL_WebDev_MiniProject.Data
 
 				var admin = new UserAccount()
 				{
-					FirstName = "Adder",
-					LastName = "8bit",
+					FirstName = "Admin",
+					LastName = "Adder",
 					UserName = "Admin@example.com",
 					Email = "Admin@example.com",
 					Reputation = 0,
+					PhoneNumber = "0811112223",
+					DateOfBirth = new DateOnly(2001, 10, 10),
+					ImageURL = "",
 					EmailConfirmed = false	
 				};
 
