@@ -14,5 +14,7 @@ namespace KMITL_WebDev_MiniProject.Models
 
 		[Required]
 		public int Reputation {get; set;}
+		
+		public string ImageURL {get; set;}
 	}
 }

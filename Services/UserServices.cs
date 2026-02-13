@@ -36,7 +36,8 @@ namespace KMITL_WebDev_MiniProject.Services
 			{
 				FirstName = acc.FirstName,
 				LastName = acc.LastName,
-				Reputation = acc.Reputation
+				Reputation = acc.Reputation,
+				ImageURL = acc.ImageURL
 			};
 		}
 	}

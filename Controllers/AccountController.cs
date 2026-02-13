@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Services;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KMITL_WebDev_MiniProject.Controllers
 {
@@ -33,6 +35,39 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			return View();
 		}
 
+		[HttpGet]
+		public IActionResult RegisterInsertProfile(RegisterViewModel model)
+		{
+			if(User.Identity.IsAuthenticated)
+				return RedirectToAction("Index", "Home");
+
+			TempData["MyModel"] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
+			
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> RegisterInsertProfile(IFormFile profilePicture)
+		{
+			if(User.Identity.IsAuthenticated)
+				return RedirectToAction("Index", "Home");
+
+			RegisterViewModel model = Newtonsoft.Json.JsonConvert.DeserializeObject<RegisterViewModel>(TempData["MyModel"] as string);
+			if(model.Email == null || model.Password == null) return RedirectToAction("Register", "Account");
+
+			if(profilePicture != null && profilePicture.Length > 0)
+			{
+				Console.WriteLine("Doing Image Processing");
+				using (var memoryStream = new MemoryStream())
+				{
+					await profilePicture.CopyToAsync(memoryStream);
+					model.ImageURL = Convert.ToBase64String(memoryStream.ToArray());
+				}
+			} else return RegisterInsertProfile(model);
+
+			return Register(model).Result;
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> Register(RegisterViewModel model)
 		{
@@ -44,6 +79,9 @@ namespace KMITL_WebDev_MiniProject.Controllers
 					Email = model.Email,
 					FirstName = model.FirstName,
 					LastName = model.LastName,
+					PhoneNumber = model.PhoneNumber,
+					DateOfBirth = model.DateOfBirth,
+					ImageURL = model.ImageURL,
 					EmailConfirmed = false
 				};
 
@@ -54,7 +92,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 					return View(model);
 				}
 				ModelState.Clear();
-				// ViewBag.Message = $"{account.FirstName} {account.LastName} registered successfully. Please Login.";
+				
 				var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
 				if(!res.Succeeded) return RedirectToAction("Login", "Account");
 				return RedirectToAction("Index", "home");
@@ -110,27 +148,42 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> ProfileUpdate(ProfileViewModel model)
+		public async Task<IActionResult> ProfileUpdate(ProfileViewModel model, IFormFile? newPicture)
 		{
 			if(!User.Identity.IsAuthenticated) 
 				return RedirectToAction("Login", "Account");
 
-			if(ModelState.IsValid)
+			if(!ModelState.IsValid)
+				return RedirectToAction("Profile", "Account");
+
+			var user = await _userManager.GetUserAsync(User);
+
+			if(user == null)
+				return  NotFound();
+
+			if(newPicture != null && newPicture.Length > 0)
 			{
-				var user = await _userManager.GetUserAsync(User);
-				if(user != null) 
+				using (var memoryStream = new MemoryStream())
 				{
-					user.FirstName = model.FirstName;
-					user.LastName  = model.LastName;
-					var res = await _userManager.UpdateAsync(user);
-					if(!res.Succeeded)
-					{
-						return View(model);
-					}
-					return RedirectToAction("Profile", "Account");
+					await newPicture.CopyToAsync(memoryStream);
+					user.ImageURL = Convert.ToBase64String(memoryStream.ToArray());
 				}
 			}
-			return View(model);
+			
+			user.FirstName = model.FirstName;
+			user.LastName  = model.LastName;
+
+			var res = await _userManager.UpdateAsync(user);
+
+			if(!res.Succeeded)
+			{
+				foreach (var err in res.Errors)
+					Console.WriteLine(err.Code + " : " + err.Description);
+				Console.WriteLine("Failed");
+				return NotFound();
+			}
+
+			return RedirectToAction("Profile", "Account");
 		}
 	}
 }

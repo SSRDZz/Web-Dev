@@ -1,6 +1,6 @@
 @model KMITL_WebDev_MiniProject.Models.RegisterViewModel
 
-<form asp-action="Register" method="post">
+<form asp-action="RegisterInsertProfile" method="GET">
 	<div>
 		<label asp-for="FirstName"></label>
 		<input asp-for="FirstName" required/>
@@ -30,6 +30,17 @@
 		<label asp-for="ConfirmPassword"></label>
 		<input asp-for="ConfirmPassword" required/>
 		<span asp-validation-for="ConfirmPassword"></span>
-	</div>	
+	</div>
+	<div>
+		<label asp-for="PhoneNumber"></label>
+		<input asp-for="PhoneNumber" required/>
+		<span asp-validation-for="PhoneNumber"></span>
+	</div>
+	<div>
+		<label asp-for="DateOfBirth"></label>
+		<input asp-for="DateOfBirth" type="date" required/>
+		<span asp-validation-for="DateOfBirth"></span>
+	</div>
+	<input tpye="hidden" asp-for="ImageURL"/>
 	<button type="submit">Done</button>
 </form>
