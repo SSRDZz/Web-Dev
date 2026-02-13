@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Services;
-using System.Diagnostics;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KMITL_WebDev_MiniProject.Controllers
 {
@@ -49,15 +47,17 @@ namespace KMITL_WebDev_MiniProject.Controllers
 					EmailConfirmed = false
 				};
 
-				var result = await this._userManager.CreateAsync(account, model.Password);
+				var result = await _userManager.CreateAsync(account, model.Password);
 				if(!result.Succeeded)
 				{
 					ModelState.AddModelError("", "Please enter unique Email or Password");
 					return View(model);
 				}
 				ModelState.Clear();
-				ViewBag.Message = $"{account.FirstName} {account.LastName} registered successfully. Please Login.";    
-				return RedirectToAction("Login", "Account");
+				// ViewBag.Message = $"{account.FirstName} {account.LastName} registered successfully. Please Login.";
+				var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
+				if(!res.Succeeded) return RedirectToAction("Login", "Account");
+				return RedirectToAction("Index", "home");
 			}
 			return View(model);
 		}
@@ -77,7 +77,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		{
 			if(ModelState.IsValid)
 			{
-				var result = await this._signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+				var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 				if(result.Succeeded) 
 					return RedirectToAction("Index", "Home");
 				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -89,7 +89,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Logout()
 		{
-			await this._signInManager.SignOutAsync();
+			await _signInManager.SignOutAsync();
 			return RedirectToAction("Login", "Account");
 		}
 
