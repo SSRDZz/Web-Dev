@@ -28,9 +28,9 @@ namespace KMITL_WebDev_MiniProject.Data
 				{
 					FirstName = "Hello",
 					LastName = "World",
-					// Username = "Testuser@example.com",
 					UserName = "Testuser@example.com",
 					Email = "Testuser@example.com",
+					Reputation = 0,
 					EmailConfirmed = false
 				};
 
@@ -40,16 +40,16 @@ namespace KMITL_WebDev_MiniProject.Data
 				{
 					FirstName = "Adder",
 					LastName = "8bit",
-					// Username = "Admin@example.com",
 					UserName = "Admin@example.com",
 					Email = "Admin@example.com",
+					Reputation = 0,
 					EmailConfirmed = false	
 				};
 
 				var result = await userManager.CreateAsync(user, "Testuser@1234");
 				if (!result.Succeeded)
 				{
-					foreach (var err in result.Errors)
+					foreach (IdentityError err in result.Errors)
 						Console.WriteLine(err.Code + " : " + err.Description);
 				}
 

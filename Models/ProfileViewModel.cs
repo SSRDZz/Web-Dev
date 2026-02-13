@@ -1,8 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Mvc;
+
 namespace KMITL_WebDev_MiniProject.Models
 {
 	public class ProfileViewModel
 	{
-		public string FirstName;
-		public string LastName;
+		[Required]
+		public string FirstName {get; set;}
+
+		[Required]
+		public string LastName {get; set;}
+
+		[Required]
+		public int Reputation {get; set;}
 	}
 }

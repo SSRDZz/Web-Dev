@@ -7,10 +7,9 @@
 
 <div class="text-center">
     <h3>Profile</h3>
-    <ul>
-        <li>@Model.FirstName</li>
-        <li>@Model.LastName</li>
-    </ul>
+    <div>FirstName  : @Model.FirstName</div>
+    <div>LastName   : @Model.LastName</div>
+    <div>Reputation : @Model.Reputation</div>
 </div>
 
 <a asp-controller="Account" asp-action="ProfileEdit">Edit</a>

@@ -25,5 +25,8 @@ namespace KMITL_WebDev_MiniProject.Entites
 
 		[Required]
 		public override string UserName {get; set;}
+
+		[Required]
+		public int Reputation {get; set;}
 	}
 };

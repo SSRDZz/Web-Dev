@@ -5,19 +5,19 @@
 @model KMITL_WebDev_MiniProject.Models.ProfileViewModel
 
 
-<div class="text-center">
-    <h3>Profile</h3>
-	<form asp-action="ProfileEdit" method="post">
-		<div>
-			<label asp-for="FirstName"></label>
-			<input asp-for="FirstName" required/>
-			<span asp-validation-for="FirstName"></span>
-		</div>
-		<div>
-			<label asp-for="LastName"></label>
-			<input asp-for="LastName" required/>
-			<span asp-validation-for="LastName"></span>
-		</div>
-		<button type="submit">Save</button>
-	</form>
-</div>
+<h3>Profile</h3>
+<div asp-validation-summary="All"></div>
+<form asp-action="ProfileUpdate" method="post">
+	<div>
+		<label asp-for="FirstName"></label>
+		<input asp-for="FirstName" required/>
+		<span asp-validation-for="FirstName"></span>
+	</div>
+	<div>
+		<label asp-for="LastName"></label>
+		<input asp-for="LastName" required/>
+		<span asp-validation-for="LastName"></span>
+	</div>
+	<div>Reputation: @Model.Reputation</div>
+	<button type="submit">Save</button>
+</form>
