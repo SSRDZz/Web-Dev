@@ -47,7 +47,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> RegisterInsertProfile(IFormFile profilePicture)
+		public async Task<IActionResult> RegisterInsertProfile(IFormFile? profilePicture)
 		{
 			if(User.Identity.IsAuthenticated)
 				return RedirectToAction("Index", "Home");
@@ -55,15 +55,20 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			RegisterViewModel model = Newtonsoft.Json.JsonConvert.DeserializeObject<RegisterViewModel>(TempData["MyModel"] as string);
 			if(model.Email == null || model.Password == null) return RedirectToAction("Register", "Account");
 
+			if(profilePicture == null)
+			{
+				model.ImageURL = "";
+				return Register(model).Result;
+			}
+
 			if(profilePicture != null && profilePicture.Length > 0)
 			{
-				Console.WriteLine("Doing Image Processing");
 				using (var memoryStream = new MemoryStream())
 				{
 					await profilePicture.CopyToAsync(memoryStream);
 					model.ImageURL = Convert.ToBase64String(memoryStream.ToArray());
 				}
-			} else return RegisterInsertProfile(model);
+			}
 
 			return Register(model).Result;
 		}
