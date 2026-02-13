@@ -28,5 +28,16 @@ namespace KMITL_WebDev_MiniProject.Entites
 
 		[Required]
 		public int Reputation {get; set;}
+
+		[Required]
+		[DataType(DataType.PhoneNumber)]
+		public override string PhoneNumber {get; set;}
+
+		[Required]
+		[DataType(DataType.Date)]
+		public DateOnly DateOfBirth {get; set;}
+
+		[Required]
+		public string ImageURL {get; set;}
 	}
 };
