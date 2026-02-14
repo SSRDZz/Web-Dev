@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KMITL_WebDev_MiniProject.Controllers
 {
@@ -64,43 +65,52 @@ namespace KMITL_WebDev_MiniProject.Controllers
 				}
 			} else model.ImageURL = _userServices.guestImageURL;
 
-			// return RedirectToAction("Register", model);
+			// this move was better cause no large data transfer between request but now can't do it, skill issue!
+			// TempData["FinalModel"] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
+			// return RedirectToAction("Register", null);
+
 			return Register(model).Result;
 		}
 
 		[HttpPost]
 		public async Task<IActionResult> Register(RegisterViewModel model)
 		{
-			if(ModelState.IsValid)
+			// code for upper better move
+			// RegisterViewModel finalModel = Newtonsoft.Json.JsonConvert.DeserializeObject<RegisterViewModel>(TempData["FinalModel"] as string);
+			// bool stateA = (finalModel != null) && (finalModel.Email == null || finalModel.Password == null);
+
+			if(!ModelState.IsValid)
+				return RedirectToAction("Register");
+			
+			// this too
+			// if(stateA)
+			// 	model = finalModel;
+			
+			UserAccount account = new UserAccount()
 			{
-				UserAccount account = new UserAccount()
-				{
-					UserName = model.Email,
-					Email = model.Email,
-					FirstName = model.FirstName,
-					LastName = model.LastName,
-					PhoneNumber = model.PhoneNumber,
-					DateOfBirth = model.DateOfBirth,
-					ImageURL = model.ImageURL,
-					EmailConfirmed = false
-				};
+				UserName = model.UserName,
+				Email = model.Email,
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				PhoneNumber = model.PhoneNumber,
+				DateOfBirth = model.DateOfBirth,
+				ImageURL = model.ImageURL,
+				EmailConfirmed = false
+			};
 
-				var result = await _userManager.CreateAsync(account, model.Password);
-				if(!result.Succeeded)
-				{
-					ModelState.AddModelError("", "Please enter unique Email or Password");
-					return View(model);
-				}
-				ModelState.Clear();
-				
-				var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
-				if(!res.Succeeded) 
-					return RedirectToAction("Login");
-
-				return RedirectToAction("Index", "Home");
+			var result = await _userManager.CreateAsync(account, model.Password);
+			if(!result.Succeeded)
+			{
+				ModelState.AddModelError("", "Please enter unique Email or Password");
+				return View(model);
 			}
-			Console.WriteLine($"{model.FirstName}, {model.LastName}");
-			return View(model);
+			ModelState.Clear();
+			
+			var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
+			if(!res.Succeeded) 
+				return RedirectToAction("Login");
+
+			return RedirectToAction("Index", "Home");
 		}
 
 
@@ -190,12 +200,6 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			}
 
 			return RedirectToAction("Profile");
-		}
-
-		public ActionResult DisplayImage(string imageName)
-		{
-			string imagePath = $"~/Contents/images/{imageName}";
-			return File(imagePath, "image/jpeg");
 		}
 	}
 }
