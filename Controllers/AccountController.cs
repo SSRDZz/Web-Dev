@@ -88,7 +88,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			
 			UserAccount account = new UserAccount()
 			{
-				UserName = model.UserName,
+				UserName = model.Email,
 				Email = model.Email,
 				FirstName = model.FirstName,
 				LastName = model.LastName,
