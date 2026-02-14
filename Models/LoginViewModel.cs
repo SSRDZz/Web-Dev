@@ -6,7 +6,7 @@ namespace KMITL_WebDev_MiniProject.Models
 	{
 		[Required]
 		[EmailAddress]
-		[Display(Name="Your Email")]
+		[Display(Name="Email Address")]
 		public string Email {get; set;}	
 
 		[Required]

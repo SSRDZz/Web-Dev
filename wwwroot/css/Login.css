@@ -5,29 +5,80 @@
     flex-wrap: nowrap;
     align-items: center;
     
+    min-height: 100px; 
 }
 .Header-login > h2 {
     border-right: solid 2px grey;
-    padding: 0px 20px; 
+    padding-right: 10px;
+    padding-left: 40px; 
 }
 .Header-login > p {
     color: gray;
     font-weight: 200;
+    margin-left: 20px;
 }
 
 /* login box */
 .Login form{
     display: flex;
+    flex-flow: column nowrap;
+    
 }   
 
+/* email */
 .Email-box {
-    
+    position: relative;
+    margin-top: 1.5rem;
+    width: 100%;
 }
 
+.Email-box input {
+    box-sizing: border-box; 
+
+    width: 70%;
+    padding: 10px;
+    font-size: 1em;
+    
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+.Email-box label{
+    position: absolute;
+    top: 50%;                   /* set ให้ตอนนี้ยังอยู่ตรงกลาง */
+    left: 10px;
+    transform: translateY(-50%);
+
+    color: #999;
+    pointer-events: none;
+    transition: all 0.3s ease;          /* เพิ่มความ smooth like butter */
+}
+
+.Email-box input:focus + label,
+.Email-box input:not(:placeholder-shown) + label {
+    top: -0.2rem;               /* set ให้ตอนนี้ย้ายไปข้างบน */
+    font-size: 0.8em;
+
+    color: #007bff;
+    background-color: rgb(255, 255, 255);
+    padding: 0 5px;
+}
+
+.Email-box input:focus{
+    border-color: #007bff;
+    outline: none;
+}
+
+
+/* password */
 .Password-box{
 
 }
 
+
+
+/* remember */
 .Remember-box{
 
 }
@@ -39,4 +90,5 @@ button {
 a {
     color: #7661d2;
     text-decoration: none;
+    width: fit-content;
 }

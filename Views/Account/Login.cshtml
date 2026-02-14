@@ -15,18 +15,18 @@
 <div asp-validation-summary="All"></div>
 <form asp-action="Login" method="POST" class="Login">
 	<div class="Email-box">
+		<input asp-for="Email" placeholder=" " required/>
 		<label asp-for="Email"></label>
-		<input asp-for="Email" required/>
 		<span asp-validation-for="Email"></span>
 	</div>
 	<div class="Password-box">
-		<label asp-for="Password"></label>
 		<input asp-for="Password" required/>
+		<label asp-for="Password"></label>
 		<span asp-validation-for="Password"></span>
 	</div>
 	<div class="Remember-box">
-		<label asp-for="RememberMe"></label>
 		<input asp-for="RememberMe"/>
+		<label asp-for="RememberMe"></label>
 		<span asp-validation-for="RememberMe"></span>
 	</div>
 	<button type="submit" >Login</button>
