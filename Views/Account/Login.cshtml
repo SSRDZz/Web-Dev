@@ -5,7 +5,7 @@
 }
 
 @model KMITL_WebDev_MiniProject.Models.LoginViewModel
-<link rel=stylesheet" href="~/css/Login.css" />	
+<link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
 
 <div class="Header-login">
 	<h2>Login </h2>
@@ -20,7 +20,7 @@
 		<span asp-validation-for="Email"></span>
 	</div>
 	<div class="Password-box">
-		<input asp-for="Password" required/>
+		<input asp-for="Password" placeholder=" " required/>
 		<label asp-for="Password"></label>
 		<span asp-validation-for="Password"></span>
 	</div>
@@ -29,7 +29,14 @@
 		<label asp-for="RememberMe"></label>
 		<span asp-validation-for="RememberMe"></span>
 	</div>
-	<button type="submit" >Login</button>
+	<div class="Register-page">
+		<p>
+			Don't have an account?
+			<a asp-controller="Account" asp-action="Register" class="Register" >Register</a>
+		</p>
+	</div>
+	
+	<button type="submit"><p>Log-in</p></button>
+
 </form>
 
-<a asp-controller="Account" asp-action="Register" class="Register" >Register</a>
