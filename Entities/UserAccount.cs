@@ -35,7 +35,6 @@ namespace KMITL_WebDev_MiniProject.Entites
 		[DataType(DataType.Date)]
 		public DateOnly DateOfBirth {get; set;}
 
-		[Required]
-		public string ImageURL {get; set;}
+		public string? ImageURL {get; set;}
 	}
 };

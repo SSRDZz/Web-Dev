@@ -6,7 +6,7 @@ namespace KMITL_WebDev_MiniProject.Data
 {
 	public class DbInitializer
 	{
-		public static async Task Initialize(IServiceProvider serviceProvider, UserManager<UserAccount> userManager)
+		public static async Task Initialize(IServiceProvider serviceProvider, UserManager<UserAccount> userManager, IWebHostEnvironment env)
 		{
 			using (var context = new ApplicationDbContext(
 				serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()
@@ -21,6 +21,7 @@ namespace KMITL_WebDev_MiniProject.Data
 				}
 				Console.WriteLine("DB Mocked!");
 
+				string guestURL = DbInitializer.guestImage(env).Result;
 
 				var user = new UserAccount()
 				{
@@ -31,7 +32,7 @@ namespace KMITL_WebDev_MiniProject.Data
 					Reputation = 0,
 					PhoneNumber = "0811112222",
 					DateOfBirth = new DateOnly(2000, 10, 10),
-					ImageURL = "",
+					ImageURL = guestURL,
 					EmailConfirmed = false
 				};
 
@@ -46,7 +47,7 @@ namespace KMITL_WebDev_MiniProject.Data
 					Reputation = 0,
 					PhoneNumber = "0811112223",
 					DateOfBirth = new DateOnly(2001, 10, 10),
-					ImageURL = "",
+					ImageURL = guestURL,
 					EmailConfirmed = false	
 				};
 
@@ -64,6 +65,14 @@ namespace KMITL_WebDev_MiniProject.Data
 						Console.WriteLine(err.Code + " : " + err.Description);
 				}
 			}
+		}
+
+		public static async Task<string> guestImage(IWebHostEnvironment env)
+		{
+			string path = Path.Combine(env.ContentRootPath, "Contents", "images", "guest_picture.jpg");
+			byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(path);
+			string base64Form = Convert.ToBase64String(fileBytes);
+			return base64Form;
 		}
 	}
 }

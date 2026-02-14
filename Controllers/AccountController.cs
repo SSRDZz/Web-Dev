@@ -17,12 +17,13 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public AccountController(
 			SignInManager<UserAccount> signInManager, 
 			UserManager<UserAccount> userManager,
-			ApplicationDbContext dbContext)
+			ApplicationDbContext dbContext,
+			IWebHostEnvironment env)
 		{
 			_signInManager = signInManager;
 			_userManager = userManager;
 			_dbContext = dbContext;
-			_userServices = new UserServices(_userManager, _dbContext);
+			_userServices = new UserServices(_userManager, _dbContext, env);
 		}
 
 		[HttpGet]
@@ -52,13 +53,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 
 			RegisterViewModel model = Newtonsoft.Json.JsonConvert.DeserializeObject<RegisterViewModel>(TempData["MyModel"] as string);
 			if(model.Email == null || model.Password == null)
-				return Register();
-
-			if(profilePicture == null)
-			{
-				model.ImageURL = "";
-				return Register(model).Result;
-			}
+				return RedirectToAction("Register");
 
 			if(profilePicture != null && profilePicture.Length > 0)
 			{
@@ -67,8 +62,9 @@ namespace KMITL_WebDev_MiniProject.Controllers
 					await profilePicture.CopyToAsync(memoryStream);
 					model.ImageURL = Convert.ToBase64String(memoryStream.ToArray());
 				}
-			}
+			} else model.ImageURL = _userServices.guestImageURL;
 
+			// return RedirectToAction("Register", model);
 			return Register(model).Result;
 		}
 
@@ -99,10 +95,11 @@ namespace KMITL_WebDev_MiniProject.Controllers
 				
 				var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
 				if(!res.Succeeded) 
-					return Login();
+					return RedirectToAction("Login");
 
-				return RedirectToAction("Index", "home");
+				return RedirectToAction("Index", "Home");
 			}
+			Console.WriteLine($"{model.FirstName}, {model.LastName}");
 			return View(model);
 		}
 
@@ -135,14 +132,14 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();
-			return Login();
+			return RedirectToAction("Login");
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> Profile()
 		{
 			if(!User.Identity.IsAuthenticated) 
-				return Login();
+				return RedirectToAction("Login");
 				
 			return View(_userServices.getProfileViewModelByUser(User));
 		}
@@ -151,7 +148,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public async Task<IActionResult> ProfileEdit()
 		{
 			if(!User.Identity.IsAuthenticated) 
-				return Login();
+				return RedirectToAction("Login");
 				
 			return View(_userServices.getProfileViewModelByUser(User));
 		}
@@ -160,15 +157,15 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public async Task<IActionResult> ProfileUpdate(ProfileViewModel model, IFormFile? newPicture)
 		{
 			if(!User.Identity.IsAuthenticated) 
-				return Login();
+				return RedirectToAction("Login");
 
 			if(!ModelState.IsValid)
-				return Profile().Result;
+				return RedirectToAction("Profile");
 
 			var user = await _userManager.GetUserAsync(User);
 
 			if(user == null)
-				return  NotFound();
+				return NotFound();
 
 			if(newPicture != null && newPicture.Length > 0)
 			{
@@ -188,11 +185,17 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			{
 				foreach (var err in res.Errors)
 					Console.WriteLine(err.Code + " : " + err.Description);
-				Console.WriteLine("Failed");
+				Console.WriteLine("Update Failed");
 				return NotFound();
 			}
 
-			return Profile().Result;
+			return RedirectToAction("Profile");
+		}
+
+		public ActionResult DisplayImage(string imageName)
+		{
+			string imagePath = $"~/Contents/images/{imageName}";
+			return File(imagePath, "image/jpeg");
 		}
 	}
 }

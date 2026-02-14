@@ -1,3 +1,4 @@
+using System;
 using System.Security.Claims;
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
@@ -10,11 +11,18 @@ namespace KMITL_WebDev_MiniProject.Services
 	{
 		private readonly UserManager<UserAccount> _userManager;
 		private readonly ApplicationDbContext _dbContext;
+		public readonly string guestImageURL;
 
-		public UserServices(UserManager<UserAccount> um, ApplicationDbContext dbc)
+		public UserServices(UserManager<UserAccount> um, ApplicationDbContext dbc, IWebHostEnvironment env)
 		{
 			_userManager = um;
 			_dbContext = dbc;
+
+			string path = Path.Combine(env.ContentRootPath, "Contents", "images", "guest_picture.jpg");
+			byte[] fileBytes = System.IO.File.ReadAllBytesAsync(path).Result;
+			string base64Form = Convert.ToBase64String(fileBytes);
+
+			guestImageURL = base64Form;
 		}
 
 		private async Task<UserAccount> getAccountByUser(ClaimsPrincipal User)

@@ -24,7 +24,8 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var userManager = services.GetRequiredService<UserManager<UserAccount>>();
-    DbInitializer.Initialize(services, userManager).Wait();
+    var env = app.Services.GetRequiredService<IWebHostEnvironment>();
+    DbInitializer.Initialize(services, userManager, env).Wait();
 }
 
 // Configure the HTTP request pipeline.
