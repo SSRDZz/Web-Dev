@@ -1,6 +1,4 @@
-using System.Runtime.CompilerServices;
 using KMITL_WebDev_MiniProject.Entites;
-using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

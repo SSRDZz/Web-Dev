@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Services;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KMITL_WebDev_MiniProject.Controllers
 {
@@ -30,7 +28,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		[HttpGet]
 		public IActionResult Register()
 		{
-			if(User.Identity.IsAuthenticated) 
+			if(User.Identity.IsAuthenticated)
 				return RedirectToAction("Index", "Home");
 			return View();
 		}
@@ -53,7 +51,8 @@ namespace KMITL_WebDev_MiniProject.Controllers
 				return RedirectToAction("Index", "Home");
 
 			RegisterViewModel model = Newtonsoft.Json.JsonConvert.DeserializeObject<RegisterViewModel>(TempData["MyModel"] as string);
-			if(model.Email == null || model.Password == null) return RedirectToAction("Register", "Account");
+			if(model.Email == null || model.Password == null)
+				return Register();
 
 			if(profilePicture == null)
 			{
@@ -99,7 +98,9 @@ namespace KMITL_WebDev_MiniProject.Controllers
 				ModelState.Clear();
 				
 				var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
-				if(!res.Succeeded) return RedirectToAction("Login", "Account");
+				if(!res.Succeeded) 
+					return Login();
+
 				return RedirectToAction("Index", "home");
 			}
 			return View(model);
@@ -111,6 +112,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		{
 			if(User.Identity.IsAuthenticated) 
 				return RedirectToAction("Index", "Home");
+			
 			return View();
 		}
 
@@ -133,14 +135,15 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();
-			return RedirectToAction("Login", "Account");
+			return Login();
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> Profile()
 		{
 			if(!User.Identity.IsAuthenticated) 
-				return RedirectToAction("Login", "Account");
+				return Login();
+				
 			return View(_userServices.getProfileViewModelByUser(User));
 		}
 
@@ -148,7 +151,8 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public async Task<IActionResult> ProfileEdit()
 		{
 			if(!User.Identity.IsAuthenticated) 
-				return RedirectToAction("Login", "Account");
+				return Login();
+				
 			return View(_userServices.getProfileViewModelByUser(User));
 		}
 
@@ -156,10 +160,10 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		public async Task<IActionResult> ProfileUpdate(ProfileViewModel model, IFormFile? newPicture)
 		{
 			if(!User.Identity.IsAuthenticated) 
-				return RedirectToAction("Login", "Account");
+				return Login();
 
 			if(!ModelState.IsValid)
-				return RedirectToAction("Profile", "Account");
+				return Profile().Result;
 
 			var user = await _userManager.GetUserAsync(User);
 
@@ -188,7 +192,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 				return NotFound();
 			}
 
-			return RedirectToAction("Profile", "Account");
+			return Profile().Result;
 		}
 	}
 }
