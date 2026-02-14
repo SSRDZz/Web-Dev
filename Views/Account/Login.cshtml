@@ -4,13 +4,13 @@
 }
 
 @model KMITL_WebDev_MiniProject.Models.LoginViewModel
-
+<link rel=stylesheet" href="~/css/Login.css" />	
 <h2>Login</h2>
 
 <div asp-validation-summary="All"></div>
 
 <form asp-action="Login" method="POST">
-	<div>
+	<div class="email_box">
 		<label asp-for="Email"></label>
 		<input asp-for="Email" required/>
 		<span asp-validation-for="Email"></span>
