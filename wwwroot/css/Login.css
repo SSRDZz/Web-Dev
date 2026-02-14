@@ -1,15 +1,26 @@
+html {
+    padding: 0px;
+    margin: 0px;
+}
+
 body {
     background-color: #FF6F61;
 
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+
+    box-sizing: border-box; /* เปลี่ยนการคำนวณ width and height*/
+
 
     font-family:  Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.375rem;
     font-weight: 400;
     letter-spacing: .02em;
+
+    padding: 0px 20px;
 }   
 
 /* big box */
@@ -18,9 +29,11 @@ body {
     border: solid 2px black;
     border-radius: 20px;
 
-    width: 500px;
-    height: 600px;
-    padding : 20px;
+    width: 100vw;
+    max-width: 500px;
+    height: auto;
+    min-height: 650px;
+    margin : 20px;
 
     display: flex;
     flex-flow: column nowrap;
@@ -37,7 +50,7 @@ body {
 }
 .Header-login > h2 {
     border-right: solid 2px grey;
-    padding: 0px 100px; 
+    padding: 0px 20px; 
 }
 .Header-login > p {
     color: gray;
@@ -46,13 +59,24 @@ body {
 
 /* login box */
 .Login form{
-    display: flex
+    display: flex;
 }   
 
 .Email-box {
     
 }
 
+.Password-box{
+
+}
+
+.Remember-box{
+
+}
+
+button {
+    
+}
 
 a {
     color: #7661d2;
