@@ -1,10 +1,60 @@
-.email_box {
+body {
     background-color: #FF6F61;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     font-family:  Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 1rem;
     line-height: 1.375rem;
     font-weight: 400;
     letter-spacing: .02em;
-
-    
 }   
+
+/* big box */
+.Login-box {
+    background-color: #FFFFFF;
+    border: solid 2px black;
+    border-radius: 20px;
+
+    width: 500px;
+    height: 600px;
+    padding : 20px;
+
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+}
+
+/* header box */
+.Header-login {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    
+}
+.Header-login > h2 {
+    border-right: solid 2px grey;
+    padding: 0px 100px; 
+}
+.Header-login > p {
+    color: gray;
+    font-weight: 200;
+}
+
+/* login box */
+.Login form{
+    display: flex
+}   
+
+.Email-box {
+    
+}
+
+
+a {
+    color: #7661d2;
+    text-decoration: none;
+}
