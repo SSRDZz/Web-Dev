@@ -25,8 +25,9 @@ namespace KMITL_WebDev_MiniProject.Data
 
 				var user = new UserAccount()
 				{
-					FirstName = "Hello",
-					LastName = "World",
+					FirstName = "Testing",
+					LastName = "Tests",
+					RealUserName = "Tester",
 					UserName = "Testuser@example.com",
 					Email = "Testuser@example.com",
 					Reputation = 0,
@@ -41,7 +42,8 @@ namespace KMITL_WebDev_MiniProject.Data
 				var admin = new UserAccount()
 				{
 					FirstName = "Admin",
-					LastName = "Adder",
+					LastName = "Endmin",
+					RealUserName = "GM",
 					UserName = "Admin@example.com",
 					Email = "Admin@example.com",
 					Reputation = 0,
