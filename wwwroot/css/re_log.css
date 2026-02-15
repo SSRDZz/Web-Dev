@@ -2,6 +2,7 @@ html {
     padding: 0px;
     margin: 0px;
     min-height: 100%;      /* If don't do this it will not full html page and background will glitch with gradient*/
+
 }
 
 body {
@@ -30,8 +31,10 @@ body {
 /* big box */
 .Login-box {
     background-color: #FFFFFF;
-    border: solid 2px black;
+    /* border: solid 2px rgb(43, 55, 73); */
     border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    /* https://getcssscan.com/css-box-shadow-examples */
 
     width: 100vw;
     max-width: 500px;
@@ -42,7 +45,9 @@ body {
     flex-flow: column nowrap;
     justify-content: flex-start;
 
-    margin: 20px;
+    box-sizing: border-box;
+    margin: 50px;
+    padding: 36px 52px;    
     height: auto;
 }
 
