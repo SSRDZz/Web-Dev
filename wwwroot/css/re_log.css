@@ -1,12 +1,13 @@
 html {
     padding: 0px;
     margin: 0px;
-    height: 100vh;
+    min-height: 100%;      /* If don't do this it will not full html page and background will glitch with gradient*/
 }
 
 body {
     background-color: #FF6F61;
     background: linear-gradient(135deg,rgba(255, 111, 97, 1) 0%, rgba(255, 154, 145, 1) 50%, rgba(252, 215, 215, 1) 100%);
+    background-attachment: fixed; /* lock background */
 
     display: flex;
     flex-direction: row;
@@ -22,7 +23,8 @@ body {
     letter-spacing: .02em;
 
     margin: 0px;
-    height: 100%;
+    min-height: 100vh;
+    
 }   
 
 /* big box */
@@ -40,7 +42,8 @@ body {
     flex-flow: column nowrap;
     justify-content: flex-start;
 
-    margin: 20px
+    margin: 20px;
+    height: auto;
 }
 
 @media (max-width: 500px){
@@ -48,6 +51,7 @@ body {
         margin: 0px;
         border-radius: 0px;
         height: 100vh;
+        
         
     }
 }
