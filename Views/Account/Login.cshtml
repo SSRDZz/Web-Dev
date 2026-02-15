@@ -8,13 +8,13 @@
 <link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
 
 <div class="Header-login">
-	<h2>Login </h2>
+	<h2>Log in</h2>
 	<p> Welcome ! </p>
 </div>
-
-<div asp-validation-summary="All"></div>
+	
+<div asp-validation-summary="All" class="something"></div>
 <form asp-action="Login" method="POST" class="Login">
-	<div class="Email-box">ฟ
+	<div class="Email-box">
 		<input asp-for="Email" placeholder=" " required/>
 		<label asp-for="Email"></label>
 		<span asp-validation-for="Email"></span>
