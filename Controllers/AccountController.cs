@@ -131,10 +131,16 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			if(ModelState.IsValid)
 			{
 				var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-				if(result.Succeeded) 
+				if(result.Succeeded)
+				{
+					ViewBag.login = "1";
 					return RedirectToAction("Index", "Home");
-				ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+				}
+				// ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+	
+				
 			}
+			ViewBag.login = "0";
 			return View(model);
 		}
 	
