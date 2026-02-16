@@ -15,7 +15,7 @@
 <div asp-validation-summary="All" class="something"></div>
 <form asp-action="Login" method="POST" class="Login">
 	<div class="Email-box">
-		<input asp-for="Email" placeholder=" " required/>
+		<input asp-for="Email" placeholder=" " id="email" required/>
 		<label asp-for="Email"></label>
 		<span asp-validation-for="Email"></span>
 	</div>
@@ -41,7 +41,7 @@
 		</p>
 	</div>
 	
-	<button type="submit" class="submit-button"><p>Log-in</p></button>
+	<button type="submit" class="submit-button" ><p>Log-in</p></button>
 
 </form>
 

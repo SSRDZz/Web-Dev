@@ -8,14 +8,6 @@ function Login_page(){
             el.className = 'login-error';
             el.textContent = "Username or Password is wrong.";
 
-            el.style.color = "#d93232";
-            el.style.backgroundColor = "#feefef";
-            el.style.padding = "10px 10px 10px 15px";
-            el.style.borderRadius = "5px";
-            el.style.fontSize = "14px";
-            el.style.marginBottom = "10px";
-            el.style.lineHeight = "18px";
-
             document.querySelector('form.Login').prepend(el);
         }
     })
@@ -33,9 +25,36 @@ function Show_password(){
         
         show_pw_icon.src = pw_input.type === 'password' 
             ? 'image/eye_open.svg' 
-            : 'image/eye_closed.svg'
+            : 'image/eye_closed.svg';
     })
 }
 
+
+function Disable_submit(){
+    const input_box = document.querySelectorAll('input[required]');
+    const sub_button = document.querySelector('.submit-button');
+
+    function check_form(){
+        let valid = true;
+
+        input_box.forEach(function(input){
+            if(!input.value.trim() || !input.checkValidity()){ // trim for check " " -> string spacebar
+                valid = false;
+            }
+        })
+
+        sub_button.disabled = valid 
+        ? false
+        : true;
+
+    }
+
+    input_box.forEach(function(input){       // ใส่ function 
+        input.addEventListener('input', check_form);
+    })
+    check_form();
+}
+
+Disable_submit();
 Show_password();
 Login_page();

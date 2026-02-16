@@ -108,6 +108,7 @@
     margin-bottom: 20px;
 }
 
+/* submit button*/
 .submit-button {
     max-width: 300px;
     height: 45px;
@@ -139,15 +140,38 @@
     box-shadow: 0 8px 25px rgba(255, 111, 97, 0.4);
 }
 
-
 .submit-button:active {
     transform: translateY(1px);
     box-shadow: 0 2px 10px rgba(255, 111, 97, 0.2);
 }
 
-.submit-button > p {
+.submit-button > p {        
     font-size: 20px;
     font-weight: 600;
     font-family: "Roboto";
     margin: 0;
+}
+
+/* Login Error Message */
+.login-error {
+    color: #d93232;
+    background-color: #feefef;
+    padding: 10px 10px 10px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 18px;
+    border-left: 4px solid #d93232;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
