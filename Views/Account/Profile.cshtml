@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model KMITL_WebDev_MiniProject.Models.ProfileViewModel
+
+
+<div class="text-center">
+    <h3>Profile</h3>
+    <img src="data:image/jpeg;base64,@Model.ImageURL"; style="width: 5vw; height: auto;"/>
+    <div>FirstName  : @Model.FirstName</div>
+    <div>LastName   : @Model.LastName</div>
+    <div>Reputation : @Model.Reputation</div>
+</div>
+
+<a asp-controller="Account" asp-action="ProfileEdit">Edit</a>

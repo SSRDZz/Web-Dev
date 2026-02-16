@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model KMITL_WebDev_MiniProject.Models.ProfileViewModel
+
+
+<h3>Profile</h3>
+<img src="@Model.ImageURL" style="width: 5vw; height: auto;"/>
+<div asp-validation-summary="All"></div>
+<form asp-action="ProfileUpdate" method="POST" enctype="multipart/form-data">
+	<input asp-for="ImageURL" type="hidden"/>
+	<input asp-for="Reputation" type="hidden"/>
+	<div>
+		<label asp-for="FirstName"></label>
+		<input asp-for="FirstName" required/>
+		<span asp-validation-for="FirstName"></span>
+	</div>
+	<div>
+		<label asp-for="LastName"></label>
+		<input asp-for="LastName" required/>
+		<span asp-validation-for="LastName"></span>
+	</div>
+	<div>
+		<label></label>
+		<input name="newPicture" type="file"/>
+		<span></span>
+	</div>
+	<div>Reputation: @Model.Reputation</div>
+	<button type="submit">Save</button>
+</form>

@@ -1,8 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace KMITL_WebDev_MiniProject.Models
 {
@@ -33,5 +30,16 @@ namespace KMITL_WebDev_MiniProject.Models
 		[Compare("Password", ErrorMessage="Please confirm your password")]
 		[DataType(DataType.Password)]
 		public string ConfirmPassword {get; set;}
+
+		[Required]
+		[DataType(DataType.PhoneNumber)]
+		public string PhoneNumber {get; set;}
+
+		[Required]
+		[DataType(DataType.Date)]
+		public DateOnly DateOfBirth {get; set;}
+
+		[DataType(DataType.ImageUrl)]
+		public string? ImageURL {get; set;}
 	}
 }
