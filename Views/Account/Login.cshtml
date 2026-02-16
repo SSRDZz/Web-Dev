@@ -20,9 +20,14 @@
 		<span asp-validation-for="Email"></span>
 	</div>
 	<div class="Password-box">
-		<input asp-for="Password" placeholder=" " required/>
+		<input asp-for="Password" placeholder=" " id="password" required/>
 		<label asp-for="Password"></label>
 		<span asp-validation-for="Password"></span>
+
+		<div id="show-passwd">
+			<img src="~/image/eye_open.svg" alt="Show Password" />
+		</div>
+
 	</div>
 	<div class="Remember-box">
 		<input asp-for="RememberMe"/>
@@ -36,12 +41,12 @@
 		</p>
 	</div>
 	
-	<button type="submit"><p>Log-in</p></button>
+	<button type="submit" class="submit-button"><p>Log-in</p></button>
 
 </form>
 
 <script>
 	// check login fail or pass using ViewBag
-	window.loginFailed = @((ViewBag.login != null && ViewBag.login.ToString() == "0") ? "false" : "true");
+	window.loginFailed = @((ViewBag.login != null && ViewBag.login.ToString() == "0") ? "true" : "false");
 </script>
 <script src="~/js/Login.js" asp-append-version="true"></script>
