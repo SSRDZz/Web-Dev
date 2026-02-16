@@ -41,9 +41,7 @@
 </form>
 
 <script>
-	@if((ViewBag.login) == "0"){
-		<text>
-    		alert("Login failed");
-		</text>
-	}
+	// check login fail or pass using ViewBag
+	window.loginFailed = @((ViewBag.login != null && ViewBag.login.ToString() == "0") ? "false" : "true");
 </script>
+<script src="~/js/Login.js" asp-append-version="true"></script>
