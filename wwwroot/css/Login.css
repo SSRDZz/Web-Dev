@@ -113,6 +113,8 @@
     max-width: 300px;
     height: 45px;
         
+    background-color: #FF6F61;
+    color: white;
     border: 1px solid white;
     border-radius: 15px;    
 
@@ -125,20 +127,12 @@
     width: 80%;   
 
     
-}
-
-.submit-button[data-disabled="false"] {
-    background-color: #FF6F61;
-    
-    opacity: 1;
-    cursor: pointer;
-    pointer-events: auto;
-
     box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
     transition: all 0.3s ease; 
+    cursor: pointer;
 }
 
-.submit-button[data-disabled="false"]:hover {
+.submit-button:hover {
     transform: translateY(-2px); 
     background-color: #ff857a; /* bright rose pink color */
     border: 1px solid rgba(255, 255, 255, 0.8);
@@ -146,7 +140,7 @@
     box-shadow: 0 8px 25px rgba(255, 111, 97, 0.4);
 }
 
-.submit-button[data-disabled="false"]:active {
+.submit-button:active {
     transform: translateY(1px);
     box-shadow: 0 2px 10px rgba(255, 111, 97, 0.2);
 }
@@ -159,14 +153,6 @@
 }
 
 /* submit button when disable */
-.submit-button[data-disabled="true"] {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none; 
-
-    background-color: #F1F1F2;
-    color: #9D9D9F;   
-}
 
 
     

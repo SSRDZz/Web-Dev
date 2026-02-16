@@ -47,6 +47,21 @@ function Disable_submit(){
         ? false
         : true;
 
+        // change css submit-button
+        if(!valid){
+            sub_button.style.pointerEvents = "none";
+
+            sub_button.style.backgroundColor = "#F1F1F2";
+            sub_button.style.color = "#9D9D9F";
+            sub_button.style.boxShadow = "none";
+        }
+        else {
+            sub_button.style.pointerEvents = "auto";
+            
+            sub_button.style.backgroundColor = "#FF6F61";
+            sub_button.style.color = "white";
+            sub_button.style.boxShadow = "0 4px 15px rgba(255, 111, 97, 0.3)";
+        }
     }
 
     input_box.forEach(function(input){       // ใส่ function 
