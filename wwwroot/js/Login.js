@@ -1,12 +1,21 @@
 function Login_page(){
     
     document.addEventListener('DOMContentLoaded',function(){
-        console.log(window.loginFailed);
+        // console.log(window.loginFailed);
         if (window.loginFailed){
 
             const el = document.createElement('div');
             el.className = 'login-error';
-            el.textContent = "Login failed";
+            el.textContent = "Username or Password is wrong.";
+
+            el.style.color = "#d93232";
+            el.style.backgroundColor = "#feefef";
+            el.style.padding = "10px 10px 10px 15px";
+            el.style.borderRadius = "5px";
+            el.style.fontSize = "14px";
+            el.style.marginBottom = "10px";
+            el.style.lineHeight = "18px";
+
             document.querySelector('form.Login').prepend(el);
         }
     })
