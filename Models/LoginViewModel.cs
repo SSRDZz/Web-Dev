@@ -6,14 +6,14 @@ namespace KMITL_WebDev_MiniProject.Models
 	{
 		[Required]
 		[EmailAddress]
-		[Display(Name="Email Address")]
+		[Display(Name="Your Email")]
 		public string Email {get; set;}	
 
 		[Required]
 		[DataType(DataType.Password)]
 		public string Password {get; set;}
 
-		[Display(Name="Keep me logged in")]
+		[Display(Name="Remember me?")]
 		public bool RememberMe {get; set;}
 	}
 }
