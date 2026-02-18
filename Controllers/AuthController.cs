@@ -4,18 +4,17 @@ using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Services;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace KMITL_WebDev_MiniProject.Controllers
 {
-	public class AccountController : Controller
+	public class AuthController : Controller
 	{
 		private readonly SignInManager<UserAccount> _signInManager;
 		private readonly UserManager<UserAccount> _userManager;
 		private readonly ApplicationDbContext _dbContext;
 		private readonly UserServices _userServices;
 
-		public AccountController(
+		public AuthController(
 			SignInManager<UserAccount> signInManager, 
 			UserManager<UserAccount> userManager,
 			ApplicationDbContext dbContext,
@@ -35,7 +34,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			return View();
 		}
 
-		[HttpGet]
+		[HttpPost]
 		public IActionResult RegisterInsertProfile(RegisterViewModel model)
 		{
 			if(User.Identity.IsAuthenticated)
@@ -47,7 +46,7 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> RegisterInsertProfile(IFormFile? profilePicture)
+		public async Task<IActionResult> RegisterInsertProfileLogic(IFormFile? profilePicture)
 		{
 			if(User.Identity.IsAuthenticated)
 				return RedirectToAction("Index", "Home");
@@ -56,20 +55,14 @@ namespace KMITL_WebDev_MiniProject.Controllers
 			if(model.Email == null || model.Password == null)
 				return RedirectToAction("Register");
 
-			if(profilePicture != null && profilePicture.Length > 0)
-			{
-				using (var memoryStream = new MemoryStream())
-				{
-					await profilePicture.CopyToAsync(memoryStream);
-					model.ImageURL = Convert.ToBase64String(memoryStream.ToArray());
-				}
-			} else model.ImageURL = _userServices.guestImageURL;
+			string imgBase64 = await _userServices.ImageFileToBase64(profilePicture);
+			model.ImageURL = (string.IsNullOrEmpty(imgBase64)) ? _userServices.guestImageURL : imgBase64;
 
 			// this move was better cause no large data transfer between request but now can't do it, skill issue!
 			// TempData["FinalModel"] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
 			// return RedirectToAction("Register", null);
 
-			return Register(model).Result;
+			return await Register(model);
 		}
 
 		[HttpPost]
@@ -81,10 +74,6 @@ namespace KMITL_WebDev_MiniProject.Controllers
 
 			if(!ModelState.IsValid)
 				return RedirectToAction("Register");
-			
-			// this too
-			// if(stateA)
-			// 	model = finalModel;
 			
 			UserAccount account = new UserAccount()
 			{
@@ -144,63 +133,6 @@ namespace KMITL_WebDev_MiniProject.Controllers
 		{
 			await _signInManager.SignOutAsync();
 			return RedirectToAction("Login");
-		}
-
-		[HttpGet]
-		public async Task<IActionResult> Profile()
-		{
-			if(!User.Identity.IsAuthenticated) 
-				return RedirectToAction("Login");
-				
-			return View(_userServices.getProfileViewModelByUser(User));
-		}
-
-		[HttpGet]
-		public async Task<IActionResult> ProfileEdit()
-		{
-			if(!User.Identity.IsAuthenticated) 
-				return RedirectToAction("Login");
-				
-			return View(_userServices.getProfileViewModelByUser(User));
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> ProfileUpdate(ProfileViewModel model, IFormFile? newPicture)
-		{
-			if(!User.Identity.IsAuthenticated) 
-				return RedirectToAction("Login");
-
-			if(!ModelState.IsValid)
-				return RedirectToAction("Profile");
-
-			var user = await _userManager.GetUserAsync(User);
-
-			if(user == null)
-				return NotFound();
-
-			if(newPicture != null && newPicture.Length > 0)
-			{
-				using (var memoryStream = new MemoryStream())
-				{
-					await newPicture.CopyToAsync(memoryStream);
-					user.ImageURL = Convert.ToBase64String(memoryStream.ToArray());
-				}
-			}
-			
-			user.FirstName = model.FirstName;
-			user.LastName  = model.LastName;
-
-			var res = await _userManager.UpdateAsync(user);
-
-			if(!res.Succeeded)
-			{
-				foreach (var err in res.Errors)
-					Console.WriteLine(err.Code + " : " + err.Description);
-				Console.WriteLine("Update Failed");
-				return NotFound();
-			}
-
-			return RedirectToAction("Profile");
 		}
 	}
 }

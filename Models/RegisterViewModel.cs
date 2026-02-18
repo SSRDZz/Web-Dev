@@ -32,6 +32,9 @@ namespace KMITL_WebDev_MiniProject.Models
 		public string ConfirmPassword {get; set;}
 
 		[Required]
+		public uint Sex {get; set;}
+
+		[Required]
 		[DataType(DataType.PhoneNumber)]
 		public string PhoneNumber {get; set;}
 

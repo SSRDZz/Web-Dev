@@ -28,6 +28,9 @@ namespace KMITL_WebDev_MiniProject.Entites
 		public string RealUserName {get; set;}
 
 		[Required]
+		public uint Sex {get; set;}
+
+		[Required]
 		public int Reputation {get; set;}
 
 		[Required]
