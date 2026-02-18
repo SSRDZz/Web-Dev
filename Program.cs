@@ -1,9 +1,7 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
-using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 var builder = WebApplication.CreateBuilder(args);
 

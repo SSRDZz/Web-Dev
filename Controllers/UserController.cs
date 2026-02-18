@@ -1,4 +1,3 @@
-using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Services;
@@ -6,15 +5,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class UserController(UserManager<UserAccount> userManager, ApplicationDbContext dbContext, IWebHostEnvironment env) : Controller
+public class UserController(UserManager<UserAccount> userManager, IWebHostEnvironment env) : Controller
 {
 	private UserManager<UserAccount> _userManager {get; init;} = userManager;
-	private UserServices _userServices {get; init;} = new UserServices(userManager, dbContext, env);
+	private UserServices _userServices {get; init;} = new UserServices(userManager, env);
 
 	[HttpGet]
 	public async Task<IActionResult> Profile()
 	{
-		if(!User.Identity.IsAuthenticated) 
+		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
 			
 		return View(await _userServices.getProfileViewModelByUser(User));
@@ -23,7 +22,7 @@ public class UserController(UserManager<UserAccount> userManager, ApplicationDbC
 	[HttpGet]
 	public async Task<IActionResult> ProfileEdit()
 	{
-		if(!User.Identity.IsAuthenticated) 
+		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
 			
 		return View(await _userServices.getProfileViewModelByUser(User));
@@ -32,7 +31,7 @@ public class UserController(UserManager<UserAccount> userManager, ApplicationDbC
 	[HttpPost]
 	public async Task<IActionResult> ProfileUpdate(ProfileViewModel model, IFormFile? newPicture)
 	{
-		if(!User.Identity.IsAuthenticated) 
+		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
 
 		if(!ModelState.IsValid)
