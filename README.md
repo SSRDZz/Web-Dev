@@ -2,8 +2,13 @@
 
 Now we have docker compose for DB generator
 
-if don't have docker --> download first
+if don't have docker -> download first
 
-```CLI:
-	docker compose up -d
-	docker compose down```
+start container (start)
+```
+docker compose up -d
+```
+delete container (stop)
+```
+docker compose down
+```
