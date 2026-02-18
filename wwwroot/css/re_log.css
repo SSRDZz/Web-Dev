@@ -51,6 +51,21 @@ body {
     height: auto;
 }
 
+
+a {
+    color: #7661d2;
+    text-decoration: none;
+    width: fit-content;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input {
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 @media (max-width: 500px){
     .Login-box{
         margin: 0px;
