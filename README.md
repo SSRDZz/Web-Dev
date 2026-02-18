@@ -4,6 +4,6 @@ Now we have docker compose for DB generator
 
 if don't have docker --> download first
 
-CLI:
+```CLI:
 	docker compose up -d
-	docker compose down
+	docker compose down```
