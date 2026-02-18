@@ -1,0 +1,9 @@
+services:
+  mysqldb:
+    image: mysql:9.6.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_ROOT_HOST=%
+    ports:
+      - "3307:3306"
+    container_name: "MySQLDB"
