@@ -14,10 +14,10 @@
 <body>
     @if(User.Identity.IsAuthenticated){
         <div>You gonna see this if you were logged in</div>
-        <form asp-controller="Account" asp-action="Logout" method="post">
+        <form asp-controller="Auth" asp-action="Logout" method="post">
             <button type="submit">Logout</button>
         </form>
-        <a asp-controller="Account" asp-action="Profile">Profile</a>
+        <a asp-controller="User" asp-action="Profile">Profile</a>
         @* <a asp-controller="Account" asp-action="Profile">Search</a> *@
     }
     

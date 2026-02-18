@@ -13,6 +13,10 @@ namespace KMITL_WebDev_MiniProject.Models
 		[Required(ErrorMessage="Reputation Error")]
 		public int Reputation {get; set;}
 		
-		public string? ImageURL {get; set;}
+		[Required]
+		public string ImageURL {get; set;}
+
+		[Required]
+		public string Sex {get; set;}
 	}
 }
