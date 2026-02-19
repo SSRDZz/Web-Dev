@@ -3,7 +3,9 @@ function Preview_image(){
     const input = document.querySelector('input');
     const preview = document.querySelector('.preview');
 
-    // input.style.opacity = 0;
+    input.style.opacity = 0;
+    // input.style.position = "fixed";
+    input.style.width = "5px";  
 
     input.addEventListener('change', updateImageDisplay);
 
@@ -26,6 +28,7 @@ function Preview_image(){
                 const image = document.createElement('img');
                 image.src = URL.createObjectURL(img);
                 
+
                 preview.appendChild(image);
                 
             } else {
@@ -51,7 +54,7 @@ function Preview_image(){
     ];
 
     function validFileType(file) {
-        console.log(file.type);
+        // console.log(file.type);
       return fileTypes.includes(file.type);
     }
 
