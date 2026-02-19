@@ -46,8 +46,10 @@ function Disable_submit(){
             }
         })
         
-        console.log(sub_button);
-        console.log(sub_button.disabeld);
+        
+          sub_button.disabled = valid 
+        ? false
+        : true;
         // change css submit-button
         if(sub_button.disabled){
             sub_button.style.pointerEvents = "none";
