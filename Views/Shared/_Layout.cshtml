@@ -3,26 +3,49 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - KMITL_WebDev_MiniProject</title>
-    <script type="importmap"></script>
-
+    <title>My Web App</title>
     <link rel="stylesheet" href="~/css/site.css" />
-  
-    @* google font -> Roboto*@
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
-    @if(User.Identity.IsAuthenticated){
-        <div>You gonna see this if you were logged in</div>
-        <form asp-controller="Auth" asp-action="Logout" method="post">
-            <button type="submit">Logout</button>
-        </form>
-        <a asp-controller="User" asp-action="Profile">Profile</a>
-        @* <a asp-controller="Account" asp-action="Profile">Search</a> *@
-    }
-    
-    @RenderBody()
+    <header class="custom-header">
+        <div class="header-left">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="logo">LOGO</div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search...">
+        </div>
 
-    @await RenderSectionAsync("Scripts", required: false)
+        <div class="user-profile">
+            <div class="user-icon">?</div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside id="sidebar" class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">Home</a>
+                <a href="#" class="nav-item">Popular</a>
+                
+                <div class="nav-section">Your activity</div>
+                <hr class="nav-divider">
+                <div class="nav-section">Favourite</div>
+            </nav>
+            
+            <button class="btn-create">Create Activity</button>
+        </aside>
+
+        <main class="content-area">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        }
+    </script>
 </body>
 </html>
