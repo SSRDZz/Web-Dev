@@ -75,7 +75,7 @@
     border: 1px solid white;
     border-radius: 15px;    
 
-    margin: 50px 0px;
+    margin: 30px 0px;
     
     display: flex;
     align-self: center;
@@ -116,12 +116,15 @@
 
 /* Login Error Message */
 .login-error {
+    box-sizing: border-box;
+
     color: #d93232;
     background-color: #feefef;
-    padding: 10px 10px 10px 15px;
+    padding: 10px 10px 10px 25px;
+    /* padding-bottom: 100px; */
     border-radius: 5px;
     font-size: 14px;
-    margin-bottom: 10px;
+    margin: 20px 0px;
     line-height: 18px;
     border-left: 4px solid #d93232;
     animation: slideDown 0.3s ease-out;

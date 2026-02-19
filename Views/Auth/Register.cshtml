@@ -6,6 +6,8 @@
 
 <link rel="stylesheet" href="~/css/Register.css" asp-append-version="true" />
 
+
+
 <form asp-action="Register" method="POST" class="Register">
 	<div class="Input-textBox">
 		<input asp-for="FirstName" placeholder=" "  required/>
@@ -47,6 +49,7 @@
 		</div>
 
 	</div>
+
 	<div>
 		<div>
 			<input asp-for="Sex" required/ type="radio" value=0>
@@ -76,27 +79,29 @@
 	</div>
 	<input type="hidden" asp-for="ImageURL"/>
 
-	<button type="submit" class="submit-button"><p>Register</p></button>
-</form>
-
-<ul>
+	@* this for show error if Register not success -> Reason for paste here is u can read before you press submit again *@
 	@{
 		if(ViewBag.errors != null)
 		{
 			IdentityError[] errors = ViewBag.errors;
-			for(int i = 0; i < errors.Length; i++)
-			{
-				Console.WriteLine($"error: {errors[i].Description}");
-				<li>@errors[i].Description</li>
-			}
+	}
+		@if(ViewBag.errors != null)
+		{
+			<ul class="login-error">
+				@foreach(var error in (IdentityError[])ViewBag.errors)
+				{
+					<li>@error.Description</li>
+				}
+			</ul>
 		}
+
 	}
 
-</ul>
+
+	<button type="submit" class="submit-button"><p>Register</p></button>
+</form>
 
 
-<script>
-	// check login fail or pass using ViewBag
-	window.registerFailed = @((ViewBag.register != null && ViewBag.register.ToString() == "0") ? "true" : "false");
-</script>
+
+
 <script src="~/js/Register.js" asp-append-version="true"></script>

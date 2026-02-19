@@ -75,6 +75,8 @@ function Disable_submit(){
     })
     check_form();
 }
+
+
         
 Disable_submit();
 Show_password();
