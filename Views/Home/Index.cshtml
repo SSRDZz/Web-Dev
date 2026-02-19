@@ -2,7 +2,27 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="activity-card card shadow-sm p-3 mb-5 bg-white rounded">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="user-info d-flex align-items-center">
+            <div class="profile-pic">?</div>
+            <div class="ms-2">
+                <strong>User69</strong> 
+                <span class="text-muted">3.5/5 ⭐</span>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-join text-white">Join!</button>
+            <i class="bi bi-bookmark"></i> </div>
+    </div>
+
+    <div class="mt-3">
+        <h5>Activity name</h5>
+        <p class="text-muted">Detail</p>
+        <img src="~/images/sample-activity.png" class="img-fluid rounded" alt="Activity Image">
+    </div>
+
+    <div class="mt-2 text-muted small">
+        69 users have joined this activity
+    </div>
 </div>
