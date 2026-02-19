@@ -5,66 +5,77 @@
 
 <link rel="stylesheet" href="~/css/Register.css" asp-append-version="true" />
 
-<form asp-action="RegisterInsertProfile" method="POST">
-	<div>
+<form asp-action="RegisterInsertProfile" method="POST" class="Register">
+	<div class="Input-textBox">
+		<input asp-for="FirstName" placeholder=" "  required/>
 		<label asp-for="FirstName"></label>
-		<input asp-for="FirstName" required/>
 		<span asp-validation-for="FirstName"></span>
 	</div>
-	<div>
+	<div class="Input-textBox">
+		<input asp-for="LastName" placeholder=" "  required/>
 		<label asp-for="LastName"></label>
-		<input asp-for="LastName" required/>
 		<span asp-validation-for="LastName"></span>
 	</div>
-	<div>
+	<div class="Input-textBox">
+		<input asp-for="UserName" placeholder=" " required/>
 		<label asp-for="UserName"></label>
-		<input asp-for="UserName" required/>
 		<span asp-validation-for="UserName"></span>
 	</div>
-	<div>
+	<div class="Input-textBox">
+		<input asp-for="Email" placeholder=" " required/>
 		<label asp-for="Email"></label>
-		<input asp-for="Email" required/>
 		<span asp-validation-for="Email"></span>
 	</div>
-	<div>
+	<div class="Input-textBox">
+		<input asp-for="Password" placeholder=" " required/>
 		<label asp-for="Password"></label>
-		<input asp-for="Password" required/>
 		<span asp-validation-for="Password"></span>
+
+		<div class="show-passwd">
+			<img src="~/image/eye_open.svg" alt="Show Password" />
+		</div>
+
 	</div>
-	<div>
+	<div class="Input-textBox">
+		<input asp-for="ConfirmPassword" placeholder=" " required/>
 		<label asp-for="ConfirmPassword"></label>
-		<input asp-for="ConfirmPassword" required/>
 		<span asp-validation-for="ConfirmPassword"></span>
+
+		<div class="show-passwd">
+			<img src="~/image/eye_open.svg" alt="Show Password" />
+		</div>
+
 	</div>
 	<div>
 		<div>
-			<label asp-for="Sex">Male</label>
 			<input asp-for="Sex" required/ type="radio" value=0>
+			<label asp-for="Sex">Male</label>
 			<span asp-validation-for="Sex"></span>
 		</div>
 		<div>
-			<label asp-for="Sex">Female</label>
 			<input asp-for="Sex" required/ type="radio" value=1>
+			<label asp-for="Sex">Female</label>
 			<span asp-validation-for="Sex"></span>
 		</div>
 		<div>
-			<label asp-for="Sex">Other</label>
 			<input asp-for="Sex" required/ type="radio" value=2>
+			<label asp-for="Sex">Other</label>
 			<span asp-validation-for="Sex"></span>
 		</div>
 	</div>
-	<div>
-		<label asp-for="PhoneNumber"></label>
+	<div >
 		<input asp-for="PhoneNumber" required/>
+		<label asp-for="PhoneNumber"></label>
 		<span asp-validation-for="PhoneNumber"></span>
 	</div>
 	<div>
-		<label asp-for="DateOfBirth"></label>
 		<input asp-for="DateOfBirth" type="date" required/>
+		<label asp-for="DateOfBirth"></label>
 		<span asp-validation-for="DateOfBirth"></span>
 	</div>
 	<input type="hidden" asp-for="ImageURL"/>
-	<button type="submit">Done</button>
+
+	<button type="submit" class="submit-button"><p>Register</p></button>
 </form>
 
 
