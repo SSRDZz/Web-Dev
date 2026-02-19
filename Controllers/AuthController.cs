@@ -66,6 +66,7 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		var result = await _userManager.CreateAsync(account, model.Password);
 		if(!result.Succeeded)
 		{
+			ViewBag.register = "0";
 			ModelState.AddModelError("", "Please enter unique Email or Password");
 			return View(model);
 		}
@@ -75,6 +76,7 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		if(!res.Succeeded) 
 			return RedirectToAction("Login");
 
+		ViewBag.register = "1";
 		return RedirectToAction("Index", "Home");
 	}
 

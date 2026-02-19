@@ -42,13 +42,9 @@ function Disable_submit(){
                 valid = false;
             }
         })
-
-        sub_button.disabled = valid 
-        ? false
-        : true;
-
+        
         // change css submit-button
-        if(!valid){
+        if(sub_button.disabled){
             sub_button.style.pointerEvents = "none";
 
             sub_button.style.backgroundColor = "#F1F1F2";

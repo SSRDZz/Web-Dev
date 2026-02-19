@@ -3,6 +3,8 @@
 	Layout = "~/Views/Shared/_Re_Log.cshtml";
 }
 
+<link rel="stylesheet" href="~/css/Register.css" asp-append-version="true" />
+
 <form asp-action="RegisterInsertProfile" method="POST">
 	<div>
 		<label asp-for="FirstName"></label>
@@ -64,3 +66,10 @@
 	<input type="hidden" asp-for="ImageURL"/>
 	<button type="submit">Done</button>
 </form>
+
+
+<script>
+	// check login fail or pass using ViewBag
+	window.registerFailed = @((ViewBag.register != null && ViewBag.register.ToString() == "0") ? "true" : "false");
+</script>
+<script src="~/js/Register.js" asp-append-version="true"></script>
