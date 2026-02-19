@@ -66,7 +66,7 @@ public class DbInitializer
 
 	public static async Task<string> guestImage(IWebHostEnvironment env)
 	{
-		string path = Path.Combine(env.ContentRootPath, "Contents", "images", "guest_picture.jpg");
+		string path = Path.Combine(env.WebRootPath, "image", "guest_picture.jpg");
 		byte[] fileBytes = await File.ReadAllBytesAsync(path);
 		string base64Form = Convert.ToBase64String(fileBytes);
 		return base64Form;
