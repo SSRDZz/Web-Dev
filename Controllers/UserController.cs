@@ -33,11 +33,11 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	{
 		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
-
+		
 		if(!ModelState.IsValid)
 			return RedirectToAction("Profile");
 
-		var user = await _userManager.GetUserAsync(User);
+		UserAccount user = await _userManager.GetUserAsync(User);
 
 		if(user == null)
 			return NotFound();
@@ -48,7 +48,7 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		user.FirstName = model.FirstName;
 		user.LastName  = model.LastName;
 
-		var res = await _userManager.UpdateAsync(user);
+		IdentityResult res = await _userManager.UpdateAsync(user);
 
 		if(!res.Succeeded)
 		{

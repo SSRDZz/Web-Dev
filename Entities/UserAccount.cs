@@ -6,6 +6,7 @@ namespace KMITL_WebDev_MiniProject.Entites
 {
 	[Index(nameof(Email), IsUnique = true)]
 	[Index(nameof(UserName), IsUnique = true)]
+	[Index(nameof(RealUserName), IsUnique = true)]
 	public class UserAccount: IdentityUser
 	{
 		[Key]

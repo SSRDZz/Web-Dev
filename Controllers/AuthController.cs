@@ -21,53 +21,24 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	}
 
 	[HttpPost]
-	public IActionResult RegisterInsertProfile(RegisterViewModel model)
-	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
-			return RedirectToAction("Index", "Home");
-
-		TempData["MyModel"] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
-		
-		return View(model);
-	}
-
-	[HttpPost]
-	public async Task<IActionResult> RegisterInsertProfileLogic(IFormFile? profilePicture)
-	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
-			return RedirectToAction("Index", "Home");
-
-		RegisterViewModel? model = Newtonsoft.Json.JsonConvert.DeserializeObject<RegisterViewModel>(TempData["MyModel"] as string);
-		if(model == null || model.Email == null || model.Password == null)
-			return RedirectToAction("Register");
-
-		string? imgBase64 = await _userServices.ImageFileToBase64(profilePicture);
-		model.ImageURL = string.IsNullOrEmpty(imgBase64) ? _userServices.guestImageURL : imgBase64;
-
-		// this move was better cause no large data transfer between request but now can't do it, skill issue!
-		// TempData["FinalModel"] = Newtonsoft.Json.JsonConvert.SerializeObject(model);
-		// return RedirectToAction("Register", null);
-
-		return await Register(model);
-	}
-
-	[HttpPost]
 	public async Task<IActionResult> Register(RegisterViewModel model)
 	{
-		// code for upper better move
-		// RegisterViewModel finalModel = Newtonsoft.Json.JsonConvert.DeserializeObject<RegisterViewModel>(TempData["FinalModel"] as string);
-		// bool stateA = (finalModel != null) && (finalModel.Email == null || finalModel.Password == null);
-
 		if(!ModelState.IsValid)
 			return RedirectToAction("Register");
 		
 		UserAccount account = _userServices.RegisterViewModelToAccount(model);
 
-		var result = await _userManager.CreateAsync(account, model.Password);
+		if(await _userServices.IsRealNameExist(account.RealUserName))
+		{
+			ViewBag.errors = new IdentityError[] { new IdentityError {Description = "Username is already exist"}};
+			return View(model);
+		}
+
+		IdentityResult result = await _userManager.CreateAsync(account, model.Password);
 		if(!result.Succeeded)
 		{
 			ViewBag.register = "0";
-			ModelState.AddModelError("", "Please enter unique Email or Password");
+			ViewBag.errors = result.Errors.ToArray();
 			return View(model);
 		}
 		ModelState.Clear();
@@ -77,9 +48,47 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 			return RedirectToAction("Login");
 
 		ViewBag.register = "1";
+		return RedirectToAction("RegisterInsertProfile");
+	}
+
+
+	[HttpGet]
+	public async Task<IActionResult> RegisterInsertProfile()
+	{
+		if(!User.Identity.IsAuthenticated)
+			return RedirectToAction("Register");
+		
+		UserAccount user = await _userManager.GetUserAsync(User);
+
+		if(user.ImageURL != _userServices.guestImageURL)
+			return RedirectToAction("Index", "Home");
+
+		return View();
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> RegisterInsertProfile(IFormFile? profilePicture)
+	{
+		if(User.Identity == null || !User.Identity.IsAuthenticated)
+			return RedirectToAction("Register");
+
+		UserAccount user = await _userManager.GetUserAsync(User);
+
+		if(user.ImageURL != _userServices.guestImageURL)
+			return RedirectToAction("Index", "Home");
+
+		string? imgBase64 = await _userServices.ImageFileToBase64(profilePicture);
+		user.ImageURL = !string.IsNullOrEmpty(imgBase64) ?  imgBase64 : _userServices.guestImageURL;
+
+		IdentityResult res = await _userManager.UpdateAsync(user);
+
+		if(!res.Succeeded)
+			return RedirectToAction("Register");
+
 		return RedirectToAction("Index", "Home");
 	}
 
+	
 
 	[HttpGet]
 	public IActionResult Login()
