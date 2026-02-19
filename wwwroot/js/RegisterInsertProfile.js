@@ -12,34 +12,27 @@ function Preview_image(){
             preview.removeChild(preview.firstChild);
         }
 
-        const curFiles = input.files;
-        if(curFiles.length === 0) {
+        const file_imgs = input.files;
+        if(file_imgs.length === 0) {
             const para = document.createElement('p');
-            para.textContent = 'No files currently selected for upload';
+            para.textContent = 'No file currently selected for upload';
             preview.appendChild(para);
         } else {
-            const list = document.createElement('ol');
-            preview.appendChild(list);
-
-            for(const file of curFiles) {
-                const listItem = document.createElement('li');
-                const para = document.createElement('p');
-
-                if(validFileType(file)) {
-                    para.textContent = `File name ${file.name}, file size ${returnFileSize(file.size)}.`;
-                    const image = document.createElement('img');
-                    image.src = URL.createObjectURL(file);
-
-                    listItem.appendChild(image);
-                    listItem.appendChild(para);
-
-                } else {
-                    para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
-                    listItem.appendChild(para);
-                }
-
-                list.appendChild(listItem);
+            const img = file_imgs[0];             
+            const para = document.createElement('p');
+            
+            if(validFileType(img)) {
+                para.textContent = `File name ${img.name}, file size ${returnFileSize(img.size)}.`;
+                const image = document.createElement('img');
+                image.src = URL.createObjectURL(img);
+                
+                preview.appendChild(image);
+                
+            } else {
+                para.textContent = `File name ${img.name}: Not a valid file type. Update your selection.`;
             }
+            
+            preview.appendChild(para);
         }
     }
 
@@ -58,6 +51,7 @@ function Preview_image(){
     ];
 
     function validFileType(file) {
+        console.log(file.type);
       return fileTypes.includes(file.type);
     }
 
