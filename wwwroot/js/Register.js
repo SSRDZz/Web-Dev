@@ -16,8 +16,9 @@ function Login_page(){
 function Show_password(){
     const show_pw_2 = document.querySelectorAll('.show-passwd');
     show_pw_2.forEach(show_pw => {
-        const show_pw_icon = show_pw.querySelector('img');
-        const pw_input = document.previousElementSibling;
+        const show_pw_icon = show_pw.firstElementChild;
+        const show_pw_parent = show_pw.parentElement;
+        const pw_input = show_pw_parent.firstElementChild;
 
         show_pw.addEventListener('click', function(){
             pw_input.type = pw_input.type === 'password' 
@@ -25,8 +26,10 @@ function Show_password(){
                 : 'password'; // check type and return it
             
             show_pw_icon.src = pw_input.type === 'password' 
-                ? 'image/eye_open.svg' 
-                : 'image/eye_closed.svg';
+                ? "/image/eye_open.svg"
+                : '/image/eye_closed.svg';
+
+            console.log(show_pw_icon.src);
         })
 
     })
@@ -72,7 +75,7 @@ function Disable_submit(){
     })
     check_form();
 }
-
+        
 Disable_submit();
 Show_password();
 Login_page();

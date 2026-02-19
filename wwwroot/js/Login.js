@@ -24,8 +24,9 @@ function Show_password(){
             : 'password'; // check type and return it
         
         show_pw_icon.src = pw_input.type === 'password' 
-            ? 'image/eye_open.svg' 
-            : 'image/eye_closed.svg';
+            ? '/image/eye_open.svg' 
+            : '/image/eye_closed.svg';
+        console.log(show_pw_icon.src)
     })
 }
 
