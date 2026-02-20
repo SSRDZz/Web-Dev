@@ -23,6 +23,9 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	[HttpPost]
 	public async Task<IActionResult> Register(RegisterViewModel model)
 	{
+		if(User.Identity == null || User.Identity.IsAuthenticated)
+			return RedirectToAction("Index","Home");
+
 		if(!ModelState.IsValid)
 			return RedirectToAction("Register");
 		
@@ -43,9 +46,11 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		}
 		ModelState.Clear();
 
-		var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
-		if(!res.Succeeded) 
-			return RedirectToAction("Login");
+		// var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
+		// if(!res.Succeeded) 
+		// 	return RedirectToAction("Login");
+		TempData["RealName"] = model.UserName;
+		TempData["Email"] = model.Email;
 
 		ViewBag.register = "1";
 		return RedirectToAction("RegisterInsertProfile");
@@ -55,13 +60,16 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	[HttpGet]
 	public async Task<IActionResult> RegisterInsertProfile()
 	{
-		if(!User.Identity.IsAuthenticated)
-			return RedirectToAction("Register");
-		
-		UserAccount user = await _userManager.GetUserAsync(User);
+		if(User.Identity != null && User.Identity.IsAuthenticated)
+			return RedirectToAction("Login");
+	
+		string Email = TempData["Email"] as string;
+		UserAccount user = await _userManager.FindByNameAsync(Email);
 
 		if(user.ImageURL != _userServices.guestImageURL)
 			return RedirectToAction("Index", "Home");
+
+		await _signInManager.SignInAsync(user, false);
 
 		return View();
 	}
@@ -69,8 +77,8 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	[HttpPost]
 	public async Task<IActionResult> RegisterInsertProfile(IFormFile? profilePicture)
 	{
-		if(User.Identity == null || !User.Identity.IsAuthenticated)
-			return RedirectToAction("Register");
+		if(User.Identity == null || User.Identity.IsAuthenticated)
+			return RedirectToAction("Login");
 
 		UserAccount user = await _userManager.GetUserAsync(User);
 
