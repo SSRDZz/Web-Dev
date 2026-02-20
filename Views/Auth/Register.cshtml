@@ -30,7 +30,7 @@
 		<span asp-validation-for="Email"></span>
 	</div>
 	<div class="Input-textBox">
-		<input asp-for="Password" placeholder=" " required/>
+		<input asp-for="Password" placeholder=" " id="pwd-1" class="pwd_input_box" required/>
 		<label asp-for="Password"></label>
 		<span asp-validation-for="Password"></span>
 
@@ -39,8 +39,8 @@
 		</div>
 
 	</div>
-	<div class="Input-textBox">
-		<input asp-for="ConfirmPassword" placeholder=" " required/>
+	<div class="Input-textBox" id="pwd2">
+		<input asp-for="ConfirmPassword" placeholder=" " id="pwd-2" class="pwd_input_box" required/>
 		<label asp-for="ConfirmPassword"></label>
 		<span asp-validation-for="ConfirmPassword"></span>
 
@@ -49,7 +49,9 @@
 		</div>
 
 	</div>
-
+	<div class="login-error" id="pwd_not_match" style="display:none">
+		Password and ConfirmPassword do not match.
+	</div>
 	<div>
 		<div>
 			<input asp-for="Sex" required/ type="radio" value=0>

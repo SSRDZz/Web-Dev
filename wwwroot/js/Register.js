@@ -1,17 +1,4 @@
-function Login_page(){
-    
-    document.addEventListener('DOMContentLoaded',function(){
-        // console.log(window.loginFailed);
-        if (window.registerFailed){
 
-            const el = document.createElement('div');
-            el.className = 'login-error';
-            el.textContent = "Username or Password is wrong.";
-
-            document.querySelector('form.Login').prepend(el);   
-        }
-    })
-}
 
 function Show_password(){
     const show_pw_2 = document.querySelectorAll('.show-passwd');
@@ -29,16 +16,34 @@ function Show_password(){
                 ? "/image/eye_open.svg"
                 : '/image/eye_closed.svg';
 
-            console.log(show_pw_icon.src);
+            // console.log(show_pw_icon.src);
         })
 
     })
 }
 
+function Css_submit(valid){
+    const sub_button = document.querySelector('.submit-button');
+    sub_button.disabled = !valid ;
+    if(sub_button.disabled){
+            sub_button.style.pointerEvents = "none";
+
+            sub_button.style.backgroundColor = "#F1F1F2";
+            sub_button.style.color = "#9D9D9F";
+            sub_button.style.boxShadow = "none";
+        }
+    else {
+        sub_button.style.pointerEvents = "auto";
+        
+        sub_button.style.backgroundColor = "#FF6F61";
+        sub_button.style.color = "white";
+        sub_button.style.boxShadow = "0 4px 15px rgba(255, 111, 97, 0.3)";
+    }
+}
+
 
 function Disable_submit(){
     const input_box = document.querySelectorAll('input[required]');
-    const sub_button = document.querySelector('.submit-button');
 
     function check_form(){
         let valid = true;
@@ -49,25 +54,8 @@ function Disable_submit(){
             }
         })
         
+        Css_submit(valid);  // change css submit-button
         
-          sub_button.disabled = valid 
-        ? false
-        : true;
-        // change css submit-button
-        if(sub_button.disabled){
-            sub_button.style.pointerEvents = "none";
-
-            sub_button.style.backgroundColor = "#F1F1F2";
-            sub_button.style.color = "#9D9D9F";
-            sub_button.style.boxShadow = "none";
-        }
-        else {
-            sub_button.style.pointerEvents = "auto";
-            
-            sub_button.style.backgroundColor = "#FF6F61";
-            sub_button.style.color = "white";
-            sub_button.style.boxShadow = "0 4px 15px rgba(255, 111, 97, 0.3)";
-        }
     }
 
     input_box.forEach(function(input){       // ใส่ function 
@@ -76,8 +64,44 @@ function Disable_submit(){
     check_form();
 }
 
+function Compare_pwd(){
+    
+    const pwd_input = document.querySelectorAll(".pwd_input_box");
+    
+    function Check_pwd(){
+        const pwd = document.querySelector("#pwd-1").value;
+        const con_pwd = document.querySelector("#pwd-2").value;
 
+        let valid = true
+        let show_err = false;
+
+        // console.log(pwd , con_pwd);
+
+        if(pwd=="" || con_pwd==""){
+            valid = false;
+            show_err = false;
+        }
+        else if ( pwd != con_pwd ){
+            valid = false;
+            show_err = true;
+        }
         
-Disable_submit();
+        // console.log(valid, show_err);
+
+        Css_submit(valid);
+        document.querySelector("#pwd_not_match").style.display = "none";
+        if(show_err){
+            document.querySelector("#pwd_not_match").style.display = "block";
+            // console.log('Errrrrrrrrr');
+        }
+    } 
+
+    pwd_input.forEach(function(input){
+        input.addEventListener('input',Check_pwd)
+    })
+}
+
+
+Disable_submit();   
+Compare_pwd()
 Show_password();
-Login_page();
