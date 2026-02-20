@@ -79,7 +79,7 @@
 		</div>
 	</div>
 	<div class="Input-textBox" >
-		<input asp-for="PhoneNumber" required/>
+		<input asp-for="PhoneNumber" pattern="^\d{1,10}$" required/>
 		<label asp-for="PhoneNumber"></label>
 		<span asp-validation-for="PhoneNumber"></span>
 	</div>
