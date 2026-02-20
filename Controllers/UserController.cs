@@ -33,22 +33,22 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	{
 		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
-
+		
 		if(!ModelState.IsValid)
 			return RedirectToAction("Profile");
 
-		var user = await _userManager.GetUserAsync(User);
+		UserAccount user = await _userManager.GetUserAsync(User);
 
 		if(user == null)
 			return NotFound();
 
 		string imgBase64 = await _userServices.ImageFileToBase64(newPicture);
-		user.ImageURL = (!string.IsNullOrEmpty(imgBase64)) ? imgBase64 : _userServices.guestImageURL;
+		user.ImageURL = !string.IsNullOrEmpty(imgBase64) ? imgBase64 : user.ImageURL;
 
 		user.FirstName = model.FirstName;
 		user.LastName  = model.LastName;
 
-		var res = await _userManager.UpdateAsync(user);
+		IdentityResult res = await _userManager.UpdateAsync(user);
 
 		if(!res.Succeeded)
 		{
@@ -59,5 +59,18 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		}
 
 		return RedirectToAction("Profile");
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> ProfileOther(string Id)
+	{
+		if(!User.Identity.IsAuthenticated) 
+			return RedirectToAction("Login", "Auth");
+
+		UserAccount user = await _userManager.FindByIdAsync(Id);
+		if(user == null)
+			return RedirectToAction("Index", "Home");
+
+		return View(_userServices.ToProfileViewModel(user));
 	}
 }

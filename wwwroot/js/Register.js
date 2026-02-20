@@ -2,31 +2,36 @@ function Login_page(){
     
     document.addEventListener('DOMContentLoaded',function(){
         // console.log(window.loginFailed);
-        if (window.loginFailed){
+        if (window.registerFailed){
 
             const el = document.createElement('div');
             el.className = 'login-error';
             el.textContent = "Username or Password is wrong.";
 
-            document.querySelector('form.Login').prepend(el);
+            document.querySelector('form.Login').prepend(el);   
         }
     })
 }
 
 function Show_password(){
-    const show_pw = document.querySelector('#show-passwd');
-    const show_pw_icon = show_pw.querySelector('img');
-    const pw_input = document.querySelector('#password');
+    const show_pw_2 = document.querySelectorAll('.show-passwd');
+    show_pw_2.forEach(show_pw => {
+        const show_pw_icon = show_pw.firstElementChild;
+        const show_pw_parent = show_pw.parentElement;
+        const pw_input = show_pw_parent.firstElementChild;
 
-    show_pw.addEventListener('click', function(){
-        pw_input.type = pw_input.type === 'password' 
-            ? 'text' 
-            : 'password'; // check type and return it
-        
-        show_pw_icon.src = pw_input.type === 'password' 
-            ? '/image/eye_open.svg' 
-            : '/image/eye_closed.svg';
-        console.log(show_pw_icon.src)
+        show_pw.addEventListener('click', function(){
+            pw_input.type = pw_input.type === 'password' 
+                ? 'text' 
+                : 'password'; // check type and return it
+            
+            show_pw_icon.src = pw_input.type === 'password' 
+                ? "/image/eye_open.svg"
+                : '/image/eye_closed.svg';
+
+            console.log(show_pw_icon.src);
+        })
+
     })
 }
 
@@ -44,11 +49,10 @@ function Disable_submit(){
             }
         })
         
+        
           sub_button.disabled = valid 
         ? false
         : true;
-
-        
         // change css submit-button
         if(sub_button.disabled){
             sub_button.style.pointerEvents = "none";
@@ -71,7 +75,7 @@ function Disable_submit(){
     })
     check_form();
 }
-
+        
 Disable_submit();
 Show_password();
 Login_page();

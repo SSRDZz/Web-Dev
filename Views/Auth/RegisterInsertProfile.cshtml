@@ -2,16 +2,23 @@
 	Layout = "~/Views/Shared/_Re_Log.cshtml";
 }
 
+<link rel="stylesheet" href="~/css/RegisterInsertProfile.css" asp-append-version="true" />
 
 <h2>Please Insert Your Image</h2>
 
 <div asp-validation-summary="All"></div>
 
-<form asp-action="RegisterInsertProfileLogic" method="POST" enctype="multipart/form-data">
+<form asp-action="RegisterInsertProfile" method="POST" enctype="multipart/form-data">
 	<div>
-		<label></label>
-		<input name="profilePicture" type="file"/>
+		<label for="image_uploads">Choose images to upload (PNG, JPG)</label>
+		<input name="profilePicture" type="file" id="image_uploads" accept=".jpg, .jpeg, .png" />
 		<span></span>
 	</div>
-	<button type="submit">Done</button>
+	<div class="preview">
+      <p>No files currently selected for upload</p>
+    </div>
+	<button type="submit">Submit</button>
 </form>
+
+
+<script src="~/js/RegisterInsertProfile.js" asp-append-version="true"></script>

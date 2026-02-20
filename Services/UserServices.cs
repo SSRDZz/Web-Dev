@@ -2,6 +2,7 @@ using System.Security.Claims;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace KMITL_WebDev_MiniProject.Services;
 public class UserServices
@@ -13,7 +14,7 @@ public class UserServices
 	{
 		_userManager = um;
 
-		string path = Path.Combine(env.ContentRootPath, "Contents", "images", "guest_picture.jpg");
+		string path = Path.Combine(env.WebRootPath, "image", "guest_picture.jpg");
 		byte[] fileBytes = File.ReadAllBytesAsync(path).Result;
 		string base64Form = Convert.ToBase64String(fileBytes);
 
@@ -67,10 +68,15 @@ public class UserServices
 			LastName = model.LastName,
 			PhoneNumber = model.PhoneNumber,
 			DateOfBirth = model.DateOfBirth,
-			ImageURL = model.ImageURL,
+			ImageURL = !string.IsNullOrEmpty(model.ImageURL) ? model.ImageURL : guestImageURL,
 			EmailConfirmed = false
 		};
 
+	}
+
+	public async Task<bool> IsRealNameExist(string RealName)
+	{
+		return await _userManager.Users.AnyAsync(u => u.RealUserName == RealName);
 	}
 }
 
