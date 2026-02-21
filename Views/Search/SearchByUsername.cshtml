@@ -1,0 +1,10 @@
+@using KMITL_WebDev_MiniProject.Entites
+@using Microsoft.AspNetCore.Http.Features
+@model List<UserAccount>
+
+@foreach(UserAccount user in Model)
+{
+	<div class="search-tag" id="@user.Id">
+		<h2 class="search-tag-detail">@user.RealUserName</h2>
+	</div>
+} 

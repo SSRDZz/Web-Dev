@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Web App</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 </head>
 <body>
     <header class="custom-header">
@@ -14,12 +15,15 @@
         </div>
         
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search...">
+            <input type="text" id="search-bar" class="search-input" placeholder="Search...">
         </div>
 
         <div class="user-profile">
             <div class="user-icon">?</div>
         </div>
+        <form asp-controller="Auth" asp-action="Logout" method="POST">
+            <button type="submit">Logout</button>
+        </form>
     </header>
 
     <div class="main-container">
@@ -45,6 +49,27 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('show');
+        };
+
+        let timeout = null;
+        document.getElementById("search-bar").addEventListener("keyup", () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(liveSearch, 800);
+        });
+
+        function liveSearch() {
+            console.log("doing");
+            let value = document.getElementById("search-bar").value;
+            
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action(controller: "Search", action: "SearchByUsername")',
+                data: { Username: value },
+                datatype: "html",
+                success: (data) => {
+                    $("#activity-grid").html(data);
+                } 
+            });
         }
     </script>
 </body>
