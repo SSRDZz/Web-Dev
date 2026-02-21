@@ -1,26 +1,93 @@
+form {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+
+
+input[type=file]{
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+    z-index: -1; /* Place it beneath the label visually */
+}
+
+.img-box{
+    display: flex;
+    justify-content: center;
+    width:100%;
+}
+
+.submit-button, .img-box label{
+    max-width: 300px;
+    height: 45px;
+    
+    background-color: #FF6F61;
+    color: white;
+    border: 1px solid white;
+    border-radius: 15px;    
+    
+    margin: 30px 0px;
+    
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    width: 80%;   
+    
+    
+    box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+    transition: all 0.3s ease; 
+    cursor: pointer;
+    
+    font-size: 20px;
+    font-weight: 600;
+    font-family: "Roboto";
+    /* margin: 0; */
+}
+
+.submit-button:hover, .img-box label:hover{
+    transform: translateY(-2px); 
+    background-color: #ff857a; /* bright rose pink color */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    
+    box-shadow: 0 8px 25px rgba(255, 111, 97, 0.4);
+}
+
+.submit-button:active, .img-box label:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(255, 111, 97, 0.2);
+}
+
+.submit-button > p{        
+    font-size: 20px;
+    font-weight: 600;
+    font-family: "Roboto";
+    margin: 0;
+}
+
+
+
 form img {
-      height: 64px;
-      order: 1;
-      
-      margin: 10px;
-
+    height: 80px;
+    order: 1;
+    
+    margin: 10px;
+    align-self: center;
+    justify-self: center;
 }
 
-form label, form button {
-      background-color: #7F9CCB;
-      padding: 5px 10px;
-      border-radius: 5px;
-      border: 1px ridge black;
-      font-size: 0.8rem;
-      height: auto;
+.preview{
+    display: flex;
+    flex-flow: column-reverse wrap;
 }
 
-form label:hover, form button:hover {
-    background-color: #2D5BA3;
-    color: white;
+/* text in preview picture (make in js) */
+.preview p{
+    max-width: 100%;
+    word-wrap: break-word;
+
+    margin:5px 0;
 }
 
-form label:active, form button:active {
-    background-color: #0D3F8F;
-    color: white;
-}
