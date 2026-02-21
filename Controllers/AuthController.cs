@@ -46,10 +46,6 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		}
 		ModelState.Clear();
 
-		// var res = await _signInManager.PasswordSignInAsync(account.Email, model.Password, false, lockoutOnFailure: false);
-		// if(!res.Succeeded) 
-		// 	return RedirectToAction("Login");
-		TempData["RealName"] = model.UserName;
 		TempData["Email"] = model.Email;
 
 		ViewBag.register = "1";
