@@ -1,0 +1,60 @@
+<div class="activity-grid">
+    <div class="card">
+        <div class="card-header">
+            <div class="detail">
+                <h3>Activity name</h3>
+                <p>69 users have joined this activity</p>
+                <p>detaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetail
+                </p>
+            </div>
+            <div class="card-image">
+                <img src="~/image/Sample.png" alt="Activity" style="width:100%; border-radius:10px;">
+                    <button class="join-btn">
+                        Join!</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="user-meta">User69 ⭐ 3.5/5</div>
+                </div>
+            </div>
+        </div>
+
+
+        <style>
+            .activity-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, max(1000px, 1fr));
+                gap: 200px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .detail {
+                min-width: 100px;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+
+            }
+
+            .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .card-image {
+                max-width: 350px;
+                flex-shrink: 0;
+            }
+
+            .join-btn {
+                background: #FF7061;
+                color: white;
+                border: none;
+                padding: 15px 50px;
+                border-radius: 10px;
+            }
+        </style>
