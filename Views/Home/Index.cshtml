@@ -1,8 +1,48 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<div class="activity-grid">
+    <div class="card">
+        <div class="card-header">
+            <div class="user-meta">User69 ⭐ 3.5/5</div>
+            <a asp-action="ActivityDetail" class="join-btn">
+                Join!
+            </a>
+        </div>
+        <div class="card-image">
+            <img src="~/image/sample.jpg" alt="Activity" style="width:100%; border-radius:10px;">
+            </div>
+            <div class="card-body">
+                <h3>Activity name</h3>
+                <p>69 users have joined this activity</p>
+            </div>
+        </div>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <style>
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .join-btn {
+            background: #FF7061;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>

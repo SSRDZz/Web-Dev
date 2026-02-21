@@ -43,7 +43,7 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 			return NotFound();
 
 		string imgBase64 = await _userServices.ImageFileToBase64(newPicture);
-		user.ImageURL = (!string.IsNullOrEmpty(imgBase64)) ? imgBase64 : _userServices.guestImageURL;
+		user.ImageURL = !string.IsNullOrEmpty(imgBase64) ? imgBase64 : user.ImageURL;
 
 		user.FirstName = model.FirstName;
 		user.LastName  = model.LastName;
@@ -59,5 +59,18 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		}
 
 		return RedirectToAction("Profile");
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> ProfileOther(string Id)
+	{
+		if(!User.Identity.IsAuthenticated) 
+			return RedirectToAction("Login", "Auth");
+
+		UserAccount user = await _userManager.FindByIdAsync(Id);
+		if(user == null)
+			return RedirectToAction("Index", "Home");
+
+		return View(_userServices.ToProfileViewModel(user));
 	}
 }

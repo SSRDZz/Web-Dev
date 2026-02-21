@@ -14,7 +14,7 @@ public class UserServices
 	{
 		_userManager = um;
 
-		string path = Path.Combine(env.ContentRootPath, "Contents", "images", "guest_picture.jpg");
+		string path = Path.Combine(env.WebRootPath, "image", "guest_picture.jpg");
 		byte[] fileBytes = File.ReadAllBytesAsync(path).Result;
 		string base64Form = Convert.ToBase64String(fileBytes);
 
