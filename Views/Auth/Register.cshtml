@@ -4,7 +4,12 @@
 	Layout = "~/Views/Shared/_Re_Log.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/Register.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/Auth/Register.css" asp-append-version="true" />
+
+<div class="Header-login">
+	<h2>Register</h2>
+	<p> Join with us ! </p>
+</div>
 
 <form asp-action="Register" method="POST" class="Register">
 	<div class="Input-textBox">
@@ -28,7 +33,7 @@
 		<span asp-validation-for="Email"></span>
 	</div>
 	<div class="Input-textBox">
-		<input asp-for="Password" placeholder=" " required/>
+		<input asp-for="Password" placeholder=" " id="pwd-1" class="pwd_input_box" required/>
 		<label asp-for="Password"></label>
 		<span asp-validation-for="Password"></span>
 
@@ -37,8 +42,8 @@
 		</div>
 
 	</div>
-	<div class="Input-textBox">
-		<input asp-for="ConfirmPassword" placeholder=" " required/>
+	<div class="Input-textBox" id="pwd2">
+		<input asp-for="ConfirmPassword" placeholder=" " id="pwd-2" class="pwd_input_box" required/>
 		<label asp-for="ConfirmPassword"></label>
 		<span asp-validation-for="ConfirmPassword"></span>
 
@@ -47,56 +52,65 @@
 		</div>
 
 	</div>
-	<div>
+	<div class="login-error" id="pwd_not_match" style="display:none; margin:20px 0 0 0;">
+		Password do not match.
+	</div>
+	<div class="radio-sex">
 		<div>
-			<input asp-for="Sex" required/ type="radio" value=0>
-			<label asp-for="Sex">Male</label>
+			<input asp-for="Sex" required/ type="radio" id="M" name="Sex" value=0>
+			<label asp-for="Sex" for="M">
+				<img src="/image/man.svg" alt="man option" />
+			</label>
 			<span asp-validation-for="Sex"></span>
 		</div>
 		<div>
-			<input asp-for="Sex" required/ type="radio" value=1>
-			<label asp-for="Sex">Female</label>
+			<input asp-for="Sex" required/ type="radio" id="F" name="Sex" value=1>
+			<label asp-for="Sex" for="F">	
+				<img src="/image/woman.svg" alt="woman option" />
+			</label>
 			<span asp-validation-for="Sex"></span>
 		</div>
 		<div>
-			<input asp-for="Sex" required/ type="radio" value=2>
-			<label asp-for="Sex">Other</label>
+			<input asp-for="Sex" required/ type="radio" id="O" name="Sex" value=2>
+			<label asp-for="Sex" for="O">
+				<img src="/image/other.png" alt="other option" />
+			</label>
 			<span asp-validation-for="Sex"></span>
 		</div>
 	</div>
-	<div >
-		<input asp-for="PhoneNumber" required/>
+	<div class="Input-textBox" >
+		<input asp-for="PhoneNumber" pattern="^\d{1,10}$" required/>
 		<label asp-for="PhoneNumber"></label>
 		<span asp-validation-for="PhoneNumber"></span>
 	</div>
-	<div>
+	<div class="Input-textBox">
 		<input asp-for="DateOfBirth" type="date" required/>
 		<label asp-for="DateOfBirth"></label>
 		<span asp-validation-for="DateOfBirth"></span>
 	</div>
 	<input type="hidden" asp-for="ImageURL"/>
 
-	<button type="submit" class="submit-button"><p>Register</p></button>
-</form>
-
-<ul>
+	@* this for show error if Register not success -> Reason for paste here is u can read before you press submit again *@
 	@{
 		if(ViewBag.errors != null)
 		{
 			IdentityError[] errors = ViewBag.errors;
-			for(int i = 0; i < errors.Length; i++)
-			{
-				Console.WriteLine($"error: {errors[i].Description}");
-				<li>@errors[i].Description</li>
-			}
+	}
+		@if(ViewBag.errors != null)
+		{
+			<ul class="login-error">
+				@foreach(var error in (IdentityError[])ViewBag.errors)
+				{
+					<li>@error.Description</li>
+				}
+			</ul>
 		}
+
 	}
 
-</ul>
+
+	<button type="submit" class="submit-button"><p>Register</p></button>
+</form>
 
 
-<script>
-	// check login fail or pass using ViewBag
-	window.registerFailed = @((ViewBag.register != null && ViewBag.register.ToString() == "0") ? "true" : "false");
-</script>
-<script src="~/js/Register.js" asp-append-version="true"></script>
+<script src="~/js/Auth/Register.js" asp-append-version="true"></script>
