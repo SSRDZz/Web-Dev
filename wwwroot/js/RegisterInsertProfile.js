@@ -2,6 +2,7 @@ function Preview_image(){
 
     const input = document.querySelector('input');
     const preview = document.querySelector('.preview');
+    const change_text = document.querySelector("#image_upload + label");
 
     input.style.opacity = 0;
     // input.style.position = "fixed";
@@ -14,30 +15,42 @@ function Preview_image(){
             preview.removeChild(preview.firstChild);
         }
 
+        
         const file_imgs = input.files;
         if(file_imgs.length === 0) {
             const para = document.createElement('p');
             para.textContent = 'No file currently selected for upload';
             preview.appendChild(para);
+            change_text.textContent = "Upload here!"
+
         } else {
             const img = file_imgs[0];             
             const para = document.createElement('p');
-            
-            if(validFileType(img)) {
-                para.textContent = `File name ${img.name}, file size ${returnFileSize(img.size)}.`;
+            const para2 = document.createElement('p');
+
+            if(!validFileType(img)) {
+                 para.textContent = `File name ${img.name}: Not a valid file type. Update your selection.`;
+                //  preview.appendChild(para);
+                 change_text.textContent = "Upload again"
+            }
+            else{
+                para.textContent = `File name : ${img.name}.`;
+                para2.textContent = `File size :  ${returnFileSize(img.size)}.`;
                 const image = document.createElement('img');
                 image.src = URL.createObjectURL(img);
                 
 
                 preview.appendChild(image);
+                preview.appendChild(para2);
                 
-            } else {
-                para.textContent = `File name ${img.name}: Not a valid file type. Update your selection.`;
+                change_text.textContent = "Change profile"
             }
-            
             preview.appendChild(para);
+            
         }
+
     }
+
 
 // https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
     const fileTypes = [
@@ -67,6 +80,8 @@ function Preview_image(){
         return (number/1048576).toFixed(1) + 'MB';
       }
     }
+
+
 }
 
 Preview_image()
