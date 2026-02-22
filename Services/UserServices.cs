@@ -39,6 +39,7 @@ public class UserServices
 			Id = acc.Id,
 			FirstName = acc.FirstName,
 			LastName = acc.LastName,
+			RealUserName = acc.RealUserName,
 			Reputation = acc.Reputation,
 			ImageURL = acc.ImageURL,
 			Sex = ((SexTranslator)acc.Sex).ToString()
