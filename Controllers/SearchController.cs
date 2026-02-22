@@ -1,5 +1,6 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
+using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
@@ -8,16 +9,28 @@ public class SearchController(ApplicationDbContext dbContext) : Controller
 	private ApplicationDbContext dbContext {get; init;} = dbContext;
 	public void Search()
 	{
-		
+		// Search with Username and Postname
 	}
 
 	[HttpPost]
 	public IActionResult SearchByUsername(string Username)
 	{
 		if(string.IsNullOrEmpty(Username))
-			return PartialView(new List<UserAccount>());
+			return PartialView(new List<SearchUserViewModel>());
 
 		List<UserAccount> users = dbContext.Users.Where(u => u.RealUserName.Contains(Username)).ToList();
-		return PartialView(users);
+		List<SearchUserViewModel> res = new List<SearchUserViewModel>();
+
+		for(int i = 0; i < users.Count; i++)
+		{
+			res.Add(new SearchUserViewModel()
+			{
+				Id = users[i].Id.ToString(),
+				Username = users[i].RealUserName,
+				ImageURL = users[i].ImageURL
+			});
+		}
+
+		return PartialView(res);
 	}
 };

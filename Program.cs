@@ -9,11 +9,25 @@ var connectionStrings = builder.Configuration.GetConnectionString("dbConnection"
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
-builder.Services.AddDefaultIdentity<UserAccount>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Config Property of Identity Table
+builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+
+    options.SignIn.RequireConfirmedEmail = false;
+
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+}).AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -37,8 +51,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapStaticAssets();
 

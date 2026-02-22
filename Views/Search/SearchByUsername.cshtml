@@ -1,10 +1,21 @@
-@using KMITL_WebDev_MiniProject.Entites
+@using KMITL_WebDev_MiniProject.Models
 @using Microsoft.AspNetCore.Http.Features
-@model List<UserAccount>
+@model List<SearchUserViewModel>
 
-@foreach(UserAccount user in Model)
+@foreach(SearchUserViewModel user in Model)
 {
 	<div class="search-tag" id="@user.Id">
-		<h2 class="search-tag-detail">@user.RealUserName</h2>
+		<h2 class="search-tag-detail">@user.Username</h2>
+		<img src="data:image/jpeg;base64,@user.ImageURL"; style="width: 1vw; height: auto;"/>
 	</div>
-} 
+}
+
+<style>
+	.search-tag {
+		border: groove 1px;
+	}
+
+	.search-tag-detail {
+		text-align: center;
+	}
+</style>
