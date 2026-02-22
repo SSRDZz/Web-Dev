@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Services;
@@ -72,5 +73,12 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 			return RedirectToAction("Index", "Home");
 
 		return View(_userServices.ToProfileViewModel(user));
+	}
+
+	[HttpGet]
+	public async Task<Guid> AddReputation(string Id)
+	{
+		UserAccount targetUser = await _userManager.FindByIdAsync(Id);
+		return targetUser.Id;
 	}
 }
