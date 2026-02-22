@@ -19,11 +19,11 @@ public class DbInitializer
 
 			string guestURL = await guestImage(env);
 
-			var test1 = new UserAccount()
+			UserAccount test1 = new UserAccount()
 			{
 				FirstName = "Testing",
 				LastName = "Tests",
-				RealUserName = "Tester",
+				RealUserName = "SansTales",
 				UserName = "Testuser@example.com",
 				Email = "Testuser@example.com",
 				Sex = 1,
@@ -34,7 +34,7 @@ public class DbInitializer
 				EmailConfirmed = false
 			};
 
-			var admin = new UserAccount()
+			UserAccount admin = new UserAccount()
 			{
 				FirstName = "Admin",
 				LastName = "Endmin",
@@ -49,8 +49,23 @@ public class DbInitializer
 				EmailConfirmed = false	
 			};
 
-			UserAccount[] users = {test1, admin};
-			string[] passwords = {"Testuser@1234", "Admin@1234"};
+			UserAccount user1 = new UserAccount()
+			{
+				FirstName = "Teew",
+				LastName = "Twin",
+				RealUserName = "Elaina",
+				UserName = "Elaina@gmail.com",
+				Email = "Elaina@gmail.com",
+				Sex = 1,
+				Reputation = 0,
+				PhoneNumber = "0910001234",
+				DateOfBirth = new DateOnly(2000, 10, 11),
+				ImageURL = guestURL,
+				EmailConfirmed = false	
+			};
+
+			UserAccount[] users = {test1, admin, user1};
+			string[] passwords = {"Testuser@1234", "Admin@1234", "Elaina@1234"};
 
 			for(int i = 0; i < users.Length; i++)
 			{
