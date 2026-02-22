@@ -3,18 +3,22 @@
 <div class="text-center">
     <h3>Profile</h3>
     <img src="data:image/jpeg;base64,@Model.ImageURL"; style="width: 5vw; height: auto;"/>
+    <div>UserName   : @Model.RealUserName</div>
     <div>FirstName  : @Model.FirstName</div>
     <div>LastName   : @Model.LastName</div>
     <div>Reputation : @Model.Reputation</div>
     <div>Sex        : @Model.Sex</div>
 
-    <lable>Like</lable>
-    <input type="checkbox" id="target-checkbox"></input>
+    <label>Like</label>
+    <input type="checkbox" id="target-checkbox" checked="true"></input>
 </div>
 
 <script>
     document.getElementById("target-checkbox").addEventListener("change", (e) => {
-        console.log(e.currentTarget.checked);
-        fetch('@Url.Action("AddReputation", "User")')
+        fetch('@Url.Action("AddReputation", "User")', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked})
+        });
     });
 </script>
