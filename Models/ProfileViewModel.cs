@@ -4,6 +4,9 @@ namespace KMITL_WebDev_MiniProject.Models
 {
 	public class ProfileViewModel
 	{
+		[Required]
+		public Guid Id {get; set;}
+
 		[Required(ErrorMessage="FirstName Error")]
 		public string FirstName {get; set;}
 

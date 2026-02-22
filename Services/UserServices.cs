@@ -36,6 +36,7 @@ public class UserServices
 	{
 		return new ProfileViewModel()
 		{
+			Id = acc.Id,
 			FirstName = acc.FirstName,
 			LastName = acc.LastName,
 			Reputation = acc.Reputation,

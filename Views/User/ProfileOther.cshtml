@@ -7,4 +7,14 @@
     <div>LastName   : @Model.LastName</div>
     <div>Reputation : @Model.Reputation</div>
     <div>Sex        : @Model.Sex</div>
+
+    <lable>Like</lable>
+    <input type="checkbox" id="target-checkbox"></input>
 </div>
+
+<script>
+    document.getElementById("target-checkbox").addEventListener("change", (e) => {
+        console.log(e.currentTarget.checked);
+        fetch('@Url.Action("AddReputation", "User")')
+    });
+</script>
