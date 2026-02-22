@@ -1,3 +1,4 @@
+using KMITL_WebDev_MiniProject.DTO;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Services;
@@ -75,9 +76,9 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	}
 
 	[HttpPost]
-	public async Task AddReputation(string Id, bool isRep)
+	public async Task AddReputation([FromBody] AddReputationDTO Data)
 	{
-		UserAccount targetUser = await _userManager.FindByIdAsync(Id);
-		// do something
+		UserAccount targetUser = await _userManager.FindByIdAsync(Data.Id.ToString());
+		Console.WriteLine($"{Data.Id}, {Data.IsLike}, {targetUser.RealUserName}");
 	}
 }
