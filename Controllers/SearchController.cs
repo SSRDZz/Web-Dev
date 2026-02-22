@@ -25,7 +25,7 @@ public class SearchController(ApplicationDbContext dbContext) : Controller
 		{
 			res.Add(new SearchUserViewModel()
 			{
-				Id = users[i].Id.ToString(),
+				Id = users[i].Id,
 				Username = users[i].RealUserName,
 				ImageURL = users[i].ImageURL
 			});
