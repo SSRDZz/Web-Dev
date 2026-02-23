@@ -5,8 +5,8 @@
 
 @foreach(SearchUserViewModel user in Model)
 {
-	<div class="search-tag" id="@user.Id">
-		<h2 class="search-tag-detail" id="search-tag-detail">@user.Username</h2>
+	<div class="search-tag" userid="@user.Id" onclick="window.location.href = '@Url.Action("ProfileOther", "User")?Id=@user.Id'">
+		<h2 class="search-tag-detail">@user.Username</h2>
 		<img src="data:image/jpeg;base64,@user.ImageURL"; style="width: 1vw; height: auto;"/>
 	</div>
 }
@@ -20,18 +20,3 @@
 		text-align: center;
 	}
 </style>
-
-<script>
-	if(typeof eles === "undefined") var eles = null;
-
-	eles = document.querySelectorAll(".search-tag");
-	
-	eles.forEach((item, index) => {
-		const usrId = eles[index].getAttribute("id");
-		item.getElementsByTagName("h2")[0].addEventListener("click", () =>{
-			window.location.href = '@Url.Action("ProfileOther", "User")' + `?Id=${usrId}`
-		});
-	});
-
-	eles = null;
-</script>

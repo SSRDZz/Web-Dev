@@ -3,22 +3,43 @@
 <div class="text-center">
     <h3>Profile</h3>
     <img src="data:image/jpeg;base64,@Model.ImageURL"; style="width: 5vw; height: auto;"/>
-    <div>UserName   : @Model.RealUserName</div>
-    <div>FirstName  : @Model.FirstName</div>
-    <div>LastName   : @Model.LastName</div>
-    <div>Reputation : @Model.Reputation</div>
-    <div>Sex        : @Model.Sex</div>
-
-    <label>Like</label>
-    <input type="checkbox" id="target-checkbox" checked="@Model.IsLike"></input>
+    <div>
+        <label>Username</label>
+        <span>@Model.RealUserName</span>
+    </div>
+    <div>
+        <label>FirstName</label>
+        <span>@Model.FirstName</span>
+    </div>
+    <div>
+        <label>LastName</label>
+        <span>@Model.LastName</span>
+    </div>
+    <div>
+        <label>Reputation</label>
+        <span id="user-reputation">@Model.Reputation</span>
+    </div>
+    <div>
+        <label>Sex</label>
+        <span>@Model.Sex</span>
+    </div>
+    <div>
+        <label>Like</label>
+        <input type="checkbox" id="target-checkbox" checked="@Model.IsLike"></input>
+    </div>
 </div>
 
 <script>
-    document.getElementById("target-checkbox").addEventListener("change", (e) => {
-        fetch('@Url.Action("AddReputation", "User")', {
+    document.getElementById("target-checkbox").addEventListener("change", async (e) => {
+        await fetch('@Url.Action("AddReputation", "User")', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked})
         });
+
+        await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
+        .then(response => response.json())
+        .then(json => { document.getElementById("user-reputation").innerText = `${json}`; })
+        .catch(err => console.warn("Something went wrong.", err));
     });
 </script>
