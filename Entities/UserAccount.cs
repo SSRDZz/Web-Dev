@@ -20,9 +20,6 @@ public class UserAccount: IdentityUser<Guid>
 	public uint Sex {get; set;}
 
 	[Required]
-	public int Reputation {get; set;}
-
-	[Required]
 	[DataType(DataType.Date)]
 	public DateOnly DateOfBirth {get; set;}
 

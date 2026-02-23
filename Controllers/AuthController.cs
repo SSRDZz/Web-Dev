@@ -5,18 +5,18 @@ using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Services;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env) : Controller
+public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
 {
 	private SignInManager<UserAccount> _signInManager {get; init;} = signInManager;
 	private UserManager<UserAccount> _userManager {get; init;} = userManager; 
-	private UserServices _userServices {get; init;} = new UserServices(userManager, env);
+	private UserServices _userServices {get; init;} = new UserServices(userManager, env, RepDbContext);
 
 	[HttpGet]
 	public IActionResult Register()
 	{
 		if(User.Identity == null || User.Identity.IsAuthenticated)
 			return RedirectToAction("Index", "Home");
-
+			
 		return View();
 	}
 
