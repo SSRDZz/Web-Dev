@@ -55,6 +55,25 @@
             sidebar.classList.toggle('show');
         };
 
+        function active_page_button(){
+            const button_page = document.querySelectorAll(".nav-item");
+            const currentPath = window.location.pathname;
+            button_page.forEach(function(button){          
+                const targetPath = button.getAttribute("href");
+                if (currentPath.includes(targetPath)) {
+                    button.className = "nav-item active";        // make only that click button active
+                }
+                else{
+                    button.className = "nav-item";     // make it all nav default
+                }
+                console.log(currentPath, targetPath, currentPath.includes(targetPath) )
+            })
+            
+        }
+
+        window.onload = active_page_button;
+
+
         let timeout = null;
         document.getElementById("search-bar").addEventListener("keyup", () => {
             clearTimeout(timeout);
