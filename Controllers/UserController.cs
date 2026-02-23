@@ -2,14 +2,17 @@ using KMITL_WebDev_MiniProject.DTO;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class UserController(UserManager<UserAccount> userManager, IWebHostEnvironment env) : Controller
+public class UserController(UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
 {
 	private UserManager<UserAccount> _userManager {get; init;} = userManager;
-	private UserServices _userServices {get; init;} = new UserServices(userManager, env);
+	private UserServices _userServices {get; init;} = new UserServices(userManager, env, RepDbContext);
+	private ApplicationReputationsDbContext RepDbContext {get; init;} = RepDbContext;
 
 	[HttpGet]
 	public async Task<IActionResult> Profile()
@@ -17,7 +20,7 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
 			
-		return View(await _userServices.getProfileViewModelByUser(User));
+		return View(await _userServices.GetProfileViewModelByUser(User));
 	}
 
 	[HttpGet]
@@ -26,7 +29,7 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
 			
-		return View(await _userServices.getProfileViewModelByUser(User));
+		return View(await _userServices.GetProfileViewModelByUser(User));
 	}
 
 	[HttpPost]
@@ -65,20 +68,55 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	[HttpGet]
 	public async Task<IActionResult> ProfileOther(string Id)
 	{
-		if(!User.Identity.IsAuthenticated) 
+		if(User.Identity == null || !User.Identity.IsAuthenticated) 
 			return RedirectToAction("Login", "Auth");
 
-		UserAccount user = await _userManager.FindByIdAsync(Id);
-		if(user == null)
+		UserAccount TargetUser = await _userManager.FindByIdAsync(Id);
+		UserAccount OwnUser = await _userManager.GetUserAsync(User);
+
+		if(TargetUser == null)
 			return RedirectToAction("Index", "Home");
 
-		return View(_userServices.ToProfileViewModel(user));
+		return View(await _userServices.GetProfileOther(OwnUser, TargetUser));
 	}
 
 	[HttpPost]
-	public async Task AddReputation([FromBody] AddReputationDTO Data)
+	public async Task<IActionResult> AddReputation([FromBody] AddReputationDTO Data)
 	{
-		UserAccount targetUser = await _userManager.FindByIdAsync(Data.Id.ToString());
-		Console.WriteLine($"{Data.Id}, {Data.IsLike}, {targetUser.RealUserName}");
+		if(Data == null)
+			return BadRequest();
+
+		UserAccount TargetUser = await _userManager.FindByIdAsync(Data.Id.ToString());
+		UserAccount OwnUser = await _userManager.GetUserAsync(User);
+
+		if(OwnUser == null || TargetUser == null)
+			return NotFound();
+
+		ReputationRelation? RepRlt = await RepDbContext.ReputationRelations
+			.Where(rlt => (rlt.UserObj == TargetUser.Id && rlt.UserSub == OwnUser.Id) 
+						|| (rlt.UserSub == TargetUser.Id && rlt.UserObj == OwnUser.Id))
+			.FirstOrDefaultAsync();
+
+		if(RepRlt == null) // Relation not exist
+		{
+			await RepDbContext.ReputationRelations.AddAsync(new ReputationRelation()
+			{
+				Id = Guid.NewGuid(),
+				UserSub = OwnUser.Id,
+				UserObj = TargetUser.Id,
+				Relation = 0b01
+			});
+		} else if(RepRlt.UserSub == OwnUser.Id)
+		{
+			RepRlt.Relation ^= 0b01;
+			RepDbContext.ReputationRelations.Entry(RepRlt);
+		} else if(RepRlt.UserObj == OwnUser.Id)
+		{
+			RepRlt.Relation ^= 0b10;
+			RepDbContext.ReputationRelations.Entry(RepRlt);
+		}
+
+		await RepDbContext.SaveChangesAsync();
+		return Ok();
 	}
 }
