@@ -7,7 +7,7 @@ public class DbInitializer
 {
 	public static async Task Initialize(IServiceProvider serviceProvider, UserManager<UserAccount> userManager, IWebHostEnvironment env)
 	{
-		using (var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
+		using (var context = new ApplicationUsersDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationUsersDbContext>>()))
 		{
 			context.Database.EnsureCreated();
 			
@@ -27,7 +27,6 @@ public class DbInitializer
 				UserName = "Testuser@example.com",
 				Email = "Testuser@example.com",
 				Sex = 1,
-				Reputation = 0,
 				PhoneNumber = "0811112222",
 				DateOfBirth = new DateOnly(2000, 10, 10),
 				ImageURL = guestURL,
@@ -42,7 +41,6 @@ public class DbInitializer
 				UserName = "Admin@example.com",
 				Email = "Admin@example.com",
 				Sex = 0,
-				Reputation = 0,
 				PhoneNumber = "0811112223",
 				DateOfBirth = new DateOnly(2001, 10, 10),
 				ImageURL = guestURL,
@@ -57,7 +55,6 @@ public class DbInitializer
 				UserName = "Elaina@gmail.com",
 				Email = "Elaina@gmail.com",
 				Sex = 1,
-				Reputation = 0,
 				PhoneNumber = "0910001234",
 				DateOfBirth = new DateOnly(2000, 10, 11),
 				ImageURL = guestURL,
@@ -76,6 +73,11 @@ public class DbInitializer
 						Console.WriteLine(err.Code + " : " + err.Description);
 				}
 			}
+		}
+
+		using (var context = new ApplicationReputationsDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationReputationsDbContext>>()))
+		{
+			context.Database.EnsureCreated();
 		}
 	}
 
