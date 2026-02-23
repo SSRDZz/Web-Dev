@@ -1,4 +1,4 @@
-@model KMITL_WebDev_MiniProject.Models.ProfileViewModel
+@model KMITL_WebDev_MiniProject.Models.ProfileOtherViewModel
 
 <div class="text-center">
     <h3>Profile</h3>
@@ -10,7 +10,7 @@
     <div>Sex        : @Model.Sex</div>
 
     <label>Like</label>
-    <input type="checkbox" id="target-checkbox" checked="true"></input>
+    <input type="checkbox" id="target-checkbox" checked="@Model.IsLike"></input>
 </div>
 
 <script>

@@ -25,9 +25,7 @@
 	if(typeof eles === "undefined") var eles = null;
 
 	eles = document.querySelectorAll(".search-tag");
-
 	
-
 	eles.forEach((item, index) => {
 		const usrId = eles[index].getAttribute("id");
 		item.getElementsByTagName("h2")[0].addEventListener("click", () =>{

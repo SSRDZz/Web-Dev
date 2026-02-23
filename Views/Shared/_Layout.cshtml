@@ -58,11 +58,10 @@
         });
 
         function liveSearch() {
-            console.log("doing");
             let value = document.getElementById("search-bar").value;
             
             $.ajax({
-                type: "POST",
+                type: "GET",
                 url: '@Url.Action(controller: "Search", action: "SearchByUsername")',
                 data: { Username: value },
                 datatype: "html",
