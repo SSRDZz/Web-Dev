@@ -119,4 +119,10 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		await RepDbContext.SaveChangesAsync();
 		return Ok();
 	}
+
+	[HttpGet]
+	public async Task<int> FindReputation(Guid TargetID)
+	{
+		return await _userServices.FindUserReputation(TargetID);
+	}
 }
