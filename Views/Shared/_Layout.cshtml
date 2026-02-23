@@ -29,8 +29,12 @@
     <div class="main-container">
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">Home</a>
+                <a asp-controller="Home" class="nav-item active">Home</a>
                 <a href="#" class="nav-item">Popular</a>
+                <a asp-controller="Search"  class="nav-item">
+                    Search
+                    <img src="/image/man.svg" alt="search" />
+                </a>
                 
                 <div class="nav-section">Your activity</div>
                 <hr class="nav-divider">

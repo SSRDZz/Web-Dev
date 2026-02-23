@@ -7,6 +7,22 @@ namespace KMITL_WebDev_MiniProject.Controllers;
 public class SearchController(ApplicationDbContext dbContext) : Controller
 {
 	private ApplicationDbContext dbContext {get; init;} = dbContext;
+
+	[Route("Search")]
+	[Route("Search/Index")]	
+	[HttpGet]
+	public IActionResult Index()
+	{
+		if(User.Identity == null || !User.Identity.IsAuthenticated) // ต้อง authen ก่อน 
+		{
+			return RedirectToAction("Login","Auth"); // back to default
+		}
+
+		return View();
+	}
+	
+
+	
 	public void Search()
 	{
 		// Search with Username and Postname

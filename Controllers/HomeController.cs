@@ -6,6 +6,8 @@ namespace KMITL_WebDev_MiniProject.Controllers;
 
 public class HomeController : Controller
 {
+    [Route("Home")]	
+    [Route("Home/Index")]	
     public IActionResult Index()
     {
         return View();
