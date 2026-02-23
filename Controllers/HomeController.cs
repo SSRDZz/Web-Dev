@@ -8,6 +8,9 @@ public class HomeController : Controller
 {
     public IActionResult Index()
     {
+        if(User.Identity != null && !User.Identity.IsAuthenticated)
+            return RedirectToAction("Login", "Auth");
+        
         return View();
     }
 
@@ -18,6 +21,9 @@ public class HomeController : Controller
 
     public IActionResult ActivityDetail()
     {
+        if(User.Identity != null && !User.Identity.IsAuthenticated)
+            return RedirectToAction("Login", "Auth");
+
         return View();
     }
 
