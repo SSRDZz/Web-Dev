@@ -1,6 +1,7 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
@@ -13,6 +14,7 @@ public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 	}
 
 	[HttpGet]
+	[Authorize]
 	public IActionResult SearchByUsername(string Username)
 	{
 		if(string.IsNullOrEmpty(Username))

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
@@ -12,18 +13,20 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	private UserServices _userServices {get; init;} = new UserServices(userManager, env, RepDbContext);
 
 	[HttpGet]
+	[AllowAnonymous]
 	public IActionResult Register()
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
+		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Index", "Home");
 			
 		return View();
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	public async Task<IActionResult> Register(RegisterViewModel model)
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
+		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Index","Home");
 
 		if(!ModelState.IsValid)
@@ -54,6 +57,7 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 
 
 	[HttpGet]
+	[AllowAnonymous]
 	public async Task<IActionResult> RegisterInsertProfile()
 	{
 		if(User.Identity != null && User.Identity.IsAuthenticated)
@@ -71,9 +75,10 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	public async Task<IActionResult> RegisterInsertProfile(IFormFile? profilePicture)
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
+		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Login");
 
 		UserAccount user = await _userManager.GetUserAsync(User);
@@ -95,15 +100,17 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	
 
 	[HttpGet]
+	[AllowAnonymous]
 	public IActionResult Login()
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated) 
+		if(User.Identity != null && User.Identity.IsAuthenticated) 
 			return RedirectToAction("Index", "Home");
 		
 		return View();
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Login(LoginViewModel model)
 	{

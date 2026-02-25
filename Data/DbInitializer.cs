@@ -18,7 +18,7 @@ public class DbInitializer
 		if(context.Users.Any())
 			return;
 
-		string guestURL = await guestImage(env);
+		string guestURL = await GuestImage(env);
 
 		UserAccount test1 = new UserAccount()
 		{
@@ -84,7 +84,7 @@ public class DbInitializer
 			return ;
 	} 
 
-	public static async Task<string> guestImage(IWebHostEnvironment env)
+	public static async Task<string> GuestImage(IWebHostEnvironment env)
 	{
 		string path = Path.Combine(env.WebRootPath, "image", "guest_picture.jpg");
 		byte[] fileBytes = await File.ReadAllBytesAsync(path);

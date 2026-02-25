@@ -1,5 +1,6 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,13 @@ builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
 }).AddEntityFrameworkStores<ApplicationUsersDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Home/Error";
+    options.LogoutPath = "/Auth/Logout";
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

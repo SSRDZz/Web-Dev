@@ -2,6 +2,7 @@ using KMITL_WebDev_MiniProject.DTO;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,29 +16,23 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	private ApplicationReputationsDbContext RepDbContext {get; init;} = RepDbContext;
 
 	[HttpGet]
+	[Authorize]
 	public async Task<IActionResult> Profile()
 	{
-		if(User.Identity == null || !User.Identity.IsAuthenticated) 
-			return RedirectToAction("Login", "Auth");
-			
 		return View(await _userServices.GetProfileViewModelByUser(User));
 	}
 
 	[HttpGet]
+	[Authorize]
 	public async Task<IActionResult> ProfileEdit()
 	{
-		if(User.Identity == null || !User.Identity.IsAuthenticated) 
-			return RedirectToAction("Login", "Auth");
-			
 		return View(await _userServices.GetProfileViewModelByUser(User));
 	}
 
 	[HttpPost]
+	[Authorize]
 	public async Task<IActionResult> ProfileUpdate(ProfileViewModel model, IFormFile? newPicture)
 	{
-		if(User.Identity == null || !User.Identity.IsAuthenticated) 
-			return RedirectToAction("Login", "Auth");
-		
 		if(!ModelState.IsValid)
 			return RedirectToAction("Profile");
 
@@ -66,10 +61,9 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	}
 
 	[HttpGet]
+	[Authorize]
 	public async Task<IActionResult> ProfileOther(string Id)
 	{
-		if(User.Identity == null || !User.Identity.IsAuthenticated) 
-			return RedirectToAction("Login", "Auth");
 
 		UserAccount TargetUser = await _userManager.FindByIdAsync(Id);
 		UserAccount OwnUser = await _userManager.GetUserAsync(User);
@@ -81,6 +75,7 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	}
 
 	[HttpPost]
+	[Authorize]
 	public async Task<IActionResult> AddReputation([FromBody] AddReputationDTO Data)
 	{
 		if(Data == null)
@@ -121,6 +116,7 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	}
 
 	[HttpGet]
+	[Authorize]
 	public async Task<int> FindReputation(Guid TargetID)
 	{
 		return await _userServices.FindUserReputation(TargetID);
