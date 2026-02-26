@@ -49,19 +49,7 @@
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('show');
         };
-
-        let timeout = null;
-        document.getElementById("search-bar").addEventListener("keyup", () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                let value = document.getElementById("search-bar").value;
-
-                fetch('@Url.Action(controller: "Search", action: "SearchByUsername")' + `?Username=${value}`)
-                .then(response => response.text())
-                .then(html => { document.getElementById("activity-grid").innerHTML = html; })
-                .catch(err => console.warn("Something went wrong.", err));
-            }, 800);
-        });
     </script>
+    <script src="~/js/Search/SearchUser.js"></script>
 </body>
 </html>
