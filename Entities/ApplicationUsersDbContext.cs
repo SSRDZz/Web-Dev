@@ -4,9 +4,9 @@ using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.AspNetCore.Identity;
 
 namespace KMITL_WebDev_MiniProject.Data;
-public class ApplicationDbContext: IdentityDbContext<UserAccount, IdentityRole<Guid>, Guid>
+public class ApplicationUsersDbContext: IdentityDbContext<UserAccount, IdentityRole<Guid>, Guid>
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options) {}
+    public ApplicationUsersDbContext(DbContextOptions<ApplicationUsersDbContext> options): base(options) {}
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{

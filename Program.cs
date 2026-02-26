@@ -1,5 +1,6 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionStrings = builder.Configuration.GetConnectionString("dbConnection");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
+builder.Services.AddDbContext<ApplicationUsersDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
+builder.Services.AddDbContext<ApplicationReputationsDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
 
 // Config Property of Identity Table
 builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
@@ -22,7 +24,14 @@ builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
-}).AddEntityFrameworkStores<ApplicationDbContext>();
+}).AddEntityFrameworkStores<ApplicationUsersDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Home/Error";
+    options.LogoutPath = "/Auth/Logout";
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

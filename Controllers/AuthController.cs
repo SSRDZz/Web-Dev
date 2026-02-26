@@ -3,27 +3,30 @@ using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env) : Controller
+public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
 {
 	private SignInManager<UserAccount> _signInManager {get; init;} = signInManager;
 	private UserManager<UserAccount> _userManager {get; init;} = userManager; 
-	private UserServices _userServices {get; init;} = new UserServices(userManager, env);
+	private UserServices _userServices {get; init;} = new UserServices(userManager, env, RepDbContext);
 
 	[HttpGet]
+	[AllowAnonymous]
 	public IActionResult Register()
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
+		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Index", "Home");
-
+			
 		return View();
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	public async Task<IActionResult> Register(RegisterViewModel model)
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
+		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Index","Home");
 
 		if(!ModelState.IsValid)
@@ -54,32 +57,25 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 
 
 	[HttpGet]
+	[AllowAnonymous]
 	public async Task<IActionResult> RegisterInsertProfile()
 	{
 		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Login");
 	
-		string Email = TempData["Email"] as string;
-		UserAccount user = await _userManager.FindByNameAsync(Email);
-
-		if(user.ImageURL != _userServices.guestImageURL)
-			return RedirectToAction("Index", "Home");
-
-		await _signInManager.SignInAsync(user, false);
-
 		return View();
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	public async Task<IActionResult> RegisterInsertProfile(IFormFile? profilePicture)
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated)
+		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Login");
 
-		UserAccount user = await _userManager.GetUserAsync(User);
-
-		if(user.ImageURL != _userServices.guestImageURL)
-			return RedirectToAction("Index", "Home");
+		string Email = TempData["Email"] as string;
+		UserAccount user = await _userManager.FindByNameAsync(Email);
+		await _signInManager.SignInAsync(user, false);
 
 		string? imgBase64 = await _userServices.ImageFileToBase64(profilePicture);
 		user.ImageURL = !string.IsNullOrEmpty(imgBase64) ?  imgBase64 : _userServices.guestImageURL;
@@ -95,15 +91,17 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	
 
 	[HttpGet]
+	[AllowAnonymous]
 	public IActionResult Login()
 	{
-		if(User.Identity == null || User.Identity.IsAuthenticated) 
+		if(User.Identity != null && User.Identity.IsAuthenticated) 
 			return RedirectToAction("Index", "Home");
 		
 		return View();
 	}
 
 	[HttpPost]
+	[AllowAnonymous]
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Login(LoginViewModel model)
 	{

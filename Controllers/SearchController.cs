@@ -1,18 +1,20 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class SearchController(ApplicationDbContext dbContext) : Controller
+public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 {
-	private ApplicationDbContext dbContext {get; init;} = dbContext;
+	private ApplicationUsersDbContext dbContext {get; init;} = dbContext;
 	public void Search()
 	{
 		// Search with Username and Postname
 	}
 
-	[HttpPost]
+	[HttpGet]
+	[Authorize]
 	public IActionResult SearchByUsername(string Username)
 	{
 		if(string.IsNullOrEmpty(Username))
@@ -25,7 +27,7 @@ public class SearchController(ApplicationDbContext dbContext) : Controller
 		{
 			res.Add(new SearchUserViewModel()
 			{
-				Id = users[i].Id.ToString(),
+				Id = users[i].Id,
 				Username = users[i].RealUserName,
 				ImageURL = users[i].ImageURL
 			});

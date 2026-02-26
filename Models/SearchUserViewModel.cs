@@ -4,7 +4,7 @@ namespace KMITL_WebDev_MiniProject.Models;
 public class SearchUserViewModel
 {
 	[Required]
-	public string Id {get; set;}
+	public Guid Id {get; set;}
 	
 	[Required]
 	public string Username {get; set;}
