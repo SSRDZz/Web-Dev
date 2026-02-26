@@ -63,14 +63,6 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Login");
 	
-		string Email = TempData["Email"] as string;
-		UserAccount user = await _userManager.FindByNameAsync(Email);
-
-		if(user.ImageURL != _userServices.guestImageURL)
-			return RedirectToAction("Index", "Home");
-
-		await _signInManager.SignInAsync(user, false);
-
 		return View();
 	}
 
@@ -81,10 +73,9 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		if(User.Identity != null && User.Identity.IsAuthenticated)
 			return RedirectToAction("Login");
 
-		UserAccount user = await _userManager.GetUserAsync(User);
-
-		if(user.ImageURL != _userServices.guestImageURL)
-			return RedirectToAction("Index", "Home");
+		string Email = TempData["Email"] as string;
+		UserAccount user = await _userManager.FindByNameAsync(Email);
+		await _signInManager.SignInAsync(user, false);
 
 		string? imgBase64 = await _userServices.ImageFileToBase64(profilePicture);
 		user.ImageURL = !string.IsNullOrEmpty(imgBase64) ?  imgBase64 : _userServices.guestImageURL;
