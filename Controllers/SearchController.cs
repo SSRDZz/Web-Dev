@@ -26,23 +26,20 @@ public class SearchController(ApplicationDbContext dbContext) : Controller
 	public IActionResult GetData(string keyword, string type)
 	{
 
-		var mockEvents = new List<object> // mock ไว้ก่อน
+        var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
+
+        response.Activity = new List<object> // mock list ไว้ก่อน
 		{
-			new { message = $"search:{keyword} type:{type}"},
 			new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"},
 			new { title = $"{keyword} ISAG Group Meetup", date = "2026-03-15", location = "Thailand"}
 		};
 
-		return Json(mockEvents);
+		return Json(response);
 
 	}
 
-	// not using now
-	public class SearchRequest
-	{
-		// make ? so it can be null or using require
-		public string ?Keyword {get; set;} 
-	}	
+
+
 
 	
 	public void Search()

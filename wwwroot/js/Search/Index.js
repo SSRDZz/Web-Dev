@@ -3,7 +3,7 @@ async function search_req(type){
 }
 
 async function Get_search(type){
-    const keyword = "Pokemon";
+    const keyword = document.querySelector("#search-bar").value;
     const result_box = document.querySelector(".result-box");
 
     const params = new URLSearchParams({        // make para for url
@@ -19,9 +19,11 @@ async function Get_search(type){
         } 
 
         const data = await response.json();         // decode
+
+        document.querySelector(".search-topic").innerText = data.message;
         
         let html_data = '<div class="list-group">';
-        data.forEach(item =>{               // add data เรียงตัว
+        data.activity.forEach(item =>{               // add data เรียงตัว
             html_data += `
             <div class="list-group-item">
                 <strong>${item.title}</strong><br>
