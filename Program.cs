@@ -11,6 +11,7 @@ var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
 builder.Services.AddDbContext<ApplicationUsersDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
 builder.Services.AddDbContext<ApplicationReputationsDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
+builder.Services.AddDbContext<ApplicationActivitiesDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
 
 // Config Property of Identity Table
 builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
