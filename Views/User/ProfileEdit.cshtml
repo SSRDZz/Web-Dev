@@ -6,10 +6,10 @@
 
 
 <h3>Profile</h3>
-<img src="data:image/jpeg;base64,@Model.ImageURL" style="width: 5vw; height: auto;"/>
+<img src="@Url.Content("~/" +  Model.ImagePath)" style="width: 5vw; height: auto;"/>
 <div asp-validation-summary="All"></div>
 <form asp-action="ProfileUpdate" method="POST" enctype="multipart/form-data">
-	<input asp-for="ImageURL" type="hidden"/>
+	<input asp-for="ImagePath" type="hidden"/>
 	<input asp-for="RealUserName" type="hidden"/>
 	<input asp-for="Reputation" type="hidden"/>
 	<input asp-for="Sex" type="hidden"/>
@@ -25,7 +25,7 @@
 	</div>
 	<div>
 		<label></label>
-		<input name="newPicture" type="file"/>
+		<input name="newPicture" type="file" accept=".jpg,.jpeg,.png"/>
 		<span></span>
 	</div>
 	<button type="submit">Save</button>

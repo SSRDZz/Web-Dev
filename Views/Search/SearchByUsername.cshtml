@@ -9,7 +9,7 @@
 		<div class="search-tag" userid="@user.Id" >
 			<a asp-controller="User" asp-action="ProfileOther" asp-route-Id="@user.Id">
 				<h2 class="search-tag-detail">@user.Username</h2>
-				<img src="data:image/jpeg;base64,@user.ImageURL"/>
+				<img src="@Url.Content("~/" +  user.ImagePath)"/>
 			</a>
 		</div>
 	}

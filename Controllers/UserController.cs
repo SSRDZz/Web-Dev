@@ -3,7 +3,6 @@ using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using KMITL_WebDev_MiniProject.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,22 +10,23 @@ using Microsoft.EntityFrameworkCore;
 namespace KMITL_WebDev_MiniProject.Controllers;
 public class UserController(UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
 {
-	private UserManager<UserAccount> _userManager {get; init;} = userManager;
-	private UserServices _userServices {get; init;} = new UserServices(userManager, env, RepDbContext);
+	private UserManager<UserAccount> UserMang {get; init;} = userManager;
 	private ApplicationReputationsDbContext RepDbContext {get; init;} = RepDbContext;
+	private UserServices UserServ {get; init;} = new UserServices(userManager, env, RepDbContext);
+	private FileUploadServcies FUS {get; init;} = new FileUploadServcies(env);
 
 	[HttpGet]
 	[Authorize]
 	public async Task<IActionResult> Profile()
 	{
-		return View(await _userServices.GetProfileViewModelByUser(User));
+		return View(await UserServ.GetProfileViewModelByUser(User));
 	}
 
 	[HttpGet]
 	[Authorize]
 	public async Task<IActionResult> ProfileEdit()
 	{
-		return View(await _userServices.GetProfileViewModelByUser(User));
+		return View(await UserServ.GetProfileViewModelByUser(User));
 	}
 
 	[HttpPost]
@@ -36,18 +36,21 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		if(!ModelState.IsValid)
 			return RedirectToAction("Profile");
 
-		UserAccount user = await _userManager.GetUserAsync(User);
+		UserAccount user = await UserMang.GetUserAsync(User);
 
 		if(user == null)
 			return NotFound();
 
-		string imgBase64 = await _userServices.ImageFileToBase64(newPicture);
-		user.ImageURL = !string.IsNullOrEmpty(imgBase64) ? imgBase64 : user.ImageURL;
+		if(FUS.FileIsExist(newPicture))
+		{
+			await FUS.Upload(newPicture, user.Id.ToString());
+			user.ImagePath = Path.Combine("image", "UserProfile", $"{user.Id}{FUS.LastExt}");
+		}
 
 		user.FirstName = model.FirstName;
 		user.LastName  = model.LastName;
 
-		IdentityResult res = await _userManager.UpdateAsync(user);
+		IdentityResult res = await UserMang.UpdateAsync(user);
 
 		if(!res.Succeeded)
 		{
@@ -65,13 +68,13 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	public async Task<IActionResult> ProfileOther(string Id)
 	{
 
-		UserAccount TargetUser = await _userManager.FindByIdAsync(Id);
-		UserAccount OwnUser = await _userManager.GetUserAsync(User);
+		UserAccount TargetUser = await UserMang.FindByIdAsync(Id);
+		UserAccount OwnUser = await UserMang.GetUserAsync(User);
 
 		if(TargetUser == null)
 			return RedirectToAction("Index", "Home");
 
-		return View(await _userServices.GetProfileOther(OwnUser, TargetUser));
+		return View(await UserServ.GetProfileOther(OwnUser, TargetUser));
 	}
 
 	[HttpPost]
@@ -81,8 +84,8 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		if(Data == null)
 			return BadRequest();
 
-		UserAccount TargetUser = await _userManager.FindByIdAsync(Data.Id.ToString());
-		UserAccount OwnUser = await _userManager.GetUserAsync(User);
+		UserAccount TargetUser = await UserMang.FindByIdAsync(Data.Id.ToString());
+		UserAccount OwnUser = await UserMang.GetUserAsync(User);
 
 		if(OwnUser == null || TargetUser == null)
 			return NotFound();
@@ -119,6 +122,6 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	[Authorize]
 	public async Task<int> FindReputation(Guid TargetID)
 	{
-		return await _userServices.FindUserReputation(TargetID);
+		return await UserServ.FindUserReputation(TargetID);
 	}
 }

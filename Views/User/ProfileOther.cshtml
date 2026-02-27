@@ -2,7 +2,7 @@
 
 <div class="text-center">
     <h3>Profile</h3>
-    <img src="data:image/jpeg;base64,@Model.ImageURL"; style="width: 5vw; height: auto;"/>
+    <img src="@Url.Content("~/" +  Model.ImagePath)" style="width: 5vw; height: auto;"/>
     <div>
         <label>Username</label>
         <span>@Model.RealUserName</span>
