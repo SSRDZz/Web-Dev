@@ -42,7 +42,7 @@ namespace KMITL_WebDev_MiniProject.Models
 		[DataType(DataType.Date)]
 		public DateOnly DateOfBirth {get; set;}
 
-		[DataType(DataType.ImageUrl)]
-		public string? ImageURL {get; set;}
+		[Required]
+		public string? ImagePath {get; set;}
 	}
 }
