@@ -18,7 +18,7 @@ public class DbInitializer
 		if(context.Users.Any())
 			return;
 
-		string guestURL = await GuestImage(env);
+		string GuestPath = Path.Combine("image", "UserProfile", "guest_picture.jpg");
 
 		UserAccount test1 = new UserAccount()
 		{
@@ -28,9 +28,9 @@ public class DbInitializer
 			UserName = "Testuser@example.com",
 			Email = "Testuser@example.com",
 			Sex = 1,
+			ImagePath = GuestPath,
 			PhoneNumber = "0811112222",
 			DateOfBirth = new DateOnly(2000, 10, 10),
-			ImageURL = guestURL,
 			EmailConfirmed = false
 		};
 
@@ -42,9 +42,9 @@ public class DbInitializer
 			UserName = "Admin@example.com",
 			Email = "Admin@example.com",
 			Sex = 0,
+			ImagePath = GuestPath,
 			PhoneNumber = "0811112223",
 			DateOfBirth = new DateOnly(2001, 10, 10),
-			ImageURL = guestURL,
 			EmailConfirmed = false	
 		};
 
@@ -56,9 +56,9 @@ public class DbInitializer
 			UserName = "Elaina@gmail.com",
 			Email = "Elaina@gmail.com",
 			Sex = 1,
+			ImagePath = GuestPath,
 			PhoneNumber = "0910001234",
 			DateOfBirth = new DateOnly(2000, 10, 11),
-			ImageURL = guestURL,
 			EmailConfirmed = false	
 		};
 
@@ -83,12 +83,4 @@ public class DbInitializer
 		if(context.ReputationRelations.Any()) 
 			return ;
 	} 
-
-	public static async Task<string> GuestImage(IWebHostEnvironment env)
-	{
-		string path = Path.Combine(env.WebRootPath, "image", "guest_picture.jpg");
-		byte[] fileBytes = await File.ReadAllBytesAsync(path);
-		string base64Form = Convert.ToBase64String(fileBytes);
-		return base64Form;
-	}
 }
