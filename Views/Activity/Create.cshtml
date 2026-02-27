@@ -1,0 +1,196 @@
+@model KMITL_WebDev_MiniProject.Models.ActivityViewModel
+
+@{
+    ViewData["Title"] = "Create Activity";
+}
+
+<div class="create-activity-container">
+    <h2>Create New Activity</h2>
+    
+    <form asp-action="Create" method="post" class="activity-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter activity name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your activity in detail..."></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Location"></label>
+            <input asp-for="Location" class="form-control" placeholder="Event location" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="mapURL"></label>
+            <input asp-for="mapURL" class="form-control" placeholder="https://maps.example.com" />
+            <span asp-validation-for="mapURL" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EventDate"></label>
+            <input asp-for="EventDate" type="datetime-local" class="form-control" />
+            <span asp-validation-for="EventDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MaxPeople"></label>
+            <input asp-for="MaxPeople" type="number" class="form-control" min="1" max="1000" />
+            <span asp-validation-for="MaxPeople" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="RecruitingMode"></label>
+            <select asp-for="RecruitingMode" class="form-control" asp-items="Html.GetEnumSelectList<RecruitingMode>()">
+                <option value="">-- Select Recruiting Mode --</option>
+            </select>
+            <span asp-validation-for="RecruitingMode" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ImageUrl"></label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="Image URL (optional)" />
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+
+        <div class="form-group form-check">
+            <input asp-for="ShowParticipants" class="form-check-input" />
+            <label asp-for="ShowParticipants" class="form-check-label">
+                Show participant list publicly
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Activity</button>
+            <a href="/" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .create-activity-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .create-activity-container h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    .activity-form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #FF7061;
+        box-shadow: 0 0 0 3px rgba(255, 112, 97, 0.1);
+    }
+
+    .form-control textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+    }
+
+    .form-check-input {
+        margin-right: 10px;
+        cursor: pointer;
+        width: 18px;
+        height: 18px;
+    }
+
+    .form-check-label {
+        margin: 0 !important;
+        cursor: pointer;
+        font-weight: normal !important;
+    }
+
+    .text-danger {
+        display: block;
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: background-color 0.2s;
+    }
+
+    .btn-primary {
+        background-color: #FF7061;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #e85d52;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        text-decoration: none;
+    }
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
