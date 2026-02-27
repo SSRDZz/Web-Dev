@@ -28,8 +28,12 @@
     <div class="main-container">
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">Home</a>
+                <a asp-controller="Home" class="nav-item active">Home</a>
                 <a href="#" class="nav-item">Popular</a>
+                <a asp-controller="Search"  class="nav-item">
+                    Search
+                    <img src="/image/man.svg" alt="search" style="height: 15px;"/>
+                </a>
                 
                 <div class="nav-section">Your activity</div>
                 <hr class="nav-divider">
@@ -49,6 +53,46 @@
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('show');
         };
+
+        function active_page_button(){
+            const button_page = document.querySelectorAll(".nav-item");
+            const currentPath = window.location.pathname;
+            button_page.forEach(function(button){          
+                const targetPath = button.getAttribute("href");
+                if (currentPath.includes(targetPath)) {
+                    button.className = "nav-item active";        // make only that click button active
+                }
+                else{
+                    button.className = "nav-item";     // make it all nav default
+                }
+                console.log(currentPath, targetPath, currentPath.includes(targetPath) )
+            })
+            
+        }
+
+        window.onload = active_page_button;
+
+
+        let timeout = null;
+        document.getElementById("search-bar").addEventListener("keyup", () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(liveSearch, 800);
+        });
+
+        function liveSearch() {
+            console.log("doing");
+            let value = document.getElementById("search-bar").value;
+            
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action(controller: "Search", action: "SearchByUsername")',
+                data: { Username: value },
+                datatype: "html",
+                success: (data) => {
+                    $("#activity-grid").html(data);
+                } 
+            });
+        }
     </script>
     <script src="~/js/Search/SearchUser.js"></script>
 </body>

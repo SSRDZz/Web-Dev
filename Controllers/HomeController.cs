@@ -9,6 +9,8 @@ public class HomeController : Controller
 {
     [HttpGet]
     [Authorize]
+    [Route("Home")]	
+    [Route("Home/Index")]	
     public IActionResult Index()
     {
         return View();
