@@ -1,6 +1,20 @@
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+html {
+    padding: 0px;
+    margin: 0px;
+    min-height: 100vh;     
+}
+
+
+* { 
+    /* outline: 1px solid red !important; */
+    box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; 
+
+    margin: 0px;
+    min-height: 100vh;
+}
 
 .custom-header {
     background-color: #FF7061;
@@ -13,16 +27,29 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x:
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+    max-width: 100%
 }
 
 .logo { color: white; font-weight: bold; font-size: 1.5rem; }
+
+.search-container {
+    width: 100%;
+    max-width: 400px;
+
+    display: flex;
+    justify-content: center;
+
+}
 
 .search-input {
     padding: 8px 15px;
     border-radius: 20px;
     border: none;
-    width: 400px;
+
+    width:100%;
     outline: none;
+    margin: 0 10px;
 }
 
 .user-icon {
@@ -33,6 +60,8 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x:
     display: flex;
     align-items: center;
     justify-content: center;
+
+    margin: 0 10px;
 }
 
 /* Layout แบ่งหน้าจอ */
@@ -91,7 +120,11 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x:
         margin-right: 10px;
     }
 
-    .search-container { display: none; } 
+    /* make logo disappeat is better that search bar disappear */
+    .logo { 
+        display: none;
+    }  
+
 
     .sidebar {
         position: fixed;

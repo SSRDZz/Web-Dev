@@ -2,6 +2,7 @@ async function search_req(type){
     await Get_search(type);
 }
 
+// API http get request
 async function Get_search(type){
     const keyword = document.querySelector("#search-bar").value;
     const result_box = document.querySelector(".result-box");
