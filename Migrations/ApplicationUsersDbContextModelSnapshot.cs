@@ -4,19 +4,16 @@ using KMITL_WebDev_MiniProject.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MvcMovie.Migrations.Users
+namespace MvcMovie.Migrations
 {
     [DbContext(typeof(ApplicationUsersDbContext))]
-    [Migration("20260224132128_Users")]
-    partial class Users
+    partial class ApplicationUsersDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,7 +50,8 @@ namespace MvcMovie.Migrations.Users
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ImageURL")
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("LastName")
