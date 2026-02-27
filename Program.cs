@@ -41,6 +41,19 @@ builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
+// Apply database migrations automatically
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var usersContext = services.GetRequiredService<ApplicationUsersDbContext>();
+    var reputationsContext = services.GetRequiredService<ApplicationReputationsDbContext>();
+    var activitiesContext = services.GetRequiredService<ApplicationActivitiesDbContext>();
+    
+    usersContext.Database.Migrate();
+    reputationsContext.Database.Migrate();
+    activitiesContext.Database.Migrate();
+}
+
 // Seed the database with mockup data
 using (var scope = app.Services.CreateScope())
 {
