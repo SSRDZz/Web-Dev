@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KMITL_WebDev_MiniProject.Controllers;
 public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 {
-	private ApplicationDbContext dbContext {get; init;} = dbContext;
+	private ApplicationUsersDbContext dbContext {get; init;} = dbContext;
 
 	[Route("Search")]
 	[Route("Search/Index")]	

@@ -59,7 +59,7 @@ function check_form(){
             valid = false;
         }
     })
-    Css_submit(valid && Check_pwd());
+    Css_submit(Check_pwd() && valid);
 }
 
 function Check_pwd(){
