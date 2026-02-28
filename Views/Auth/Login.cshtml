@@ -5,7 +5,7 @@
 }
 
 @model KMITL_WebDev_MiniProject.Models.LoginViewModel
-<link rel="stylesheet" href="~/css/Login.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/Auth/Login.css" asp-append-version="true" />
 
 <div class="Header-login">
 	<h2>Log in</h2>
@@ -49,4 +49,4 @@
 	// check login fail or pass using ViewBag
 	window.loginFailed = @((ViewBag.login != null && ViewBag.login.ToString() == "0") ? "true" : "false");
 </script>
-<script src="~/js/Login.js" asp-append-version="true"></script>
+<script src="~/js/Auth/Login.js" asp-append-version="true"></script>

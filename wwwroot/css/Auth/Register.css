@@ -1,0 +1,228 @@
+.Header-login {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    
+    min-height: 80px; 
+}
+.Header-login > h2 {
+    border-right: solid 3px grey;
+    padding-right: 12px;
+    
+    font-size: 2rem;
+    font-weight: 600;
+}
+.Header-login > p {
+    color: gray;
+    font-weight: 200;
+    margin-left: 15px;
+    
+    font-size: 1.5rem;
+}
+
+
+
+.Register {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+}
+
+.Input-textBox {
+    position: relative;
+    margin-top: 1.5rem;
+    width: 100%;
+}
+
+.Input-textBox input {
+     box-sizing: border-box; 
+
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+
+.Input-textBox  label {
+    position: absolute;
+    top: 50%;                   /* set ให้ตอนนี้ยังอยู่ตรงกลาง */
+    left: 10px;
+    transform: translateY(-50%);
+
+    color: #999;
+    pointer-events: none;
+    transition: all 0.3s ease;          /* เพิ่มความ smooth like butter */
+}
+
+.Input-textBox input:focus + label,
+.Input-textBox input:not(:placeholder-shown) + label {
+    top: -0.2rem;               /* set ให้ตอนนี้ย้ายไปข้างบน */
+    font-size: 0.8em;
+
+    color: #007bff;
+    background-color: rgb(255, 255, 255);
+    padding: 0 5px;
+}
+
+.Input-textBox input:focus{
+    border-color: #007bff;
+    outline: none;
+}
+
+
+
+/* will fix later ---------------------------------------------------------------------------------- Now -> fix what ? from me in the future -> I think I done it but I don't know when */
+.show-passwd {
+    position: absolute;
+    top: 50%;
+    right: 1rem; 
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.show-passwd img {
+    width: 90%;
+    height: auto;
+}
+
+/* gender custom style radio box  */
+input[type="radio"]{
+    display: none;
+}
+
+.radio-sex {
+    display:flex;
+    flex-flow: row nowrap;
+    
+    margin:20px 0 0 0;
+    width: 100%;
+
+    border: 2px solid lightgrey;
+    border-radius: 0.5em;
+}
+.radio-sex div {
+    flex-grow: 1;
+}
+
+.radio-sex  div  label {
+    position: relative;
+    /* color: #4189e0; */
+    /* display: flex; */
+
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 100%;
+    border-right: 2px solid lightgrey;
+    padding: 7px 0px;
+    /* border-radius: 0.5em; */
+}
+
+/* label of last option */
+#O + label { 
+    border: none;
+}
+
+.radio-sex  div  label img {
+    height: 20px;
+}
+
+.radio-sex  div  label:before {
+    content: "";
+    height: 20px;
+}
+
+/* if checked that radio */
+input[type="radio"]:checked + label:before {
+    background-color: lightgrey;
+}
+
+input[type="radio"]:checked + label {
+    background-color: lightgrey;
+}
+
+
+/* submit button */
+.submit-button {
+    max-width: 300px;
+    height: 45px;
+        
+    background-color: #FF6F61;
+    color: white;
+    border: 1px solid white;
+    border-radius: 15px;    
+
+    margin: 30px 0px;
+    
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    width: 80%;   
+
+    
+    box-shadow: 0 4px 15px rgba(255, 111, 97, 0.3);
+    transition: all 0.3s ease; 
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    transform: translateY(-2px); 
+    background-color: #ff857a; /* bright rose pink color */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+
+    box-shadow: 0 8px 25px rgba(255, 111, 97, 0.4);
+}
+
+.submit-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 10px rgba(255, 111, 97, 0.2);
+}
+
+.submit-button > p {        
+    font-size: 20px;
+    font-weight: 600;
+    font-family: "Roboto";
+    margin: 0;
+}
+
+/* submit button when disable */
+/* Now -> using js .style */
+
+    
+
+/* Login Error Message */
+.login-error {
+    box-sizing: border-box;
+
+    color: #d93232;
+    background-color: #feefef;
+    padding: 10px 10px 10px 25px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin: 20px 0px;
+    line-height: 18px;
+    border-left: 4px solid #d93232;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

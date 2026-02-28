@@ -1,0 +1,36 @@
+@using KMITL_WebDev_MiniProject.Models
+@using Microsoft.AspNetCore.Http.Features
+@using System.Linq.Expressions
+@model List<SearchUserViewModel>
+
+<div id="search-user-result">
+	@foreach(SearchUserViewModel user in Model)
+	{
+		<div class="search-tag" userid="@user.Id" >
+			<a asp-controller="User" asp-action="ProfileOther" asp-route-Id="@user.Id">
+				<h2 class="search-tag-detail">@user.Username</h2>
+				<img src="data:image/jpeg;base64,@user.ImageURL"/>
+			</a>
+		</div>
+	}
+
+	<style>
+		.search-tag {
+			border: groove 1px;
+			cursor: pointer;
+		}
+
+		.search-tag a {
+			text-decoration: none;
+		}
+
+		.search-tag-detail {
+			text-align: center;
+		}
+
+		.search-tag img {
+			width: 1vw; 
+			height: auto;
+		}
+	</style>
+</div>

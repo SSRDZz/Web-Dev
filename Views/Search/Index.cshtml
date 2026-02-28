@@ -1,0 +1,22 @@
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/Search/Index.css" asp-append-version="true" />
+
+<div class="Header-type">
+	<button onclick=search_req("All") id="All" class="type">All</button>
+	<button onclick=search_req("Activity") id="Activity" class="type">Activity</button>
+	<button onclick=search_req("People") id="People" class="type">People</button>
+</div>
+<div class="search-topic">
+	
+</div>
+<div class="result-box">
+	<span> something here</span>
+	<hr />
+	<span> something here again</span>
+	<hr />
+</div>
+
+<script src="~/js/Search/Index.js" asp-append-version="true"></script>

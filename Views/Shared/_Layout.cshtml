@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Web App</title>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/Layout/site.css" />
 </head>
 <body>
     <header class="custom-header">
@@ -14,7 +14,7 @@
         </div>
         
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search...">
+            <input type="text" id="search-bar" class="search-input" placeholder="Search...">
         </div>
 
         <div class="user-profile">
@@ -28,8 +28,12 @@
     <div class="main-container">
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">Home</a>
+                <a asp-controller="Home" class="nav-item active">Home</a>               
                 <a href="#" class="nav-item">Popular</a>
+                <a asp-controller="Search"  class="nav-item">
+                    Search
+                    <img src="/image/man.svg" alt="search" style="height: 15px;"/>
+                </a>
                 
                 <div class="nav-section">Your activity</div>
                 <hr class="nav-divider">
@@ -44,11 +48,7 @@
         </main>
     </div>
 
-    <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('show');
-        }
-    </script>
 </body>
 </html>
+<script src="~/js/Layout/site.js"></script>
+<script src="~/js/Search/SearchUser.js"></script>
