@@ -12,17 +12,18 @@
             <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
             <div class="logo">LOGO</div>
         </div>
-        
+
         <div class="search-container">
             <input type="text" id="search-bar" class="search-input" placeholder="Search...">
         </div>
 
         <div class="user-profile">
-            <div class="user-icon">?</div>
+            <div class="user-icon">
+                <a asp-action="Profile">
+                    ?
+                </a>
+            </div>
         </div>
-        <form asp-controller="Auth" asp-action="Logout" method="POST">
-            <button type="submit">Logout</button>
-        </form>
     </header>
 
     <div class="main-container">
@@ -30,12 +31,12 @@
             <nav class="sidebar-nav">
                 <a href="#" class="nav-item active">Home</a>
                 <a href="#" class="nav-item">Popular</a>
-                
+
                 <div class="nav-section">Your activity</div>
                 <hr class="nav-divider">
                 <div class="nav-section">Favourite</div>
             </nav>
-            
+
             <button class="btn-create">Create Activity</button>
         </aside>
 
@@ -45,11 +46,12 @@
     </div>
 
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('show');
-        };
+                    function toggleSidebar() {
+                        const sidebar = document.getElementById('sidebar');
+                        sidebar.classList.toggle('show');
+                    };
     </script>
     <script src="~/js/Search/SearchUser.js"></script>
 </body>
+
 </html>
