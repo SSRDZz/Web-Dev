@@ -4,7 +4,7 @@
             <div class="detail">
                 <h3>Activity name</h3>
                 <p>69 users have joined this activity</p>
-                <p>detaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetaildetail
+                <p>detaildetaildetailde taildetaildetaildet aildetai ldetaild etai lde ta ildetaildetaildetai ldetaildetailde taildetaildeta ildetail END
                 </p>
             </div>
             <div class="card-image">
@@ -23,22 +23,22 @@
         <style>
             .activity-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fill, max(1000px, 1fr));
-                gap: 200px;
+                grid-template-columns: repeat(auto-fit, minmax(700px, 1980px));
+                gap: 20px;
+                justify-content: space-between;
             }
 
             .card {
                 padding: 15px;
             }
 
-            .detail {
-                min-width: 100px;
+            @**@.detail {
+                min-width: 80px;
                 word-wrap: break-word;
                 overflow-wrap: break-word;
-
             }
 
-            .card-header {
+                    .card-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
@@ -56,5 +56,20 @@
                 border: none;
                 padding: 15px 50px;
                 border-radius: 10px;
+            }
+
+            @@media (max-width: 768px) {
+                .card-header {
+                    flex-direction: column;
+                }
+
+                .card-image {
+                    width: 80%;
+                    max-width: 80%;
+                }
+
+                .join-btn {
+                    width: 100%;
+                }
             }
         </style>
