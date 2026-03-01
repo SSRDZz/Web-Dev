@@ -33,6 +33,8 @@ body {
 
 .logo { color: white; font-weight: bold; font-size: 1.5rem; }
 
+
+/* search bar */
 .search-container {
     width: 100%;
     max-width: 400px;
@@ -42,16 +44,26 @@ body {
 
 }
 
+
 .search-input {
     padding: 8px 15px;
-    border-radius: 20px;
-    border: none;
-
     width:100%;
     outline: none;
     margin: 0 10px;
+
+    border: 2px solid transparent;
+    border-radius: 20px;
 }
 
+.search-input:focus{
+    border-color: #007bff;
+
+    outline: none;
+
+}
+
+
+/* user profile */
 .user-icon {
     background: white;
     width: 35px;
@@ -108,6 +120,18 @@ body {
 
 /* Content Area */
 .content-area { flex: 1; padding: 25px; background-color: #fff; }
+
+
+/* anchor */
+a {
+    color: #7661d2;
+    text-decoration: none;
+    width: fit-content;
+}
+
+a:hover {
+    text-decoration: underline;
+}
 
 @media (max-width: 768px) {
     .menu-toggle {
