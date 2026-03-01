@@ -11,6 +11,7 @@ var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
 builder.Services.AddDbContext<ApplicationUsersDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
 builder.Services.AddDbContext<ApplicationReputationsDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
+builder.Services.AddDbContext<ApplicationActivitiesDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
 
 // Config Property of Identity Table
 builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
@@ -39,6 +40,19 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+// Apply database migrations automatically
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var usersContext = services.GetRequiredService<ApplicationUsersDbContext>();
+    var reputationsContext = services.GetRequiredService<ApplicationReputationsDbContext>();
+    var activitiesContext = services.GetRequiredService<ApplicationActivitiesDbContext>();
+    
+    usersContext.Database.Migrate();
+    reputationsContext.Database.Migrate();
+    activitiesContext.Database.Migrate();
+}
 
 // Seed the database with mockup data
 using (var scope = app.Services.CreateScope())

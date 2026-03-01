@@ -36,8 +36,8 @@
                 <hr class="nav-divider">
                 <div class="nav-section">Favourite</div>
             </nav>
-
-            <button class="btn-create">Create Activity</button>
+            
+            <a class="btn-create" asp-controller="Activity" asp-action="Create">Create Activity</a>
         </aside>
 
         <main class="content-area">
@@ -52,6 +52,7 @@
                     };
     </script>
     <script src="~/js/Search/SearchUser.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 
 </html>
