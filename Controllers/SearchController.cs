@@ -38,7 +38,8 @@ public class SearchController(ApplicationUsersDbContext dbContext) : Controller
         response.Activity = new List<object> // mock list ไว้ก่อน
 		{
 			new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"},
-			new { title = $"{keyword} ISAG Group Meetup", date = "2026-03-15", location = "Thailand"}
+			new { title = $"{keyword} ISAG Group Meetup", date = "2026-03-15", location = "Thailand"},
+			new { title = $"{keyword}-{type} -> From search web", date = "2026-03-15", location = "Thailand"}
 		};
 
 		return Json(response);

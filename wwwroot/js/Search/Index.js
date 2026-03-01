@@ -2,62 +2,64 @@ async function search_req(type){
     await Get_search(type);
 }
 
-// API http get request
-async function Get_search(type){
-    const keyword = document.querySelector(".search-input").value;
-    const result_box = document.querySelector(".result-box");
 
-    console.log(keyword, result_box)
+// API http get request using ajax
+async function fetch_data(type = "All"){
+    // const urlParameter = new URLSearchParams(window.location.search);
+    // const keyword = urlParameter.get('keyword') || "";
+    const keyword = document.querySelector(".search-input").value; // use this because when user input in search bar but not enter -> then press button -> so it will got value from both button and search bar
+    // const type = urlParameter.get('type') || "All";
 
-    const params = new URLSearchParams({        // make para for url
-        keyword: keyword,
-        type: type
-    });
-    const url = `/Search/GetData?${params.toString()}`;
 
+    const url = `/Search/GetData?keyword=${keyword}&type=${type}`;
+    console.log(url);
+    
     try{
-        const response = await fetch(url);     // using get http method to recieve data
-        if (!response.ok){          // error when not ok
+        const response = await fetch(url);           // using get http method to recieve data
+        if(!response.ok){
             throw new Error('Get not found');
-        } 
+        }
 
-        const data = await response.json();         // decode
+        const data = await response.json();
 
-        document.querySelector(".search-topic").innerText = data.message;
-        
-        let html_data = '<div class="list-group">';
-        data.activity.forEach(item =>{               // add data เรียงตัว
-            html_data += `
-            <div class="list-group-item">
-                <strong>${item.title}</strong><br>
-                <small>Date: ${item.date} | Place: ${item.location}</small>      
-            <hr>
-            `;
-        });
-        html_data += '</div>';
+        renderResult(data)
 
-        result_box.innerHTML = html_data;           // insert data in element box
-        
-    } catch (error) {
-        console.error('Error:', error);
-        resultArea.innerHTML = '<p class="text-danger">Error when fetch data</p>';
+    }   catch (error) {
+        console.error('Fetch error:', error);
     }
+
 }
 
-function fetch_data(){
-    const urlParameter = new URLSearchParams(window.location.search);
-    const keyword = urlParameter.get('keyword');
+// for update html with new result
+function renderResult(data){
+    document.querySelector(".search-topic").innerText = data.message;
 
-    if(keyword){        // if keyword != null -> go getData
-         fetch(`/Search/GetData?keyword=${keyword}`)
-            .then(response =>  response.json())
-            .then(data => {
-                console.log("ได้ข้อมูล JSON มาแล้ว:", data.activity);
-                // นำข้อมูลไปวน Loop แสดงผลในหน้าเว็บ
-            });
-    }
+    const result_box = document.querySelector(".result-box");
+    console.log("Render something finished == nothing");
+
+    let html_data = '<div class="list-group">';
+    data.activity.forEach(item =>{               // add data เรียงตัว
+        html_data += `
+        <div class="list-group-item">
+            <strong>${item.title}</strong><br>
+            <small>Date: ${item.date} | Place: ${item.location}</small>      
+        <hr>
+        `;
+    });
+    html_data += '</div>';
+
+    result_box.innerHTML = html_data;           // insert data in element box
+        
 }
 
+document.querySelectorAll(".type").forEach(button => {
+    button.addEventListener('click',function(){
+        const type = button.getAttribute("name");
+        console.log(type)
+        fetch_data(type);
+    })
+
+})
 
 window.addEventListener('load', function(){
     fetch_data();
