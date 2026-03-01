@@ -23,5 +23,6 @@ public class UserAccount: IdentityUser<Guid>
 	[DataType(DataType.Date)]
 	public DateOnly DateOfBirth {get; set;}
 
-	public string? ImageURL {get; set;}
+	[Required]
+	public string ImagePath {get; set;}
 }

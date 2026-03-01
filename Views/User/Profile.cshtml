@@ -1,5 +1,7 @@
 @{
     ViewData["Title"] = "Home Page";
+    TimeOnly v = new TimeOnly();
+    int p = v.Second;
 }
 
 @model KMITL_WebDev_MiniProject.Models.ProfileViewModel
@@ -7,7 +9,7 @@
 
 <div class="text-center">
     <h3>Profile</h3>
-    <img src="data:image/jpeg;base64,@Model.ImageURL"; style="width: 5vw; height: auto;"/>
+    <img src="@Url.Content($"~/{Model.ImagePath}")" asp-append-version="true" style="width: 5vw; height: auto;"/>
     <div>Username   : @Model.RealUserName</div>
     <div>FirstName  : @Model.FirstName</div>
     <div>LastName   : @Model.LastName</div>
