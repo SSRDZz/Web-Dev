@@ -10,6 +10,7 @@ public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 {
 	private ApplicationUsersDbContext dbContext {get; init;} = dbContext;
 
+	[Authorize]
 	[Route("Search")]
 	[Route("Search/Index")]	
 	[HttpGet]
@@ -24,10 +25,11 @@ public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 		return View();
 	}
 	
-	[HttpGet]			// end point (server side to pass data from DB)
+	[HttpGet]			
+	[Produces("application/json")] // end point (server side to pass data from DB)
+	[Authorize]
 	public IActionResult GetData(string? keyword, string? type)
 	{
-
 		keyword = keyword?.Trim() ?? "*"; // means if it null -> make keyword = *
 		type = type ?? "All";
 
@@ -48,12 +50,6 @@ public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 
 
 
-
-	
-	public void Search()
-	{
-		// Search with Username and Postname
-	}
 
 	[HttpGet]
 	[Authorize]
