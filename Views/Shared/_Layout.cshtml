@@ -12,13 +12,15 @@
             <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
             <div class="logo">LOGO</div>
         </div>
+      
+        <form asp-controller="Search" method="GET" class="search-container">
+            <input name="keyword" id="keyword" class="search-input" placeholder="Search..." value="@ViewData["CurrentKeyword"]" >
+            <button type="submit" style="display:none"></button>
+        </form>
 
-        <div class="search-container">
-            <input type="text" id="search-bar" class="search-input" placeholder="Search...">
-        </div>
 
-        <div class="user-profile">
-            <div class="user-icon">
+        <div class="user-profile">  
+            <div class="user-icon">?</div>
                 <a asp-action="Profile">
                     ?
                 </a>
@@ -29,9 +31,13 @@
     <div class="main-container">
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active">Home</a>
+                <a asp-controller="Home" class="nav-item active">Home</a>               
                 <a href="#" class="nav-item">Popular</a>
-
+                <a asp-controller="Search"  class="nav-item">
+                    Search
+                    <img src="/image/man.svg" alt="search" style="height: 15px;"/>
+                </a>
+                
                 <div class="nav-section">Your activity</div>
                 <hr class="nav-divider">
                 <div class="nav-section">Favourite</div>
@@ -54,5 +60,6 @@
     <script src="~/js/Search/SearchUser.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
-
 </html>
+<script src="~/js/Layout/site.js"></script>
+@* <script src="~/js/Search/SearchUser.js"></script> *@

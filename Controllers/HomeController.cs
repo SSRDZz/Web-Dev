@@ -21,6 +21,8 @@ public class HomeController : Controller
 
     [HttpGet]
     [Authorize]
+    [Route("Home")]	
+    [Route("Home/Index")]	
     public async Task<IActionResult> Index()
     {
         var activities = await _activitiesContext.Activities.ToListAsync();
