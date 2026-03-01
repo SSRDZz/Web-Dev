@@ -9,6 +9,7 @@ public class DbInitializer
 	{
 		await ForUsers(new ApplicationUsersDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationUsersDbContext>>()), env, userManager);
 		await ForReputations(new ApplicationReputationsDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationReputationsDbContext>>()));
+		await ForActivities(new ApplicationActivitiesDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationActivitiesDbContext>>()));
 	}
 
 	public static async Task ForUsers(ApplicationUsersDbContext context, IWebHostEnvironment env, UserManager<UserAccount> userManager)
@@ -18,7 +19,7 @@ public class DbInitializer
 		if(context.Users.Any())
 			return;
 
-		string guestURL = await GuestImage(env);
+		string GuestPath = Path.Combine("image", "UserProfile", "guest_picture.jpg");
 
 		UserAccount test1 = new UserAccount()
 		{
@@ -28,9 +29,9 @@ public class DbInitializer
 			UserName = "Testuser@example.com",
 			Email = "Testuser@example.com",
 			Sex = 1,
+			ImagePath = GuestPath,
 			PhoneNumber = "0811112222",
 			DateOfBirth = new DateOnly(2000, 10, 10),
-			ImageURL = guestURL,
 			EmailConfirmed = false
 		};
 
@@ -42,9 +43,9 @@ public class DbInitializer
 			UserName = "Admin@example.com",
 			Email = "Admin@example.com",
 			Sex = 0,
+			ImagePath = GuestPath,
 			PhoneNumber = "0811112223",
 			DateOfBirth = new DateOnly(2001, 10, 10),
-			ImageURL = guestURL,
 			EmailConfirmed = false	
 		};
 
@@ -56,9 +57,9 @@ public class DbInitializer
 			UserName = "Elaina@gmail.com",
 			Email = "Elaina@gmail.com",
 			Sex = 1,
+			ImagePath = GuestPath,
 			PhoneNumber = "0910001234",
 			DateOfBirth = new DateOnly(2000, 10, 11),
-			ImageURL = guestURL,
 			EmailConfirmed = false	
 		};
 
@@ -82,7 +83,55 @@ public class DbInitializer
 
 		if(context.ReputationRelations.Any()) 
 			return ;
-	} 
+	}
+
+	public static async Task ForActivities(ApplicationActivitiesDbContext context)
+	{
+		// ensure the database and tables exist (migrations may not be created yet)
+		await context.Database.EnsureCreatedAsync();
+
+		if(context.Activities.Any())
+			return;
+
+		// Add sample activities
+		var activities = new List<Activity>
+		{
+			new Activity
+			{
+				Name = "Community Cleanup",
+				Description = "Join us for a fun community cleanup event!",
+				ImageUrl = null,
+				MaxPeople = 50,
+				RecruitingMode = 1, // FirstComeFirstServe
+				ShowParticipants = true,
+				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+				EventDate = DateTime.Now.AddDays(7),
+				Location = "Central Park",
+				MapUrl = "https://maps.example.com/centralpark",
+				CreatedAt = DateTime.Now,
+				UpdatedAt = DateTime.Now
+			},
+			new Activity
+			{
+				Name = "Tech Workshop",
+				Description = "Learn new programming skills with industry experts",
+				ImageUrl = null,
+				MaxPeople = 30,
+				RecruitingMode = 3, // OwnerSelect
+				ShowParticipants = false,
+				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+				EventDate = DateTime.Now.AddDays(14),
+				Location = "Tech Hub Downtown",
+				MapUrl = "https://maps.example.com/techhub",
+				CreatedAt = DateTime.Now,
+				UpdatedAt = DateTime.Now
+			}
+		};
+
+		await context.Activities.AddRangeAsync(activities);
+		await context.SaveChangesAsync();
+	}
+
 
 	public static async Task<string> GuestImage(IWebHostEnvironment env)
 	{

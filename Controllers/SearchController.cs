@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class SearchController(ApplicationUsersDbContext dbContext) : Controller
+public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvironment Env) : Controller
 {
 	private ApplicationUsersDbContext dbContext {get; init;} = dbContext;
 
@@ -67,7 +67,7 @@ public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 			{
 				Id = users[i].Id,
 				Username = users[i].RealUserName,
-				ImageURL = users[i].ImageURL
+				ImagePath = users[i].ImagePath
 			});
 		}
 

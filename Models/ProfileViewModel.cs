@@ -20,7 +20,7 @@ namespace KMITL_WebDev_MiniProject.Models
 		public int Reputation {get; set;}
 		
 		[Required]
-		public string ImageURL {get; set;}
+		public string ImagePath {get; set;}
 
 		[Required]
 		public string Sex {get; set;}

@@ -10,5 +10,5 @@ public class SearchUserViewModel
 	public string Username {get; set;}
 
 	[Required]
-	public string ImageURL {get; set;}
+	public string ImagePath {get; set;}
 };

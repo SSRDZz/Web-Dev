@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MvcMovie.Migrations.Users
+namespace MvcMovie.Migrations
 {
     /// <inheritdoc />
     public partial class Users : Migration
@@ -46,7 +46,7 @@ namespace MvcMovie.Migrations.Users
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Sex = table.Column<uint>(type: "int unsigned", nullable: false),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
-                    ImageURL = table.Column<string>(type: "longtext", nullable: true)
+                    ImagePath = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),

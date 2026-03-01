@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 namespace KMITL_WebDev_MiniProject.Controllers;
 public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
 {
-	private SignInManager<UserAccount> _signInManager {get; init;} = signInManager;
-	private UserManager<UserAccount> _userManager {get; init;} = userManager; 
-	private UserServices _userServices {get; init;} = new UserServices(userManager, env, RepDbContext);
+	private SignInManager<UserAccount> SignInMang {get; init;} = signInManager;
+	private UserManager<UserAccount> UserMang {get; init;} = userManager; 
+	private UserServices UserServ {get; init;} = new UserServices(userManager, env, RepDbContext);
+	private FileUploadServcies FUS {get; init;} = new FileUploadServcies(env);
 
 	[HttpGet]
 	[AllowAnonymous]
@@ -32,15 +33,16 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		if(!ModelState.IsValid)
 			return RedirectToAction("Register");
 		
-		UserAccount account = _userServices.RegisterViewModelToAccount(model);
+		UserAccount account = UserServ.RegisterViewModelToAccount(model);
+		account.ImagePath = UserServ.GuestImagePath;
 
-		if(await _userServices.IsRealNameExist(account.RealUserName))
+		if(await UserServ.IsRealNameExist(account.RealUserName))
 		{
 			ViewBag.errors = new IdentityError[] { new IdentityError {Description = "Username is already exist"}};
 			return View(model);
 		}
 
-		IdentityResult result = await _userManager.CreateAsync(account, model.Password);
+		IdentityResult result = await UserMang.CreateAsync(account, model.Password);
 		if(!result.Succeeded)
 		{
 			ViewBag.register = "0";
@@ -74,13 +76,15 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 			return RedirectToAction("Login");
 
 		string Email = TempData["Email"] as string;
-		UserAccount user = await _userManager.FindByNameAsync(Email);
-		await _signInManager.SignInAsync(user, false);
+		UserAccount user = await UserMang.FindByNameAsync(Email);
+		await SignInMang.SignInAsync(user, false);
 
-		string? imgBase64 = await _userServices.ImageFileToBase64(profilePicture);
-		user.ImageURL = !string.IsNullOrEmpty(imgBase64) ?  imgBase64 : _userServices.guestImageURL;
+		await FUS.Upload(profilePicture, user.Id.ToString());
 
-		IdentityResult res = await _userManager.UpdateAsync(user);
+		// string? imgBase64 = await UserServ.ImageFileToBase64(profilePicture);
+		// user.ImageURL = !string.IsNullOrEmpty(imgBase64) ?  imgBase64 : UserServ.guestImageURL;
+
+		IdentityResult res = await UserMang.UpdateAsync(user);
 
 		if(!res.Succeeded)
 			return RedirectToAction("Register");
@@ -108,7 +112,7 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		if(!ModelState.IsValid)
 			return View(model);
 		
-		var result = await _signInManager.PasswordSignInAsync(
+		var result = await SignInMang.PasswordSignInAsync(
 			model.Email, 
 			model.Password, 
 			model.RememberMe, 
@@ -128,7 +132,7 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> Logout()
 	{
-		await _signInManager.SignOutAsync();
+		await SignInMang.SignOutAsync();
 		return RedirectToAction("Login");
 	}
 }
