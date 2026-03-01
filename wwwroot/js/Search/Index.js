@@ -4,8 +4,10 @@ async function search_req(type){
 
 // API http get request
 async function Get_search(type){
-    const keyword = document.querySelector("#search-bar").value;
+    const keyword = document.querySelector(".search-input").value;
     const result_box = document.querySelector(".result-box");
+
+    console.log(keyword, result_box)
 
     const params = new URLSearchParams({        // make para for url
         keyword: keyword,
@@ -41,3 +43,22 @@ async function Get_search(type){
         resultArea.innerHTML = '<p class="text-danger">Error when fetch data</p>';
     }
 }
+
+function fetch_data(){
+    const urlParameter = new URLSearchParams(window.location.search);
+    const keyword = urlParameter.get('keyword');
+
+    if(keyword){        // if keyword != null -> go getData
+         fetch(`/Search/GetData?keyword=${keyword}`)
+            .then(response =>  response.json())
+            .then(data => {
+                console.log("ได้ข้อมูล JSON มาแล้ว:", data.activity);
+                // นำข้อมูลไปวน Loop แสดงผลในหน้าเว็บ
+            });
+    }
+}
+
+
+window.addEventListener('load', function(){
+    fetch_data();
+});

@@ -13,19 +13,25 @@ public class SearchController(ApplicationUsersDbContext dbContext) : Controller
 	[Route("Search")]
 	[Route("Search/Index")]	
 	[HttpGet]
-	public IActionResult Index()
+	public IActionResult Index(string? keyword)
 	{
 		if(User.Identity == null || !User.Identity.IsAuthenticated) // ต้อง authen ก่อน 
 		{
 			return RedirectToAction("Login","Auth"); // back to default
 		}
+		ViewData["CurrentKeyword"] = keyword;
 
 		return View();
 	}
 	
 	[HttpGet]			// end point (server side to pass data from DB)
-	public IActionResult GetData(string keyword, string type)
+	public IActionResult GetData(string? keyword, string? type)
 	{
+
+		keyword = keyword?.Trim() ?? "*"; // means if it null -> make keyword = *
+		type = type ?? "All";
+
+		// Console.Write(keyword + type + "\n");
 
         var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
 

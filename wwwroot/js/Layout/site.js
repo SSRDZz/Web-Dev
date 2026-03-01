@@ -26,31 +26,30 @@ function active_page_button(){
     
 }
 
-window.onload = active_page_button;
-
-
-
-
-
-
-
-let timeout = null;
-document.getElementById("search-bar").addEventListener("keyup", () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(liveSearch, 800);
+window.addEventListener('load', function(){
+    active_page_button();
 });
 
-function liveSearch() {
-    console.log("doing");
-    let value = document.getElementById("search-bar").value;
+
+
+
+// let timeout = null;
+// document.getElementById("search-bar").addEventListener("keyup", () => {
+//     clearTimeout(timeout);
+//     timeout = setTimeout(liveSearch, 800);
+// });
+
+// function liveSearch() {
+//     console.log("doing");
+//     let value = document.getElementById("search-bar").value;
     
-    $.ajax({
-        type: "POST",
-        url: '@Url.Action(controller: "Search", action: "SearchByUsername")',
-        data: { Username: value },
-        datatype: "html",
-        success: (data) => {
-            $("#activity-grid").html(data);
-        } 
-    });
-}
+//     $.ajax({
+//         type: "POST",
+//         url: '@Url.Action(controller: "Search", action: "SearchByUsername")',
+//         data: { Username: value },
+//         datatype: "html",
+//         success: (data) => {
+//             $("#activity-grid").html(data);
+//         } 
+//     });
+// }

@@ -12,12 +12,14 @@
             <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
             <div class="logo">LOGO</div>
         </div>
-        
-        <div class="search-container">
-            <input type="text" id="search-bar" class="search-input" placeholder="Search...">
-        </div>
+      
+        <form asp-controller="Search" method="GET" class="search-container">
+            <input name="keyword" id="keyword" class="search-input" placeholder="Search..." value="@ViewData["CurrentKeyword"]" >
+            <button type="submit" style="display:none"></button>
+        </form>
 
-        <div class="user-profile">
+
+        <div class="user-profile">  
             <div class="user-icon">?</div>
         </div>
         <form asp-controller="Auth" asp-action="Logout" method="POST">
@@ -51,4 +53,4 @@
 </body>
 </html>
 <script src="~/js/Layout/site.js"></script>
-<script src="~/js/Search/SearchUser.js"></script>
+@* <script src="~/js/Search/SearchUser.js"></script> *@
