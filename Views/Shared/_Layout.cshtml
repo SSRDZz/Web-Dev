@@ -20,10 +20,8 @@
 
 
         <div class="user-profile">  
-            <div class="user-icon">?</div>
-                <a asp-action="Profile">
-                    ?
-                </a>
+            <div class="user-icon">
+                <a asp-controller="User" asp-action="Profile">?</a>
             </div>
         </div>
     </header>
@@ -31,7 +29,7 @@
     <div class="main-container">
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar-nav">
-                <a asp-controller="Home" class="nav-item active">Home</a>               
+                <a asp-controller="Home" asp-action="Index" class="nav-item active">Home</a>               
                 <a href="#" class="nav-item">Popular</a>
                 <a asp-controller="Search"  class="nav-item">
                     Search
@@ -52,14 +50,14 @@
     </div>
 
     <script>
-                    function toggleSidebar() {
-                        const sidebar = document.getElementById('sidebar');
-                        sidebar.classList.toggle('show');
-                    };
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('show');
+        };
     </script>
     <script src="~/js/Search/SearchUser.js"></script>
+    <script src="~/js/Layout/site.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
-<script src="~/js/Layout/site.js"></script>
 @* <script src="~/js/Search/SearchUser.js"></script> *@
