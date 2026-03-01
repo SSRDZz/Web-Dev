@@ -21,10 +21,11 @@
 
         <div class="user-profile">  
             <div class="user-icon">?</div>
+                <a asp-action="Profile">
+                    ?
+                </a>
+            </div>
         </div>
-        <form asp-controller="Auth" asp-action="Logout" method="POST">
-            <button type="submit">Logout</button>
-        </form>
     </header>
 
     <div class="main-container">
@@ -41,7 +42,7 @@
                 <hr class="nav-divider">
                 <div class="nav-section">Favourite</div>
             </nav>
-            
+
             <button class="btn-create">Create Activity</button>
         </aside>
 
