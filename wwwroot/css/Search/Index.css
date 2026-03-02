@@ -1,3 +1,8 @@
-h2 {
-    color: violet;
+img {
+    width: 10px;
+}
+
+a {
+    color: lightslategray;
+    text-decoration: none;
 }

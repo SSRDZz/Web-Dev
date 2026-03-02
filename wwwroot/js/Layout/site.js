@@ -21,7 +21,6 @@ function active_page_button(){
         else{
             button.className = "nav-item";     // make it all nav default
         }
-        console.log(currentPath, targetPath, currentPath.includes(targetPath) )
     })
     
 }

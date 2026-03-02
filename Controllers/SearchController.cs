@@ -30,19 +30,38 @@ public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvir
 	[Authorize]
 	public IActionResult GetData(string? keyword, string? type)
 	{
-		keyword = keyword?.Trim() ?? "*"; // means if it null -> make keyword = *
+		keyword = keyword?.Trim() ?? ""; // means if it null -> make keyword = *
 		type = type ?? "All";
-
-		// Console.Write(keyword + type + "\n");
 
         var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
 
-        response.Activity = new List<object> // mock list ไว้ก่อน
+        // response.Result = new List<object> // mock list ไว้ก่อน
+		// {
+		// 	new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"},
+		// 	new { title = $"{keyword} ISAG Group Meetup", date = "2026-03-15", location = "Thailand"},
+		// 	new { title = $"{keyword}-{type} -> From search web", date = "2026-03-15", location = "Thailand"}
+		// };
+
+
+		List<UserAccount> user_query;
+		// List Activity
+		Object activity_query;
+
+		if(type=="People" || type == "All")
 		{
-			new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"},
-			new { title = $"{keyword} ISAG Group Meetup", date = "2026-03-15", location = "Thailand"},
-			new { title = $"{keyword}-{type} -> From search web", date = "2026-03-15", location = "Thailand"}
-		};
+			user_query = dbContext.Users.Where(u => u.RealUserName.Contains(keyword)).ToList();		// query user
+			foreach (var user in user_query)
+			{
+				response.Result_User.Add(				// add in json
+					new { name = $"{user.RealUserName}", image = $"{user.ImageURL}", id = $"{user.Id}"}
+				);
+			}
+		}
+		if(type=="Activity" || type == "All")
+		{
+			activity_query = new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"} ;
+		}
+
 
 		return Json(response);
 

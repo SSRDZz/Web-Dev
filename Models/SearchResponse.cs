@@ -4,6 +4,7 @@
 
     public class SearchResponse
     {
-        public string Message {get; set;}
-        public List<Object> Activity {get; set;}
+        public string Message {get; set;} = "Initial mesage";
+        public List<Object> Result_User {get; set;} = new List<object>();
+        public List<Object> Result_Activity {get; set;}  = new List<object>();
     }
