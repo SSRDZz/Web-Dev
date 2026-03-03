@@ -68,7 +68,7 @@ public class UserServices
 			LastName = Model.LastName,
 			PhoneNumber = Model.PhoneNumber,
 			DateOfBirth = Model.DateOfBirth,
-			ImagePath = !string.IsNullOrEmpty(Model.ImagePath) ? Model.ImagePath : GuestImagePath,
+			ImagePath = GuestImagePath,
 			EmailConfirmed = false
 		};
 	}

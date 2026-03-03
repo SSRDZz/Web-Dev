@@ -7,9 +7,6 @@ namespace KMITL_WebDev_MiniProject.Models
 	[Index(nameof(UserName), IsUnique = true)]
 	public class RegisterViewModel
 	{
-		[Key]
-		public int Id {get; set;}
-
 		[Required]
 		public string FirstName {get; set;}
 
@@ -41,8 +38,5 @@ namespace KMITL_WebDev_MiniProject.Models
 		[Required]
 		[DataType(DataType.Date)]
 		public DateOnly DateOfBirth {get; set;}
-
-		[Required]
-		public string? ImagePath {get; set;}
 	}
 }
