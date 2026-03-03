@@ -35,14 +35,6 @@ public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvir
 
         var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
 
-        // response.Result = new List<object> // mock list ไว้ก่อน
-		// {
-		// 	new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"},
-		// 	new { title = $"{keyword} ISAG Group Meetup", date = "2026-03-15", location = "Thailand"},
-		// 	new { title = $"{keyword}-{type} -> From search web", date = "2026-03-15", location = "Thailand"}
-		// };
-
-
 		List<UserAccount> user_query;
 		// List Activity
 		Object activity_query;
@@ -53,8 +45,9 @@ public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvir
 			foreach (var user in user_query)
 			{
 				response.Result_User.Add(				// add in json
-					new { name = $"{user.RealUserName}", image = $"{user.ImageURL}", id = $"{user.Id}"}
+					new { name = $"{user.RealUserName}", image = $"{Url.Content("~/" +  user.ImagePath)}", id = $"{user.Id}"}
 				);
+				// Console.Write(Url.Content("~/" +  user.ImagePath) +"|||||||||||||||||"+ user.ImagePath + "-----------------------\n");
 			}
 		}
 		if(type=="Activity" || type == "All")

@@ -39,7 +39,7 @@ function renderResult(data){
             <div class="list-group-item" userid="${item.id}" >
                 <a href="/User/ProfileOther/${item.id}">
                     <h2 class="search-tag-detail">${item.name}</h2>
-                    <img src="data:image/jpeg;base64,${item.image}" style="width:30px;"/>
+                    <img src="${item.image}" style="width:30px;"/>
                 </a>
             </div>
         `;
