@@ -13,7 +13,7 @@
             <div class="logo">LOGO</div>
         </div>
       
-        <form asp-controller="Search" method="GET" class="search-container">
+        <form asp-controller="Search" asp-action="Index" method="GET" class="search-container">
             <input name="keyword" id="keyword" class="search-input" placeholder="Search..." value="@ViewData["CurrentKeyword"]" >
             <button type="submit" style="display:none"></button>
         </form>

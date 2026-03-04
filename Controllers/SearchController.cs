@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvironment Env) : Controller
+public class SearchController(ApplicationUsersDbContext dbContext, ApplicationActivitiesDbContext dbContext2,IWebHostEnvironment Env) : Controller
 {
 	private ApplicationUsersDbContext dbContext {get; init;} = dbContext;
+	private ApplicationActivitiesDbContext dbContext2 {get; init;} = dbContext2;
 
 	[Authorize]
 	[Route("Search")]
@@ -37,7 +38,7 @@ public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvir
 
 		List<UserAccount> user_query;
 		// List Activity
-		Object activity_query;
+		List<Activity> activities_query;
 
 		if(type=="People" || type == "All")
 		{
@@ -52,7 +53,13 @@ public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvir
 		}
 		if(type=="Activity" || type == "All")
 		{
-			activity_query = new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"} ;
+			activities_query = dbContext2.Activities.Where(u => u.Name.Contains(keyword)).ToList();
+			foreach (var activity in activities_query)
+			{
+				response.Result_Activity.Add(
+					new { name = $"{activity.Name}", date = activity.EventDate.ToString("yyyy-MM-dd"), location = activity.Location, id = activity.Id }
+				);
+			}
 		}
 
 

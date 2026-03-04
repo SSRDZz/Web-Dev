@@ -42,6 +42,7 @@ function renderResult(data){
                     <img src="${item.image}" style="width:30px;"/>
                 </a>
             </div>
+            <hr>
         `;
     });
     
@@ -49,9 +50,12 @@ function renderResult(data){
     data.result_Activity.forEach(item =>{               
         html_data += `
         <div class="list-group-item">
-            <strong>${item.title}</strong><br>
-            <small>Date: ${item.date} | Place: ${item.location}</small>      
-        </div><hr>
+            <a href="/Activity/Detail/${item.id}">
+                <strong>${item.name}</strong><br>
+                <small>Date: ${item.date} | Place: ${item.location}</small>      
+            </a>
+        </div>
+        <hr>
         `;
     });
 
