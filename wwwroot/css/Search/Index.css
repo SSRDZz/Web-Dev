@@ -6,3 +6,39 @@ a {
     color: lightslategray;
     text-decoration: none;
 }
+.list-group-item{
+    padding: 5px;
+    border-radius: 12px;
+    margin: 10px 5px;
+
+}
+
+.list-group-item a{
+    width: 100%;
+    display: flex;
+}
+
+.list-group-item:hover {
+    background-color: #ececec;
+}
+
+.list-group-item:hover a {
+    text-decoration: none;
+}
+
+
+#activity-item a {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+    justify-content: center;
+}
+
+#user-item a {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    justify-content: space-between;
+}

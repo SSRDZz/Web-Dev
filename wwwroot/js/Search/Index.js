@@ -54,9 +54,10 @@ function renderResult(data){
         if("location" in item){         // this mean it activity
             // console.log("it activity");
             html_data += `
-            <div class="list-group-item">
+            <div class="list-group-item" id="activity-item">
                 <a href="/Activity/Detail/${item.id}">
-                    <strong>${item.name}</strong><br>
+                    <strong>${item.name}</strong>
+                    
                     <small>Date: ${item.date} | Place: ${item.location}</small>      
                 </a>
             </div>
@@ -66,7 +67,7 @@ function renderResult(data){
         else{
             // console.log("It user");
             html_data += `
-            <div class="list-group-item" userid="${item.id}" >
+            <div class="list-group-item" id="user-item" userid="${item.id}" >
                 <a href="/User/ProfileOther/${item.id}">
                     <h2 class="search-tag-detail">${item.name}</h2>
                     <img src="${item.image}" style="width:30px;"/>
