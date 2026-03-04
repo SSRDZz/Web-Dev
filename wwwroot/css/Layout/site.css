@@ -91,6 +91,16 @@ body {
     display: flex;
     flex-direction: column;
     transition: 0.3s ease;
+
+    
+}
+
+.sidebar a:hover{
+    text-decoration: none;
+}
+
+.sidebar a:not(.active):hover{
+    background-color: #ececec;
 }
 
 .nav-item {

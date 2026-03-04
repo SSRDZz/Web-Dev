@@ -50,7 +50,7 @@ function renderResult(data){
     });
 
     mergeJson.forEach(item => {
-        console.log(item);
+        // console.log(item);
         if("location" in item){         // this mean it activity
             // console.log("it activity");
             html_data += `
