@@ -33,9 +33,39 @@ function renderResult(data){
     let html_data = '<div class="list-group">';
 
      // add user
-    console.log(data,"==================\n", data.Result ,"==================\n", data.Result_User)
-    data.result_User.forEach(item =>{                  
-        html_data += `
+    // console.log(data,"==================\n", data.Result ,"==================\n", data.Result_User)
+
+    const mergeJson = [...data.result_User,...data.result_Activity];
+    mergeJson.sort((a,b) =>  {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); 
+
+        if (nameA < nameB) {
+            return -1; // A
+        }
+        if (nameA > nameB) {
+            return 1; // B
+        }
+        return 0; 
+    });
+
+    mergeJson.forEach(item => {
+        console.log(item);
+        if("location" in item){         // this mean it activity
+            // console.log("it activity");
+            html_data += `
+            <div class="list-group-item">
+                <a href="/Activity/Detail/${item.id}">
+                    <strong>${item.name}</strong><br>
+                    <small>Date: ${item.date} | Place: ${item.location}</small>      
+                </a>
+            </div>
+            <hr>
+            `;
+        }
+        else{
+            // console.log("It user");
+            html_data += `
             <div class="list-group-item" userid="${item.id}" >
                 <a href="/User/ProfileOther/${item.id}">
                     <h2 class="search-tag-detail">${item.name}</h2>
@@ -44,19 +74,7 @@ function renderResult(data){
             </div>
             <hr>
         `;
-    });
-    
-    // add activity
-    data.result_Activity.forEach(item =>{               
-        html_data += `
-        <div class="list-group-item">
-            <a href="/Activity/Detail/${item.id}">
-                <strong>${item.name}</strong><br>
-                <small>Date: ${item.date} | Place: ${item.location}</small>      
-            </a>
-        </div>
-        <hr>
-        `;
+        }
     });
 
     html_data += '</div>';
