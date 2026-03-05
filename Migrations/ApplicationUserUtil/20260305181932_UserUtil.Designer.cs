@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MvcMovie.Migrations.Reputations
+namespace MvcMovie.Migrations.ApplicationUserUtil
 {
-    [DbContext(typeof(ApplicationReputationsDbContext))]
-    [Migration("20260224132055_Reputations")]
-    partial class Reputations
+    [DbContext(typeof(ApplicationUserUtilDbContext))]
+    [Migration("20260305181932_UserUtil")]
+    partial class UserUtil
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,27 @@ namespace MvcMovie.Migrations.Reputations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ActivityID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("Owner")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
+                });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.ReputationRelation", b =>
                 {

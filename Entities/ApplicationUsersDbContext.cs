@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.AspNetCore.Identity;
 
-namespace KMITL_WebDev_MiniProject.Data;
+namespace KMITL_WebDev_MiniProject.Entites;
 public class ApplicationUsersDbContext: IdentityDbContext<UserAccount, IdentityRole<Guid>, Guid>
 {
     public ApplicationUsersDbContext(DbContextOptions<ApplicationUsersDbContext> options): base(options) {}

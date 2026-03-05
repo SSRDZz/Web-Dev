@@ -8,7 +8,7 @@ public class DbInitializer
 	public static async Task Initialize(IServiceProvider serviceProvider, UserManager<UserAccount> userManager, IWebHostEnvironment env)
 	{
 		await ForUsers(new ApplicationUsersDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationUsersDbContext>>()), env, userManager);
-		await ForReputations(new ApplicationReputationsDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationReputationsDbContext>>()));
+		await ForUserUtil(new ApplicationUserUtilDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationUserUtilDbContext>>()));
 		await ForActivities(new ApplicationActivitiesDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationActivitiesDbContext>>()));
 	}
 
@@ -77,7 +77,7 @@ public class DbInitializer
 		}
 	}
 
-	public static async Task ForReputations(ApplicationReputationsDbContext context)
+	public static async Task ForUserUtil(ApplicationUserUtilDbContext context)
 	{
 		await context.Database.MigrateAsync();
 

@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using KMITL_WebDev_MiniProject.Entites;
 
-namespace KMITL_WebDev_MiniProject.Data;
+namespace KMITL_WebDev_MiniProject.Entites;
 
 public class ApplicationActivitiesDbContext : DbContext
 {
