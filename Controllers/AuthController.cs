@@ -6,7 +6,7 @@ using KMITL_WebDev_MiniProject.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
+public class AuthController(SignInManager<UserAccount> signInManager, UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationUserUtilDbContext RepDbContext) : Controller
 {
 	private SignInManager<UserAccount> SignInMang {get; init;} = signInManager;
 	private UserManager<UserAccount> UserMang {get; init;} = userManager; 

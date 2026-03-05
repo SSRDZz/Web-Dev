@@ -1,7 +1,7 @@
-using System.Diagnostics;
+// using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using KMITL_WebDev_MiniProject.Models;
-using KMITL_WebDev_MiniProject.Data;
+using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,10 +48,10 @@ public class HomeController : Controller
         return View();
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [AllowAnonymous]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+    // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    // [AllowAnonymous]
+    // public IActionResult Error()
+    // {
+    //     return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    // }
 }
