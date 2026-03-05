@@ -26,7 +26,7 @@ async function fetch_data(type = "All"){
 
 
 // for update html with new result
-function renderResult(data){                            
+async function renderResult(data){                            
     document.querySelector(".search-topic").innerText = data.message;
     const result_box = document.querySelector(".result-box");
 
@@ -49,14 +49,14 @@ function renderResult(data){
         return 0; 
     });
 
-    mergeJson.forEach(item => {
+    for (const item of mergeJson) {
         // console.log(item);
         if("location" in item){         // this mean it activity
             // console.log("it activity");
             html_data += `
             <div class="list-group-item" id="activity-item">
                 <a href="/Activity/Detail/${item.id}">
-                    <strong>${item.name}</strong>
+                    <h3>${item.name}</h3>
                     
                     <small>Date: ${item.date} | Place: ${item.location}</small>      
                 </a>
@@ -66,17 +66,31 @@ function renderResult(data){
         }
         else{
             // console.log("It user");
+            let rep = 0 ;
+            try {
+                const url = `/User/FindReputation?TargetID=${item.id}`;
+                rep = await fetch(url);
+                rep = await rep.text();
+
+            } catch (error){
+                console.log("error when get rep",error);
+            }
+
+            // console.log(rep);
             html_data += `
             <div class="list-group-item" id="user-item" userid="${item.id}" >
                 <a href="/User/ProfileOther/${item.id}">
-                    <h2 class="search-tag-detail">${item.name}</h2>
-                    <img src="${item.image}" style="width:30px;"/>
+                    <img src="${item.image}" />
+                    <div class="detail">
+                        <h3 class="search-tag-detail">${item.name}</h3>
+                        <small> ${rep} Like</small>
+                    </div>
                 </a>
             </div>
             <hr>
         `;
         }
-    });
+    };
 
     html_data += '</div>';
 
@@ -84,9 +98,24 @@ function renderResult(data){
         
 }
 
+
+// show what page are user in -> by check what button should have .active class
+function active_button(active_button){
+    const button_page = document.querySelectorAll(".Header-type button");
+    // console.log(button_page);
+    button_page.forEach(function(button){          
+        button.className = "type";     // make it all default
+    })
+    // console.log(active_button);
+    active_button.className = "type active";  // make only that click button active
+}
+
+
 document.querySelectorAll(".type").forEach(button => {
     button.addEventListener('click',function(){
         const type = button.getAttribute("name");
+        active_button(button);
+        // console.log(button);
         fetch_data(type);
     })
 
