@@ -13,8 +13,13 @@
             <div class="logo">LOGO</div>
         </div>
       
-        <form asp-controller="Search" method="GET" class="search-container">
-            <input name="keyword" id="keyword" class="search-input" placeholder="Search..." value="@ViewData["CurrentKeyword"]" >
+        <form asp-controller="Search" asp-action="Index" method="GET" class="search-container">
+            <input name="keyword" id="keyword" class="search-input" placeholder="Search for anything" value="@ViewData["CurrentKeyword"]" >
+            
+            <div id="submit-button">
+                <img src="/image/search.svg" alt="Search" />
+            </div>	
+
             <button type="submit" style="display:none"></button>
         </form>
 
@@ -29,11 +34,23 @@
     <div class="main-container">
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar-nav">
-                <a asp-controller="Home" asp-action="Index" class="nav-item active">Home</a>               
-                <a href="#" class="nav-item">Popular</a>
-                <a asp-controller="Search"  class="nav-item">
-                    Search
-                    <img src="/image/man.svg" alt="search" style="height: 15px;"/>
+                <a asp-controller="Home" asp-action="Index" class="nav-item active">
+                    <div class="sidebar-item">
+                        <img src="/image/home.svg" alt="search" />
+                        Home
+                    </div>
+                </a>               
+                <a href="#" class="nav-item">
+                    <div class="sidebar-item">
+                        <img src="/image/we_going_up_uP_UP.svg" alt="search" />
+                        Popular
+                    </div>
+                </a>
+                <a asp-controller="Search" asp-action="Index"  class="nav-item">
+                    <div class="sidebar-item">
+                        <img src="/image/compose.svg" alt="search" />
+                        Search
+                    </div>
                 </a>
                 
                 <div class="nav-section">Your activity</div>

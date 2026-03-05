@@ -7,7 +7,7 @@
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     sidebar.classList.toggle('show');
-};
+}
 
 // show what page are user in -> by check what button should have .active class
 function active_page_button(){
@@ -21,15 +21,22 @@ function active_page_button(){
         else{
             button.className = "nav-item";     // make it all nav default
         }
-        console.log(currentPath, targetPath, currentPath.includes(targetPath) )
     })
     
+}
+
+function submit_searchBar(){
+    const icon = document.querySelector("#submit-button");
+    const form = document.querySelector(".search-container");
+    icon.addEventListener('click',function(){
+        form.submit();
+    });
 }
 
 window.addEventListener('load', function(){
     active_page_button();
 });
-
+submit_searchBar();
 
 
 

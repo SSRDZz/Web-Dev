@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvironment Env) : Controller
+public class SearchController(ApplicationUsersDbContext dbContext, ApplicationActivitiesDbContext dbContext2,IWebHostEnvironment Env) : Controller
 {
 	private ApplicationUsersDbContext dbContext {get; init;} = dbContext;
+	private ApplicationActivitiesDbContext dbContext2 {get; init;} = dbContext2;
 
 	[Authorize]
 	[Route("Search")]
@@ -30,19 +31,38 @@ public class SearchController(ApplicationUsersDbContext dbContext, IWebHostEnvir
 	[Authorize]
 	public IActionResult GetData(string? keyword, string? type)
 	{
-		keyword = keyword?.Trim() ?? "*"; // means if it null -> make keyword = *
+		keyword = keyword?.Trim() ?? ""; // means if it null -> make keyword = *
 		type = type ?? "All";
 
-		// Console.Write(keyword + type + "\n");
+        // var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
+        var response = new SearchResponse {Message = new {keyword = $"{keyword}", type = $"{type}"} };
 
-        var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
+		List<UserAccount> user_query;
+		// List Activity
+		List<Activity> activities_query;
 
-        response.Activity = new List<object> // mock list ไว้ก่อน
+		if(type=="People" || type == "All")
 		{
-			new { title = $"{keyword} Workshop in ESL", date = "2026-03-10", location = "Indonesia"},
-			new { title = $"{keyword} ISAG Group Meetup", date = "2026-03-15", location = "Thailand"},
-			new { title = $"{keyword}-{type} -> From search web", date = "2026-03-15", location = "Thailand"}
-		};
+			user_query = dbContext.Users.Where(u => u.RealUserName.Contains(keyword)).ToList();		// query user
+			foreach (var user in user_query)
+			{
+				response.Result_User.Add(				// add in json
+					new { name = $"{user.RealUserName}", image = $"{Url.Content("~/" +  user.ImagePath)}", id = $"{user.Id}"}
+				);
+				// Console.Write(Url.Content("~/" +  user.ImagePath) +"|||||||||||||||||"+ user.ImagePath + "-----------------------\n");
+			}
+		}
+		if(type=="Activity" || type == "All")
+		{
+			activities_query = dbContext2.Activities.Where(u => u.Name.Contains(keyword)).ToList();
+			foreach (var activity in activities_query)
+			{
+				response.Result_Activity.Add(
+					new { name = $"{activity.Name}", date = activity.EventDate.ToString("yyyy-MM-dd"), location = activity.Location, id = activity.Id }
+				);
+			}
+		}
+
 
 		return Json(response);
 
