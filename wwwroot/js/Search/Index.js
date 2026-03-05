@@ -71,7 +71,7 @@ async function renderResult(data){
             <hr>
             `;
         }
-        else{
+        else{                   // this mean it user
             // console.log("It user");
             let rep = 0 ;
             try {
@@ -86,7 +86,7 @@ async function renderResult(data){
             // console.log(rep);
             html_data += `
             <div class="list-group-item" id="user-item" userid="${item.id}" >
-                <a href="/User/ProfileOther/${item.id}">
+                <a href="/User/ProfileOther/${item.id} ">
                     <img src="${item.image}" />
                     <div class="detail">
                         <h3 class="search-tag-detail">${item.name}</h3>

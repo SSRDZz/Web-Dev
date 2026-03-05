@@ -29,11 +29,23 @@
     <div class="main-container">
         <aside id="sidebar" class="sidebar">
             <nav class="sidebar-nav">
-                <a asp-controller="Home" asp-action="Index" class="nav-item active">Home</a>               
-                <a href="#" class="nav-item">Popular</a>
+                <a asp-controller="Home" asp-action="Index" class="nav-item active">
+                    <div class="sidebar-item">
+                        <img src="/image/home.svg" alt="search" />
+                        Home
+                    </div>
+                </a>               
+                <a href="#" class="nav-item">
+                    <div class="sidebar-item">
+                        <img src="/image/we_going_up_uP_UP.svg" alt="search" />
+                        Popular
+                    </div>
+                </a>
                 <a asp-controller="Search" asp-action="Index"  class="nav-item">
-                    Search
-                    <img src="/image/man.svg" alt="search" style="height: 15px;"/>
+                    <div class="sidebar-item">
+                        <img src="/image/compose.svg" alt="search" />
+                        Search
+                    </div>
                 </a>
                 
                 <div class="nav-section">Your activity</div>

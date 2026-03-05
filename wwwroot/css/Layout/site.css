@@ -111,7 +111,7 @@ body {
     text-decoration: none;
     color: #333;
     border-radius: 8px;
-    margin-bottom: 5px;
+    margin-bottom: 15px; 
 }
 
 .nav-item.active { background-color: #e0e0e0; font-weight: bold; }
@@ -128,6 +128,18 @@ body {
     border-radius: 25px;
     font-weight: bold;
     cursor: pointer;
+}
+
+/* for icon in side bar */
+.sidebar-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-item img {
+    padding-right: 5px;
+    height: 20px;
 }
 
 /* Content Area */
