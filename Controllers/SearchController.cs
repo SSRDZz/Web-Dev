@@ -34,7 +34,8 @@ public class SearchController(ApplicationUsersDbContext dbContext, ApplicationAc
 		keyword = keyword?.Trim() ?? ""; // means if it null -> make keyword = *
 		type = type ?? "All";
 
-        var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
+        // var response = new SearchResponse { Message = $"search:{keyword} type:{type}" };
+        var response = new SearchResponse {Message = new {keyword = $"{keyword}", type = $"{type}"} };
 
 		List<UserAccount> user_query;
 		// List Activity

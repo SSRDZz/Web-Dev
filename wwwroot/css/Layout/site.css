@@ -53,6 +53,8 @@ body {
 
     border: 2px solid transparent;
     border-radius: 20px;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; 
 }
 
 .search-input:focus{

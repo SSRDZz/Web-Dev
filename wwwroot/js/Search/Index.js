@@ -26,8 +26,15 @@ async function fetch_data(type = "All"){
 
 
 // for update html with new result
-async function renderResult(data){                            
-    document.querySelector(".search-topic").innerText = data.message;
+async function renderResult(data){  
+    const keyword_result = data.message.keyword == "" 
+    ? "All Activity"
+    : data.message.keyword;
+
+    document.querySelector(".search-topic").innerHTML = `
+        Showing results for <span class="highlight">${keyword_result}</span> 
+        in <span class="type-tag">${data.message.type}</span>
+    `;
     const result_box = document.querySelector(".result-box");
 
     let html_data = '<div class="list-group">';
