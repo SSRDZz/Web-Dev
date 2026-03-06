@@ -1,0 +1,15 @@
+@using KMITL_WebDev_MiniProject.DTO
+@model List<KMITL_WebDev_MiniProject.DTO.ShowCommentDTO>
+
+<link rel="stylesheet" href="~/css/Activity/Comment.css" />
+
+@{
+	foreach(ShowCommentDTO show in Model) 
+	{
+		<div class="comment-detail-container">
+			<img src="@Url.Content("~/" + show.ImagePath)"/>
+			<div>@show.UserName</div>
+			<div>@show.Content</div>
+		</div>
+	}
+}

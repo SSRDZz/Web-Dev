@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MvcMovie.Migrations
+namespace MvcMovie.Migrations.Activitys
 {
     [DbContext(typeof(ApplicationActivitiesDbContext))]
     partial class ApplicationActivitiesDbContextModelSnapshot : ModelSnapshot
@@ -24,11 +24,9 @@ namespace MvcMovie.Migrations
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.Activity", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -92,6 +90,9 @@ namespace MvcMovie.Migrations
                     b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("ActivityId1")
+                        .HasColumnType("char(36)");
+
                     b.Property<string>("Keyword")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -99,7 +100,7 @@ namespace MvcMovie.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId");
+                    b.HasIndex("ActivityId1");
 
                     b.ToTable("ActivityKeywords");
                 });
@@ -113,8 +114,8 @@ namespace MvcMovie.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ActivityId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("ActivityId")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext");
@@ -132,7 +133,8 @@ namespace MvcMovie.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("ImageURL")
+                    b.Property<string>("ImagePath")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("LastName")
@@ -190,9 +192,7 @@ namespace MvcMovie.Migrations
                 {
                     b.HasOne("KMITL_WebDev_MiniProject.Entites.Activity", null)
                         .WithMany("Keywords")
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ActivityId1");
                 });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.UserAccount", b =>

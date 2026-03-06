@@ -35,7 +35,7 @@ namespace MvcMovie.Migrations.ApplicationUserUtil
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("Owner")
+                    b.Property<Guid>("OwnerID")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");

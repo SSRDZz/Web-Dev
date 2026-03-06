@@ -6,7 +6,7 @@ namespace KMITL_WebDev_MiniProject.Entites;
 public class Activity
 {
 	[Key]
-	public int Id { get; set; }
+	public Guid Id { get; set; }
 
 	[Required]
 	[StringLength(100, MinimumLength = 3)]

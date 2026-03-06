@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MvcMovie.Migrations.ApplicationUserUtil
 {
     [DbContext(typeof(ApplicationUserUtilDbContext))]
-    [Migration("20260305181932_UserUtil")]
+    [Migration("20260305191658_UserUtil")]
     partial class UserUtil
     {
         /// <inheritdoc />
@@ -38,7 +38,7 @@ namespace MvcMovie.Migrations.ApplicationUserUtil
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("Owner")
+                    b.Property<Guid>("OwnerID")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");

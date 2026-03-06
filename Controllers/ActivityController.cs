@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
+using KMITL_WebDev_MiniProject.DTO;
+using MvcMovie.Migrations.ApplicationUserUtil;
+using KMITL_WebDev_MiniProject.Services;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 
@@ -13,11 +15,15 @@ public class ActivityController : Controller
 {
     private readonly ApplicationActivitiesDbContext _activitiesContext;
     private readonly UserManager<UserAccount> _userManager;
+    private readonly ApplicationUserUtilDbContext _UserUtilDbContext;
+    private readonly CommentServices _ComSer;
 
-    public ActivityController(ApplicationActivitiesDbContext activitiesContext, UserManager<UserAccount> userManager)
+    public ActivityController(ApplicationActivitiesDbContext activitiesContext, ApplicationUserUtilDbContext UserUtilDbContext, UserManager<UserAccount> userManager)
     {
         _activitiesContext = activitiesContext;
         _userManager = userManager;
+        _UserUtilDbContext = UserUtilDbContext;
+        _ComSer = new CommentServices(_UserUtilDbContext, _userManager);
     }
 
     [HttpGet("Create")]
@@ -65,12 +71,17 @@ public class ActivityController : Controller
     [HttpGet("Detail/{id}")]
     [HttpGet("ActivityDetail/{id}")]
     [AllowAnonymous]
-    public async Task<IActionResult> Detail(int id)
+    public async Task<IActionResult> Detail(Guid id)
     {
-        var activity = await _activitiesContext.Activities.FindAsync(id);
+        Activity activity = await _activitiesContext.Activities.FindAsync(id);
+        ActivityDTO dto = new ActivityDTO()
+        {
+            Act = activity,
+            Comments = await _ComSer.ShowCommentDTOs(id)
+        };
         if (activity == null)
             return NotFound();
 
-        return View("ActivityDetail", activity);
+        return View("ActivityDetail", dto);
     }
 }

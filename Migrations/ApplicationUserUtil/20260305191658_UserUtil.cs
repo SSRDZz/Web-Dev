@@ -19,7 +19,7 @@ namespace MvcMovie.Migrations.ApplicationUserUtil
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Owner = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    OwnerID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ActivityID = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Content = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")

@@ -1,0 +1,9 @@
+.comment-detail-container {
+	border: groove 2px black;
+	margin-bottom: 10px;
+}
+
+.comment-detail-container img {
+	width: 50px;
+	height: auto;
+}

@@ -1,44 +1,44 @@
-@model KMITL_WebDev_MiniProject.Entites.Activity
+@model KMITL_WebDev_MiniProject.DTO.ActivityDTO
 
 @{
-    ViewData["Title"] = Model?.Name ?? "Activity Details";
+    ViewData["Title"] = Model?.Act.Name ?? "Activity Details";
 }
 
 <div class="activity-grid">
     <div class="card">
         <div class="card-header">
             <div class="detail">
-                <h3>@Model?.Name</h3>
-                <p>@Model?.Description</p>
+                <h3>@Model?.Act.Name</h3>
+                <p>@Model?.Act.Description</p>
                 <div class="activity-info">
-                    <p><strong>Event Date:</strong> @Model?.EventDate.ToString("MMMM dd, yyyy")</p>
-                    <p><strong>Location:</strong> @Model?.Location</p>
-                    <p><strong>Max Participants:</strong> @Model?.MaxPeople</p>
-                    @if (!string.IsNullOrEmpty(Model?.MapUrl))
+                    <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Location:</strong> @Model?.Act.Location</p>
+                    <p><strong>Max Participants:</strong> @Model?.Act.MaxPeople</p>
+                    @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
                     {
-                        <p><strong>Map URL:</strong> <a href="@Model.MapUrl" target="_blank">View on Map</a></p>
+                        <p><strong>Map URL:</strong> <a href="@Model..Act.apUrl" target="_blank">View on Map</a></p>
                     }
                     <p><strong>Recruiting Mode:</strong> 
-                        @if (Model?.RecruitingMode == 1)
+                        @if (Model?.Act.RecruitingMode == 1)
                         {
                             <span>First Come, First Served</span>
                         }
-                        else if (Model?.RecruitingMode == 2)
+                        else if (Model?.Act.RecruitingMode == 2)
                         {
                             <span>Random on Event Day</span>
                         }
-                        else if (Model?.RecruitingMode == 3)
+                        else if (Model?.Act.RecruitingMode == 3)
                         {
                             <span>Owner Selection</span>
                         }
                     </p>
-                    <p><strong>Show Participants:</strong> @(Model?.ShowParticipants == true ? "Yes" : "No")</p>
+                    <p><strong>Show Participants:</strong> @(Model?.Act.ShowParticipants == true ? "Yes" : "No")</p>
                 </div>
             </div>
             <div class="card-image">
-                @if (!string.IsNullOrEmpty(Model?.ImageUrl))
+                @if (!string.IsNullOrEmpty(Model?.Act.ImageUrl))
                 {
-                    <img src="@Model.ImageUrl" alt="@Model?.Name" style="width:100%; border-radius:10px; max-height: 300px; object-fit: cover;">
+                    <img src="@Model..Act.mageUrl" alt="@Model?.Act.Name" style="width:100%; border-radius:10px; max-height: 300px; object-fit: cover;">
                 }
                 else
                 {
@@ -51,10 +51,19 @@
         </div>
         <div class="card-body">
             <div class="user-meta">Activity Owner</div>
-            <p><strong>Created:</strong> @Model?.CreatedAt.ToString("MMM dd, yyyy")</p>
-            <p><strong>Last Updated:</strong> @Model?.UpdatedAt.ToString("MMM dd, yyyy")</p>
+            <p><strong>Created:</strong> @Model?.Act.CreatedAt.ToString("MMM dd, yyyy")</p>
+            <p><strong>Last Updated:</strong> @Model?.Act.UpdatedAt.ToString("MMM dd, yyyy")</p>
         </div>
     </div>
+
+    <div>
+        <label>Comment</label>
+        <input type="text" id="create-comment" act-id="@Model.Act.Id"/>
+    </div>
+    
+    <section id="comment-section">
+        @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
+    </section>
 </div>
 
 <style>
@@ -112,3 +121,5 @@
         background: #e85d52;
     }
 </style>
+
+<script src="~/js/Activity/ActivityDetail.js"></script>

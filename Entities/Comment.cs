@@ -8,7 +8,7 @@ public class Comment
 	public Guid Id {get; set;}
 
 	[Required]
-	public Guid Owner {get; set;}
+	public Guid OwnerID {get; set;}
 
 	[Required]
 	public Guid ActivityID {get; set;}
