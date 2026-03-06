@@ -33,17 +33,73 @@ function submit_searchBar(){
     });
 }
 
+// suggestion declare
+const search_input = document.querySelector(".search-input");
+const suggestion_box = document.querySelector(".suggestion-box");
+
+// suggestion for input search box
+function suggestion(){
+    let timeout = 0;
+    search_input.addEventListener("input", function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(fetch_suggestion,300);
+    });
+}
+
+// query data from back-end using fetch api
+async function fetch_suggestion(){
+    const keyword = search_input.value.trim();
+
+    if (keyword.length >= 1){
+        const mockData = ["Aaaa","banaba",'python',"c-waffle"];
+        renderSuggestion(mockData);
+    }
+    else {
+        suggestion_box.style.display = "none";
+    }
+}
+
+// render result suggestion
+function renderSuggestion(data){
+    suggestion_box.innerHTML = data.map(item => `<li class="suggestion-item">${item}</li>`).join('');
+    suggestion_box.style.display = 'block';
+
+    // make when user click suggestion -> change search-input value
+    const suggestion_item = document.querySelectorAll(".suggestion-item");
+
+    suggestion_item.forEach(function(item){
+        item.addEventListener("click", function(){
+            search_input.value = this.textContent;
+            suggestion_box.style.display = 'none';
+        })   
+    });
+}
+
+
+// when click other component that not suggestion box 
+document.addEventListener('click', (e) => {
+    const suggestion_box = document.querySelector(".suggestion-box");
+    const search_input = document.querySelector(".search-input")
+
+    if (!search_input.contains(e.target)) {
+        console.log("click at element -> ",e);
+        suggestion_box.style.display = 'none';
+    }
+});
+
 window.addEventListener('load', function(){
     active_page_button();
 });
+
 submit_searchBar();
+suggestion();
 
 
 
 // let timeout = null;
 // document.getElementById("search-bar").addEventListener("keyup", () => {
 //     clearTimeout(timeout);
-//     timeout = setTimeout(liveSearch, 800);
+//     timeout = setTimeout(liveSearch, 800);                   // รอให้ user หยุดพิมก่อน 800 ms ค่อยขึ้น 
 // });
 
 // function liveSearch() {
