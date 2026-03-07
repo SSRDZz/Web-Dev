@@ -6,12 +6,20 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionStrings = builder.Configuration.GetConnectionString("dbConnection");
+var connectionStrings = builder.Configuration.GetConnectionString("dbConnection")
+    ?? throw new InvalidOperationException("Connection string 'dbConnection' not found.");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
-builder.Services.AddDbContext<ApplicationUsersDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
-builder.Services.AddDbContext<ApplicationUserUtilDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
-builder.Services.AddDbContext<ApplicationActivitiesDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
+// configure all contexts with retry on failure to handle transient MySQL errors
+builder.Services.AddDbContext<ApplicationUsersDbContext>(options =>
+    options.UseMySql(connectionStrings, serverVersion, mySqlOptions => mySqlOptions.EnableRetryOnFailure())
+);
+builder.Services.AddDbContext<ApplicationUserUtilDbContext>(options =>
+    options.UseMySql(connectionStrings, serverVersion, mySqlOptions => mySqlOptions.EnableRetryOnFailure())
+);
+builder.Services.AddDbContext<ApplicationActivitiesDbContext>(options =>
+    options.UseMySql(connectionStrings, serverVersion, mySqlOptions => mySqlOptions.EnableRetryOnFailure())
+);
 
 // Config Property of Identity Table
 builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
