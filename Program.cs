@@ -10,15 +10,15 @@ var connectionStrings = builder.Configuration.GetConnectionString("dbConnection"
     ?? throw new InvalidOperationException("Connection string 'dbConnection' not found.");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
-// configure all contexts with retry on failure to handle transient MySQL errors
+// configure each DbContext to retry on transient failures
 builder.Services.AddDbContext<ApplicationUsersDbContext>(options =>
-    options.UseMySql(connectionStrings, serverVersion, mySqlOptions => mySqlOptions.EnableRetryOnFailure())
+    options.UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
 );
 builder.Services.AddDbContext<ApplicationUserUtilDbContext>(options =>
-    options.UseMySql(connectionStrings, serverVersion, mySqlOptions => mySqlOptions.EnableRetryOnFailure())
+    options.UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
 );
 builder.Services.AddDbContext<ApplicationActivitiesDbContext>(options =>
-    options.UseMySql(connectionStrings, serverVersion, mySqlOptions => mySqlOptions.EnableRetryOnFailure())
+    options.UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
 );
 
 // Config Property of Identity Table
