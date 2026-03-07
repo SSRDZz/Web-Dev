@@ -64,9 +64,6 @@ async function fetch_suggestion(){
         } catch(error) {
             console.log("error when get suggestion",error);
         }
-
-        // const mockData = ["Aaaa","banaba",'python',"c-waffle"];
-        // renderSuggestion(mockData);
     }
     else {
         suggestion_box.style.display = "none";

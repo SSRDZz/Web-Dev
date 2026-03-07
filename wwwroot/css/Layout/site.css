@@ -96,6 +96,8 @@ body {
     list-style: none;
     overflow-y: auto;
     max-height: 200px;
+
+    margin: 0 10px;
 }
 
 .suggestion-item {
