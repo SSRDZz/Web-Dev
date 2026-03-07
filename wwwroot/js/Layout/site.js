@@ -51,8 +51,22 @@ async function fetch_suggestion(){
     const keyword = search_input.value.trim();
 
     if (keyword.length >= 1){
-        const mockData = ["Aaaa","banaba",'python',"c-waffle"];
-        renderSuggestion(mockData);
+        const url = `/Home/GetSuggestion?keyword=${keyword}`;
+        try{
+            const response = await fetch(url);
+            if(!response.ok){
+                throw new Error("Get not found");
+            }
+
+            const data = await response.json();
+            renderSuggestion(data);
+
+        } catch(error) {
+            console.log("error when get suggestion",error);
+        }
+
+        // const mockData = ["Aaaa","banaba",'python',"c-waffle"];
+        // renderSuggestion(mockData);
     }
     else {
         suggestion_box.style.display = "none";
@@ -61,6 +75,13 @@ async function fetch_suggestion(){
 
 // render result suggestion
 function renderSuggestion(data){
+    if(data.length == 0){
+        suggestion_box.style.display = "none";
+        return;
+    }
+
+    console.log(data)
+
     suggestion_box.innerHTML = data.map(item => `<li class="suggestion-item">${item}</li>`).join('');
     suggestion_box.style.display = 'block';
 
@@ -71,6 +92,7 @@ function renderSuggestion(data){
         item.addEventListener("click", function(){
             search_input.value = this.textContent;
             suggestion_box.style.display = 'none';
+            search_input.focus();
         })   
     });
 }
@@ -82,7 +104,7 @@ document.addEventListener('click', (e) => {
     const search_input = document.querySelector(".search-input")
 
     if (!search_input.contains(e.target)) {
-        console.log("click at element -> ",e);
+        // console.log("click at element -> ",e);
         suggestion_box.style.display = 'none';
     }
 });
