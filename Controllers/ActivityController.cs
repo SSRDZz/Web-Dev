@@ -87,13 +87,24 @@ public class ActivityController : Controller
     public async Task<IActionResult> Detail(Guid id)
     {
         Activity activity = await _activitiesContext.Activities.FindAsync(id);
+        if (activity == null)
+            return NotFound();
+
+        // look up owner name
+        string ownerName = "";
+        if (activity.OwnerId != Guid.Empty)
+        {
+            var owner = await _userManager.FindByIdAsync(activity.OwnerId.ToString());
+            if (owner != null)
+                ownerName = owner.RealUserName ?? owner.UserName;
+        }
+
         ActivityDTO dto = new ActivityDTO()
         {
             Act = activity,
-            Comments = await _ComSer.ShowCommentDTOs(id)
+            Comments = await _ComSer.ShowCommentDTOs(id),
+            OwnerName = ownerName
         };
-        if (activity == null)
-            return NotFound();
 
         return View("ActivityDetail", dto);
     }

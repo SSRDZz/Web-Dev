@@ -1,19 +1,19 @@
-﻿@model List<KMITL_WebDev_MiniProject.Entites.Activity>
+﻿@model List<KMITL_WebDev_MiniProject.Models.ActivityPreviewViewModel>
 
 <div class="activity-grid" id="activity-grid">
     @foreach(var activity in Model)
     {
         <div class="card">
             <div class="card-header">
-                <div class="user-meta">Activity Owner</div>
-                <a href="@Url.Action("Detail","Activity", new { id = activity.Id })" class="join-btn">
+                <div class="user-meta">Activity Owner: <strong>@activity.OwnerName</strong></div>
+                <a href="@Url.Action("Detail","Activity", new { id = activity.Act.Id })" class="join-btn">
                     View
                 </a>
             </div>
-            @if(!string.IsNullOrEmpty(activity.ImageUrl))
+            @if(!string.IsNullOrEmpty(activity.Act.ImageUrl))
             {
                 <div class="card-image">
-                    <img src="@Url.Content("~/" + activity.ImageUrl)" alt="@activity.Name" style="width:100%; border-radius:10px;">
+                    <img src="@Url.Content("~/" + activity.Act.ImageUrl)" alt="@activity.Act.Name" style="width:100%; border-radius:10px;">
                 </div>
             }
             else
@@ -23,11 +23,11 @@
                 </div>
             }
             <div class="card-body">
-                <h3>@activity.Name</h3>
-                <p>@activity.Description</p>
-                <p><strong>Event Date:</strong> @activity.EventDate.ToString("MMM dd, yyyy")</p>
-                <p><strong>Location:</strong> @activity.Location</p>
-                <p><strong>Max Participants:</strong> @activity.MaxPeople</p>
+                <h3>@activity.Act.Name</h3>
+                <p>@activity.Act.Description</p>
+                <p><strong>Event Date:</strong> @activity.Act.EventDate.ToString("MMM dd, yyyy")</p>
+                <p><strong>Location:</strong> @activity.Act.Location</p>
+                <p><strong>Max Participants:</strong> @activity.Act.MaxPeople</p>
             </div>
         </div>
     }
