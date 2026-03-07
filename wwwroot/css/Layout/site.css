@@ -55,7 +55,10 @@ body {
     border: 2px solid transparent;
     border-radius: 20px;
 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden;
+    position: relative;
+    z-index: 10;
+    background-color: white;
 }
 
 .search-input:focus{
@@ -69,15 +72,52 @@ body {
     top: 50%;
     right: 1rem; 
     transform: translateY(-50%);
-    cursor: pointer;
-    width: 1.5rem;
+    
     display: flex;
     align-items: center;    
+    
+    width: 1.5rem;
+    z-index: 15;
+    
+    cursor: pointer;
 }
 
 #submit-button img {
     width: 90%;
-    height: auto;
+    height: auto; 
+}
+
+/* suggestion box */
+.suggestion-box{
+    position: absolute;
+    top: calc(100% - 15px);
+    left: 0;
+    right: 0;
+
+    background: white;
+    border: 2px solid #d0d0d0;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+
+    z-index: 5; 
+    list-style: none;
+    overflow-y: auto;
+    max-height: 200px;
+
+    margin: 0 10px;
+    padding-top: 10px;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    margin: 0;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa; 
 }
 
 /* user profile */

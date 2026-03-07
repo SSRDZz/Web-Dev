@@ -33,30 +33,80 @@ function submit_searchBar(){
     });
 }
 
+// suggestion declare
+const search_input = document.querySelector(".search-input");
+const suggestion_box = document.querySelector(".suggestion-box");
+
+// suggestion for input search box
+function suggestion(){
+    let timeout = 0;
+    search_input.addEventListener("input", function(){
+        clearTimeout(timeout);
+        timeout = setTimeout(fetch_suggestion,300);
+    });
+}
+
+// query data from back-end using fetch api
+async function fetch_suggestion(){
+    const keyword = search_input.value.trim();
+
+    if (keyword.length >= 1){
+        const url = `/Home/GetSuggestion?keyword=${keyword}`;
+        try{
+            const response = await fetch(url);
+            if(!response.ok){
+                throw new Error("Get not found");
+            }
+
+            const data = await response.json();
+            renderSuggestion(data);
+
+        } catch(error) {
+            console.log("error when get suggestion",error);
+        }
+    }
+    else {
+        suggestion_box.style.display = "none";
+    }
+}
+
+// render result suggestion
+function renderSuggestion(data){
+    if(data.length == 0){
+        suggestion_box.style.display = "none";
+        return;
+    }
+
+    suggestion_box.innerHTML = data.map(item => `<li class="suggestion-item">${item}</li>`).join('');
+    suggestion_box.style.display = 'block';
+
+    // make when user click suggestion -> change search-input value
+    const suggestion_item = document.querySelectorAll(".suggestion-item");
+
+    suggestion_item.forEach(function(item){
+        item.addEventListener("click", function(){
+            search_input.value = this.textContent;
+            suggestion_box.style.display = 'none';
+            search_input.focus();
+        })   
+    });
+}
+
+
+// when click other component that not suggestion box 
+document.addEventListener('click', (e) => {
+    const suggestion_box = document.querySelector(".suggestion-box");
+    const search_input = document.querySelector(".search-input")
+
+    if (!search_input.contains(e.target)) {
+        // console.log("click at element -> ",e);
+        suggestion_box.style.display = 'none';
+    }
+});
+
 window.addEventListener('load', function(){
     active_page_button();
 });
+
 submit_searchBar();
-
-
-
-// let timeout = null;
-// document.getElementById("search-bar").addEventListener("keyup", () => {
-//     clearTimeout(timeout);
-//     timeout = setTimeout(liveSearch, 800);
-// });
-
-// function liveSearch() {
-//     console.log("doing");
-//     let value = document.getElementById("search-bar").value;
-    
-//     $.ajax({
-//         type: "POST",
-//         url: '@Url.Action(controller: "Search", action: "SearchByUsername")',
-//         data: { Username: value },
-//         datatype: "html",
-//         success: (data) => {
-//             $("#activity-grid").html(data);
-//         } 
-//     });
-// }
+suggestion();
