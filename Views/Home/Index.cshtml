@@ -6,14 +6,14 @@
         <div class="card">
             <div class="card-header">
                 <div class="user-meta">Activity Owner</div>
-                <a href="/Activity/Detail/@activity.Id" class="join-btn">
+                <a href="@Url.Action("Detail","Activity", new { id = activity.Id })" class="join-btn">
                     View
                 </a>
             </div>
             @if(!string.IsNullOrEmpty(activity.ImageUrl))
             {
                 <div class="card-image">
-                    <img src="@activity.ImageUrl" alt="@activity.Name" style="width:100%; border-radius:10px;">
+                    <img src="@Url.Content("~/" + activity.ImageUrl)" alt="@activity.Name" style="width:100%; border-radius:10px;">
                 </div>
             }
             else

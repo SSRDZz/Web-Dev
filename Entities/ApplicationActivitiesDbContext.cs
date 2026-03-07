@@ -24,6 +24,13 @@ public class ApplicationActivitiesDbContext : DbContext
 			entity.Property(a => a.RecruitingMode).IsRequired();
 			entity.HasIndex(a => a.OwnerId);
 			entity.HasIndex(a => a.EventDate);
+
+		// configure many-to-many with UserAccount for co‑owners
+		entity
+			.HasMany(a => a.CoOwners)
+			.WithMany(u => u.CoOwnedActivities)
+			// use UsingEntity so we can set the table name
+			.UsingEntity(join => join.ToTable("ActivityCoOwners"));
 		});
 
 		builder.Entity<ActivityKeyword>(entity =>
@@ -31,6 +38,12 @@ public class ApplicationActivitiesDbContext : DbContext
 			entity.HasKey(k => k.Id);
 			entity.Property(k => k.Keyword).IsRequired().HasMaxLength(100);
 			entity.Property(k => k.ActivityId).IsRequired();
+
+			// explicit relationship to avoid mismatched column types
+			entity.HasOne(k => k.Activity)
+				.WithMany(a => a.Keywords)
+				.HasForeignKey(k => k.ActivityId)
+				.OnDelete(DeleteBehavior.Cascade);
 		});
 	}
 }

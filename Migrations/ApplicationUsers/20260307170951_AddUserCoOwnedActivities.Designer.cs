@@ -4,6 +4,7 @@ using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MvcMovie.Migrations.ApplicationUsers
 {
     [DbContext(typeof(ApplicationUsersDbContext))]
-    partial class ApplicationUsersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260307170951_AddUserCoOwnedActivities")]
+    partial class AddUserCoOwnedActivities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
