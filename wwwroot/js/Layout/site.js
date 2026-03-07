@@ -80,8 +80,6 @@ function renderSuggestion(data){
         return;
     }
 
-    console.log(data)
-
     suggestion_box.innerHTML = data.map(item => `<li class="suggestion-item">${item}</li>`).join('');
     suggestion_box.style.display = 'block';
 
@@ -115,26 +113,3 @@ window.addEventListener('load', function(){
 
 submit_searchBar();
 suggestion();
-
-
-
-// let timeout = null;
-// document.getElementById("search-bar").addEventListener("keyup", () => {
-//     clearTimeout(timeout);
-//     timeout = setTimeout(liveSearch, 800);                   // รอให้ user หยุดพิมก่อน 800 ms ค่อยขึ้น 
-// });
-
-// function liveSearch() {
-//     console.log("doing");
-//     let value = document.getElementById("search-bar").value;
-    
-//     $.ajax({
-//         type: "POST",
-//         url: '@Url.Action(controller: "Search", action: "SearchByUsername")',
-//         data: { Username: value },
-//         datatype: "html",
-//         success: (data) => {
-//             $("#activity-grid").html(data);
-//         } 
-//     });
-// }

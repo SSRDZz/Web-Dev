@@ -67,7 +67,7 @@ public class HomeController : Controller
         var suggestions = _activitiesContext.Activities
             .Where(a => a.Name.StartsWith(keyword))
             .Select(a => a.Name)
-            .Take(3)
+            .Take(4)
             .ToList();
         return Json(suggestions);
     }
