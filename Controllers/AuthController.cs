@@ -80,6 +80,7 @@ public class AuthController(SignInManager<UserAccount> signInManager, UserManage
 		await SignInMang.SignInAsync(user, false);
 
 		await FUS.Upload(profilePicture, user.Id.ToString());
+		user.ImagePath = Path.Combine("image", "UserProfile", $"{user.Id}{FUS.LastExt}");
 
 		// string? imgBase64 = await UserServ.ImageFileToBase64(profilePicture);
 		// user.ImageURL = !string.IsNullOrEmpty(imgBase64) ?  imgBase64 : UserServ.guestImageURL;

@@ -67,12 +67,14 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 	[Authorize]
 	public async Task<IActionResult> ProfileOther(string Id)
 	{
-
 		UserAccount TargetUser = await UserMang.FindByIdAsync(Id);
 		UserAccount OwnUser = await UserMang.GetUserAsync(User);
 
 		if(TargetUser == null)
 			return RedirectToAction("Index", "Home");
+		
+		if(TargetUser.Id == OwnUser.Id)
+			return RedirectToAction("Profile");
 
 		return View(await UserServ.GetProfileOther(OwnUser, TargetUser));
 	}
