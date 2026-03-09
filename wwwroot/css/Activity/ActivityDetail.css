@@ -1,0 +1,167 @@
+h2 {
+    border-bottom: 3px solid #FFAB77;
+    border-radius: 4px;
+
+    width: fit-content;
+    margin: 15px 0;
+}
+
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, max(1000px, 1fr));
+    gap: 25px;
+
+    padding: 15px
+}
+/* 
+.card {
+    padding: 15px;
+} */
+
+/* card head -- top */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* detail */
+.detail {
+    min-width: 200px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+.activity-info {
+    margin-top: 15px;
+    line-height: 1.8;
+}
+
+.activity-info p {
+    margin: 8px 0;
+}
+
+#activity-map {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    margin: 8px 0;
+}
+
+
+/* card image */
+.card-image {
+    max-width: 350px;
+    min-width: 250px;
+
+    flex-shrink: 1;
+    flex-grow: 0;
+
+    
+}
+
+.join-btn {
+    background: #FF7061;
+    color: white;
+    border: none;
+    padding: 15px 50px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.join-btn:hover {
+    background: #e85d52;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.status-badge.available {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-badge.full {
+    background-color: #FF9800;
+    color: white;
+}
+
+.status-badge.closed {
+    background-color: #9E9E9E;
+    color: white;
+}
+
+.user-meta {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+
+/* comment section */
+#create-comment {
+    width: 80%;
+    height: 50px;
+
+    padding: 10px 25px;
+    
+    border: 1px solid #ddd;
+    border-radius: 50px;
+
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#create-comment:focus {
+    outline: none;
+    border-color: #FF7061;
+    box-shadow: 0 0 0 3px rgba(255, 112, 97, 0.1);
+}
+
+#create-comment textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+hr {
+    border: none;
+    border-bottom: 2px solid #E9E9EB;
+    margin: 0px 10px;
+}
+
+
+
+/* phone screen */
+@media (max-width: 768px) {
+    .card-header {
+        display: flex;
+        flex-direction: column;
+        align-items: start  ;
+    }
+
+    .card-image {
+        width: 100%;
+        max-width: 750px;
+
+        margin: 20px 0;
+
+    }
+
+    #create-comment {
+        width: 100%;
+    }
+}
