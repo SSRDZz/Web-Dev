@@ -85,4 +85,21 @@ public class HomeController : Controller
             .ToList();
         return Json(suggestions);
     }
+
+    [HttpGet]
+    [Produces("application/json")] 
+    [Authorize]
+    public IActionResult GetSuggestion(string keyword)
+    {   
+        if(string.IsNullOrEmpty(keyword))
+        {
+            return Json(new List<string>());
+        }
+        var suggestions = _activitiesContext.Activities
+            .Where(a => a.Name.StartsWith(keyword))
+            .Select(a => a.Name)
+            .Take(4)
+            .ToList();
+        return Json(suggestions);
+    }
 }
