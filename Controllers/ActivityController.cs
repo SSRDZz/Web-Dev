@@ -143,6 +143,43 @@ public class ActivityController : Controller
             OwnerName = ownerName
         };
 
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            dto.IsOwner = activity.OwnerId == currentUser.Id;
+            dto.IsJoined = activity.Participants.Any(p => p.Id == currentUser.Id);
+        }
+
         return View("ActivityDetail", dto);
+    }
+
+    [HttpPost("Join/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Join(Guid id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+
+        var activity = await _activitiesContext.Activities
+            .Include(a => a.Participants)
+            .FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null)
+            return NotFound();
+
+        if (activity.OwnerId == user.Id)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        if (activity.Participants.Any(p => p.Id == user.Id))
+            return RedirectToAction(nameof(Detail), new { id });
+
+        if (activity.Participants.Count >= activity.MaxPeople)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        activity.Participants.Add(user);
+        activity.UpdatedAt = DateTime.Now;
+        await _activitiesContext.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Detail), new { id });
     }
 }

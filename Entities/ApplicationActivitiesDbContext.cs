@@ -15,6 +15,11 @@ public class ApplicationActivitiesDbContext : DbContext
 	{
 		base.OnModelCreating(builder);
 
+		builder.Entity<UserAccount>(entity =>
+		{
+			entity.ToTable("AspNetUsers");
+		});
+
 		builder.Entity<Activity>(entity =>
 		{
 			entity.HasKey(a => a.Id);

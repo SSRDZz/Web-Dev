@@ -51,7 +51,32 @@
                         <span style="color: #999;">No Image</span>
                     </div>
                 }
-                <button class="join-btn">Join!</button>
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    <form asp-action="Join" asp-route-id="@Model.Act.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        @if (Model.IsOwner)
+                        {
+                            <button class="join-btn" type="button" disabled>You are owner</button>
+                        }
+                        else if (Model.IsJoined)
+                        {
+                            <button class="join-btn" type="button" disabled>Joined</button>
+                        }
+                        else if (Model.Act.Participants.Count >= Model.Act.MaxPeople)
+                        {
+                            <button class="join-btn" type="button" disabled>Full</button>
+                        }
+                        else
+                        {
+                            <button class="join-btn" type="submit">Join!</button>
+                        }
+                    </form>
+                }
+                else
+                {
+                    <a class="join-btn" href="@Url.Action("Login", "Auth")" style="display:block; text-align:center; text-decoration:none;">Login to Join</a>
+                }
             </div>
         </div>
         <div class="card-body">

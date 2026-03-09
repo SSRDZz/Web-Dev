@@ -12,4 +12,8 @@ public class ActivityDTO
 
 	// display name of the activity owner (pulled from UserAccount)
 	public string OwnerName { get; set; } = string.Empty;
+
+	public bool IsJoined { get; set; }
+
+	public bool IsOwner { get; set; }
 }
