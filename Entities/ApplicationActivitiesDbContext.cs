@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using KMITL_WebDev_MiniProject.Entites;
 
 namespace KMITL_WebDev_MiniProject.Entites;
@@ -23,16 +24,23 @@ public class ApplicationActivitiesDbContext : DbContext
 			entity.Property(a => a.EventDate).IsRequired();
 			entity.Property(a => a.RecruitingMode).IsRequired();
 			entity.HasIndex(a => a.OwnerId);
-			entity.HasIndex(a => a.EventDate);
+		entity.HasIndex(a => a.EventDate);
 
 		// configure many-to-many with UserAccount for co‑owners
 		entity
 			.HasMany(a => a.CoOwners)
 			.WithMany(u => u.CoOwnedActivities)
-			// use UsingEntity so we can set the table name
 			.UsingEntity(join => join.ToTable("ActivityCoOwners"));
-		});
 
+		// configure many-to-many with UserAccount for participants
+		entity
+			.HasMany(a => a.Participants)
+			.WithMany(u => u.ParticipatingActivities)
+			.UsingEntity<Dictionary<string, object>>(
+				"ActivityParticipants",
+				j => j.HasOne<UserAccount>().WithMany().HasForeignKey("ParticipantsId"),
+				j => j.HasOne<Activity>().WithMany().HasForeignKey("ActivityId"));
+		});
 		builder.Entity<ActivityKeyword>(entity =>
 		{
 			entity.HasKey(k => k.Id);

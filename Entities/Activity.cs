@@ -32,6 +32,8 @@ public class Activity
 
 	public ICollection<UserAccount> CoOwners { get; set; } = new List<UserAccount>();
 
+	public ICollection<UserAccount> Participants { get; set; } = new List<UserAccount>();
+
 	[Required]
 	public DateTime EventDate { get; set; }
 

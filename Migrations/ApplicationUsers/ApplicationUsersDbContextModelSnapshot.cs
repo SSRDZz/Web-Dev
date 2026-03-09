@@ -34,7 +34,7 @@ namespace MvcMovie.Migrations.ApplicationUsers
 
                     b.HasIndex("CoOwnersId");
 
-                    b.ToTable("ActivityUserAccount");
+                    b.ToTable("ActivityUserAccount", (string)null);
                 });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.Activity", b =>
@@ -89,7 +89,7 @@ namespace MvcMovie.Migrations.ApplicationUsers
 
                     b.HasKey("Id");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activity", (string)null);
                 });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.ActivityKeyword", b =>
@@ -110,7 +110,7 @@ namespace MvcMovie.Migrations.ApplicationUsers
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivityKeyword");
+                    b.ToTable("ActivityKeyword", (string)null);
                 });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.UserAccount", b =>

@@ -8,6 +8,7 @@ using MvcMovie.Migrations.ApplicationUserUtil;
 using KMITL_WebDev_MiniProject.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 
@@ -34,7 +35,11 @@ public class ActivityController : Controller
     [HttpGet("createactivity")]
     public IActionResult Create()
     {
-        return View(new ActivityViewModel());
+        var now = DateTime.Now;
+        return View(new ActivityViewModel 
+        { 
+            EventDate = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0)
+        });
     }
 
     [HttpPost("Create")]
@@ -67,8 +72,35 @@ public class ActivityController : Controller
             UpdatedAt = DateTime.Now
         };
 
+        // add the activity first so we have a valid Id for the keywords
         _activitiesContext.Activities.Add(activity);
         await _activitiesContext.SaveChangesAsync();
+
+        // parse comma‑separated keywords and insert into the join table
+        if (!string.IsNullOrWhiteSpace(model.KeywordInput))
+        {
+            var keywordList = model.KeywordInput
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(k => k.Trim())
+                .Where(k => !string.IsNullOrEmpty(k))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (keywordList.Any())
+            {
+                foreach (var kw in keywordList)
+                {
+                    _activitiesContext.ActivityKeywords.Add(new ActivityKeyword
+                    {
+                        Id = Guid.NewGuid(),
+                        ActivityId = activity.Id,
+                        Keyword = kw
+                    });
+                }
+
+                await _activitiesContext.SaveChangesAsync();
+            }
+        }
 
         if (_fileUploader.FileIsExist(model.ActivityImage))
         {
@@ -86,7 +118,12 @@ public class ActivityController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Detail(Guid id)
     {
-        Activity activity = await _activitiesContext.Activities.FindAsync(id);
+        // include keywords so the view can render them
+        Activity activity = await _activitiesContext.Activities
+            .Where(a => a.Id == id)
+            .Include(a => a.Keywords)
+            .Include(a => a.Participants)
+            .FirstOrDefaultAsync();
         if (activity == null)
             return NotFound();
 

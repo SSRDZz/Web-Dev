@@ -11,9 +11,9 @@
                 <h3>@Model?.Name</h3>
                 <p>@Model?.Description</p>
                 <div class="activity-info">
-                    <p><strong>Event Date:</strong> @Model?.EventDate.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Event Date:</strong> @Model?.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
                     <p><strong>Location:</strong> @Model?.Location</p>
-                    <p><strong>Max Participants:</strong> @Model?.MaxPeople</p>
+                    <p><strong>Participants:</strong> @Model?.Participants.Count / @Model?.MaxPeople</p>
                     @if (!string.IsNullOrEmpty(Model?.MapUrl))
                     {
                         <p><strong>Map URL:</strong> <a href="@Model.MapUrl" target="_blank">View on Map</a></p>
@@ -33,6 +33,11 @@
                         }
                     </p>
                     <p><strong>Show Participants:</strong> @(Model?.ShowParticipants == true ? "Yes" : "No")</p>
+                    @* if this model came from the ActivityController with keywords included it will show, otherwise ignore *@
+                    @if (Model is KMITL_WebDev_MiniProject.Entites.Activity act && act.Keywords != null && act.Keywords.Any())
+                    {
+                        <p><strong>Keywords:</strong> @string.Join(", ", act.Keywords.Select(k => k.Keyword))</p>
+                    }
                 </div>
             </div>
             <div class="card-image">

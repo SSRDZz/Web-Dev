@@ -30,7 +30,10 @@ public class HomeController : Controller
     [Route("Home/Index")]	
     public async Task<IActionResult> Index()
     {
-        var activities = await _activitiesContext.Activities.ToListAsync();
+        var activities = await _activitiesContext.Activities
+            .Include(a => a.Keywords)
+            .Include(a => a.Participants)
+            .ToListAsync();
         var previews = new List<ActivityPreviewViewModel>(activities.Count);
         foreach (var act in activities)
         {

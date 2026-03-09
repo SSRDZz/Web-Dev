@@ -22,6 +22,11 @@ public class ApplicationUsersDbContext: IdentityDbContext<UserAccount, IdentityR
             entity.HasIndex(u => u.UserName).IsUnique();
 
             entity.Property(u => u.PhoneNumber).HasMaxLength(20);
+
+            // Note: CoOwnedActivities and ParticipatingActivities relationships 
+            // are configured in ApplicationActivitiesDbContext
+            entity.Ignore(u => u.CoOwnedActivities);
+            entity.Ignore(u => u.ParticipatingActivities);
         });
 	}
 }

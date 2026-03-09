@@ -25,9 +25,13 @@
             <div class="card-body">
                 <h3>@activity.Act.Name</h3>
                 <p>@activity.Act.Description</p>
-                <p><strong>Event Date:</strong> @activity.Act.EventDate.ToString("MMM dd, yyyy")</p>
+                <p><strong>Event Date:</strong> @activity.Act.EventDate.ToString("MMM dd, yyyy HH:mm")</p>
                 <p><strong>Location:</strong> @activity.Act.Location</p>
-                <p><strong>Max Participants:</strong> @activity.Act.MaxPeople</p>
+                <p><strong>Participants:</strong> @activity.Act.Participants.Count / @activity.Act.MaxPeople</p>
+                @if (activity.Act.Keywords != null && activity.Act.Keywords.Any())
+                {
+                    <p><strong>Keywords:</strong> @string.Join(", ", activity.Act.Keywords.Select(k => k.Keyword))</p>
+                }
             </div>
         </div>
     }

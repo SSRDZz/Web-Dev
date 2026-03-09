@@ -28,4 +28,7 @@ public class UserAccount: IdentityUser<Guid>
 
 	// many-to-many: activities this user co-owns
 	public ICollection<Activity> CoOwnedActivities { get; set; } = new List<Activity>();
+
+	// many-to-many: activities this user is participating in
+	public ICollection<Activity> ParticipatingActivities { get; set; } = new List<Activity>();
 }

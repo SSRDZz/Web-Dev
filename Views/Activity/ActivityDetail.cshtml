@@ -11,9 +11,9 @@
                 <h3>@Model?.Act.Name</h3>
                 <p>@Model?.Act.Description</p>
                 <div class="activity-info">
-                    <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy")</p>
+                    <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
                     <p><strong>Location:</strong> @Model?.Act.Location</p>
-                    <p><strong>Max Participants:</strong> @Model?.Act.MaxPeople</p>
+                    <p><strong>Participants:</strong> @Model?.Act.Participants.Count / @Model?.Act.MaxPeople</p>
                     @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
                     {
                         <p><strong>Map URL:</strong> <a href="@Model?.Act.MapUrl" target="_blank">View on Map</a></p>
@@ -33,6 +33,11 @@
                         }
                     </p>
                     <p><strong>Show Participants:</strong> @(Model?.Act.ShowParticipants == true ? "Yes" : "No")</p>
+                    @* keywords *@
+                    @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
+                    {
+                        <p><strong>Keywords:</strong> @string.Join(", ", Model.Act.Keywords.Select(k => k.Keyword))</p>
+                    }
                 </div>
             </div>
             <div class="card-image">

@@ -3,6 +3,7 @@ using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,9 @@ var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
 // configure each DbContext to retry on transient failures
 builder.Services.AddDbContext<ApplicationUsersDbContext>(options =>
-    options.UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
+    options
+        .UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
+        .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
 );
 builder.Services.AddDbContext<ApplicationUserUtilDbContext>(options =>
     options.UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
