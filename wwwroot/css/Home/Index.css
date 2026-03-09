@@ -1,0 +1,108 @@
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.card-image {
+    overflow: hidden;
+    height: 200px;
+
+    border-radius: 10px;
+    margin-bottom: 5px;
+    background-color: #f0f0f0;
+}
+
+.card-image img {
+    height: 100%;
+    width: 100%;
+
+    object-fit: cover; /* Crops image to fit the container */
+    object-position: center;
+
+    display: center;    
+
+}
+
+.card-body {
+    padding: 10px 0;
+}
+
+.card-body h3 {
+    margin: 10px 0;
+    color: #333;
+}
+
+.card-body p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.user-meta {
+    font-size: 0.9em;
+    color: #666;
+}
+
+.join-btn {
+    background: #FF7061;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+
+.join-btn:hover {
+    background: #e85d52;
+    text-decoration: none;
+    color: white;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.status-badge.available {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-badge.full {
+    background-color: #FF9800;
+    color: white;
+}
+
+.status-badge.closed {
+    background-color: #9E9E9E;
+    color: white;
+}

@@ -1,5 +1,6 @@
 ﻿@model List<KMITL_WebDev_MiniProject.Models.ActivityPreviewViewModel>
 
+<link rel="stylesheet" href="~/css/Home/Index.css" asp-append-version="true"/>
 <div class="activity-grid" id="activity-grid">
     @foreach(var activity in Model)
     {
@@ -27,7 +28,7 @@
             @if(!string.IsNullOrEmpty(activity.Act.ImageUrl))
             {
                 <div class="card-image">
-                    <img src="@Url.Content("~/" + activity.Act.ImageUrl)" alt="@activity.Act.Name" style="width:100%; border-radius:10px;">
+                    <img src="@Url.Content("~/" + activity.Act.ImageUrl)" alt="@activity.Act.Name" >
                 </div>
             }
             else
@@ -57,98 +58,3 @@
         <p>No activities available at the moment.</p>
     </div>
 }
-
-<style>
-    .activity-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px;
-    }
-
-    .card {
-        border: 1px solid #ddd;
-        border-radius: 15px;
-        padding: 15px;
-        background: white;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .card-image {
-        margin-bottom: 15px;
-    }
-
-    .card-body {
-        padding: 10px 0;
-    }
-
-    .card-body h3 {
-        margin: 10px 0;
-        color: #333;
-    }
-
-    .card-body p {
-        margin: 5px 0;
-        color: #666;
-        font-size: 0.9em;
-    }
-
-    .user-meta {
-        font-size: 0.9em;
-        color: #666;
-    }
-
-    .join-btn {
-        background: #FF7061;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 10px;
-        cursor: pointer;
-        text-decoration: none;
-        font-size: 0.9em;
-        transition: background-color 0.2s;
-    }
-
-    .join-btn:hover {
-        background: #e85d52;
-        text-decoration: none;
-        color: white;
-    }
-
-    .status-badge {
-        display: inline-block;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-
-    .status-badge.available {
-        background-color: #4CAF50;
-        color: white;
-    }
-
-    .status-badge.full {
-        background-color: #FF9800;
-        color: white;
-    }
-
-    .status-badge.closed {
-        background-color: #9E9E9E;
-        color: white;
-    }
-</style>
