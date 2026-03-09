@@ -9,10 +9,10 @@ public class UserServices
 {
 	private readonly UserManager<UserAccount> UserMang;
 	public readonly string GuestImagePath;
-	private readonly ApplicationReputationsDbContext RepDbContext;
+	private readonly ApplicationUserUtilDbContext RepDbContext;
 	private readonly IWebHostEnvironment Env;
 
-	public UserServices(UserManager<UserAccount> um, IWebHostEnvironment env, ApplicationReputationsDbContext _RepDbContext)
+	public UserServices(UserManager<UserAccount> um, IWebHostEnvironment env, ApplicationUserUtilDbContext _RepDbContext)
 	{
 		UserMang = um;
 		RepDbContext = _RepDbContext;

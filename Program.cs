@@ -3,15 +3,26 @@ using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionStrings = builder.Configuration.GetConnectionString("dbConnection");
+var connectionStrings = builder.Configuration.GetConnectionString("dbConnection")
+    ?? throw new InvalidOperationException("Connection string 'dbConnection' not found.");
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 45));
 
-builder.Services.AddDbContext<ApplicationUsersDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
-builder.Services.AddDbContext<ApplicationReputationsDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
-builder.Services.AddDbContext<ApplicationActivitiesDbContext>(options => options.UseMySql(connectionStrings, serverVersion));
+// configure each DbContext to retry on transient failures
+builder.Services.AddDbContext<ApplicationUsersDbContext>(options =>
+    options
+        .UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
+        .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
+);
+builder.Services.AddDbContext<ApplicationUserUtilDbContext>(options =>
+    options.UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
+);
+builder.Services.AddDbContext<ApplicationActivitiesDbContext>(options =>
+    options.UseMySql(connectionStrings, serverVersion, mysql => mysql.EnableRetryOnFailure())
+);
 
 // Config Property of Identity Table
 builder.Services.AddIdentity<UserAccount, IdentityRole<Guid>>(options =>
@@ -46,7 +57,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var usersContext = services.GetRequiredService<ApplicationUsersDbContext>();
-    var reputationsContext = services.GetRequiredService<ApplicationReputationsDbContext>();
+    var reputationsContext = services.GetRequiredService<ApplicationUserUtilDbContext>();
     var activitiesContext = services.GetRequiredService<ApplicationActivitiesDbContext>();
     
     usersContext.Database.Migrate();

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MvcMovie.Migrations
+namespace MvcMovie.Migrations.ApplicationUsers
 {
     /// <inheritdoc />
     public partial class Users : Migration

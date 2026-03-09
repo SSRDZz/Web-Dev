@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class UserController(UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationReputationsDbContext RepDbContext) : Controller
+public class UserController(UserManager<UserAccount> userManager, IWebHostEnvironment env, ApplicationUserUtilDbContext UserUtilContext) : Controller
 {
 	private UserManager<UserAccount> UserMang {get; init;} = userManager;
-	private ApplicationReputationsDbContext RepDbContext {get; init;} = RepDbContext;
-	private UserServices UserServ {get; init;} = new UserServices(userManager, env, RepDbContext);
+	private ApplicationUserUtilDbContext RepDbContext {get; init;} = UserUtilContext;
+	private UserServices UserServ {get; init;} = new UserServices(userManager, env, UserUtilContext);
 	private FileUploadServcies FUS {get; init;} = new FileUploadServcies(env);
 
 	[HttpGet]

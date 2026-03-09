@@ -4,19 +4,16 @@ using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace MvcMovie.Migrations.Reputations
+namespace MvcMovie.Migrations.ApplicationUserUtil
 {
-    [DbContext(typeof(ApplicationReputationsDbContext))]
-    [Migration("20260224132055_Reputations")]
-    partial class Reputations
+    [DbContext(typeof(ApplicationUserUtilDbContext))]
+    partial class ApplicationUserUtilDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +21,27 @@ namespace MvcMovie.Migrations.Reputations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ActivityID")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("OwnerID")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
+                });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.ReputationRelation", b =>
                 {

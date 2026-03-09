@@ -8,7 +8,7 @@ public class DbInitializer
 	public static async Task Initialize(IServiceProvider serviceProvider, UserManager<UserAccount> userManager, IWebHostEnvironment env)
 	{
 		await ForUsers(new ApplicationUsersDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationUsersDbContext>>()), env, userManager);
-		await ForReputations(new ApplicationReputationsDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationReputationsDbContext>>()));
+		await ForUserUtil(new ApplicationUserUtilDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationUserUtilDbContext>>()));
 		await ForActivities(new ApplicationActivitiesDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationActivitiesDbContext>>()));
 	}
 
@@ -77,7 +77,7 @@ public class DbInitializer
 		}
 	}
 
-	public static async Task ForReputations(ApplicationReputationsDbContext context)
+	public static async Task ForUserUtil(ApplicationUserUtilDbContext context)
 	{
 		await context.Database.MigrateAsync();
 
@@ -87,8 +87,7 @@ public class DbInitializer
 
 	public static async Task ForActivities(ApplicationActivitiesDbContext context)
 	{
-		// ensure the database and tables exist (migrations may not be created yet)
-		await context.Database.EnsureCreatedAsync();
+		await context.Database.MigrateAsync();
 
 		if(context.Activities.Any())
 			return;
@@ -107,7 +106,7 @@ public class DbInitializer
 				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
 				EventDate = DateTime.Now.AddDays(7),
 				Location = "Central Park",
-				MapUrl = "https://maps.example.com/centralpark",
+				MapUrl = "13.7299,100.7788",
 				CreatedAt = DateTime.Now,
 				UpdatedAt = DateTime.Now
 			},
@@ -122,7 +121,37 @@ public class DbInitializer
 				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
 				EventDate = DateTime.Now.AddDays(14),
 				Location = "Tech Hub Downtown",
-				MapUrl = "https://maps.example.com/techhub",
+				MapUrl = "13.7367,100.5231",
+				CreatedAt = DateTime.Now,
+				UpdatedAt = DateTime.Now
+			},
+			new Activity
+			{
+				Name = "Morning Run Club",
+				Description = "Group running session for all fitness levels.",
+				ImageUrl = null,
+				MaxPeople = 40,
+				RecruitingMode = 1, // FirstComeFirstServe
+				ShowParticipants = true,
+				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+				EventDate = DateTime.Now.AddDays(3),
+				Location = "Lumpini Park",
+				MapUrl = "13.7305,100.5418",
+				CreatedAt = DateTime.Now,
+				UpdatedAt = DateTime.Now
+			},
+			new Activity
+			{
+				Name = "Board Game Night",
+				Description = "Casual board game meetup with snacks and prizes.",
+				ImageUrl = null,
+				MaxPeople = 20,
+				RecruitingMode = 2, // RandomOnEventDay
+				ShowParticipants = true,
+				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+				EventDate = DateTime.Now.AddDays(10),
+				Location = "Siam Square",
+				MapUrl = "13.7448,100.5340",
 				CreatedAt = DateTime.Now,
 				UpdatedAt = DateTime.Now
 			}

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.AspNetCore.Identity;
 
-namespace KMITL_WebDev_MiniProject.Data;
+namespace KMITL_WebDev_MiniProject.Entites;
 public class ApplicationUsersDbContext: IdentityDbContext<UserAccount, IdentityRole<Guid>, Guid>
 {
     public ApplicationUsersDbContext(DbContextOptions<ApplicationUsersDbContext> options): base(options) {}
@@ -22,6 +22,11 @@ public class ApplicationUsersDbContext: IdentityDbContext<UserAccount, IdentityR
             entity.HasIndex(u => u.UserName).IsUnique();
 
             entity.Property(u => u.PhoneNumber).HasMaxLength(20);
+
+            // Note: CoOwnedActivities and ParticipatingActivities relationships 
+            // are configured in ApplicationActivitiesDbContext
+            entity.Ignore(u => u.CoOwnedActivities);
+            entity.Ignore(u => u.ParticipatingActivities);
         });
 	}
 }

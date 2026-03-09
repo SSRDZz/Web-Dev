@@ -4,6 +4,7 @@ using KMITL_WebDev_MiniProject.Entites;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MvcMovie.Migrations.Activitys
 {
     [DbContext(typeof(ApplicationActivitiesDbContext))]
-    partial class ApplicationActivitiesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260309011307_AddActivityParticipants")]
+    partial class AddActivityParticipants
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace MvcMovie.Migrations.Activitys
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("ActivityParticipants", b =>
-                {
-                    b.Property<Guid>("ActivityId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ParticipantsId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("ActivityId", "ParticipantsId");
-
-                    b.HasIndex("ParticipantsId");
-
-                    b.ToTable("ActivityParticipants");
-                });
 
             modelBuilder.Entity("ActivityUserAccount", b =>
                 {
@@ -50,6 +38,21 @@ namespace MvcMovie.Migrations.Activitys
                     b.HasIndex("CoOwnersId");
 
                     b.ToTable("ActivityCoOwners", (string)null);
+                });
+
+            modelBuilder.Entity("ActivityUserAccount1", b =>
+                {
+                    b.Property<Guid>("ActivityId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("ParticipantsId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("ActivityId", "ParticipantsId");
+
+                    b.HasIndex("ParticipantsId");
+
+                    b.ToTable("ActivityParticipants", (string)null);
                 });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.Activity", b =>
@@ -207,22 +210,7 @@ namespace MvcMovie.Migrations.Activitys
                     b.HasIndex("RealUserName")
                         .IsUnique();
 
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("ActivityParticipants", b =>
-                {
-                    b.HasOne("KMITL_WebDev_MiniProject.Entites.Activity", null)
-                        .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KMITL_WebDev_MiniProject.Entites.UserAccount", null)
-                        .WithMany()
-                        .HasForeignKey("ParticipantsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToTable("UserAccount");
                 });
 
             modelBuilder.Entity("ActivityUserAccount", b =>
@@ -236,6 +224,21 @@ namespace MvcMovie.Migrations.Activitys
                     b.HasOne("KMITL_WebDev_MiniProject.Entites.UserAccount", null)
                         .WithMany()
                         .HasForeignKey("CoOwnersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ActivityUserAccount1", b =>
+                {
+                    b.HasOne("KMITL_WebDev_MiniProject.Entites.Activity", null)
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("KMITL_WebDev_MiniProject.Entites.UserAccount", null)
+                        .WithMany()
+                        .HasForeignKey("ParticipantsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

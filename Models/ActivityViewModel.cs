@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 using KMITL_WebDev_MiniProject.Entites;
 
 namespace KMITL_WebDev_MiniProject.Models;
@@ -6,7 +7,7 @@ namespace KMITL_WebDev_MiniProject.Models;
 public class ActivityViewModel
 {
     [Key]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required]
     [StringLength(100, MinimumLength = 3)]
@@ -15,6 +16,10 @@ public class ActivityViewModel
     public string? Description { get; set; }
 
     public ICollection<ActivityKeyword> Keywords { get; set; } = new List<ActivityKeyword>();
+
+    // temporary field for user input; controller should split on commas
+    [Display(Name = "Keywords (comma-separated)")]
+    public string? KeywordInput { get; set; }
 
 
     [Url]
@@ -37,7 +42,12 @@ public class ActivityViewModel
     public DateTime EventDate { get; set; }
     public string Location { get; set; } = null!;
 
-    public string mapURL { get; set; } = null!;
+    // should match Activity.MapUrl
+    public string? MapUrl { get; set; }
+
+    // optional file upload for activity image
+    [Display(Name = "Image File (optional)")]
+    public IFormFile? ActivityImage { get; set; }
 }
 
 public enum RecruitingMode

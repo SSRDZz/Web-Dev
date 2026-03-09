@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
+using KMITL_WebDev_MiniProject.DTO;
+using MvcMovie.Migrations.ApplicationUserUtil;
+using KMITL_WebDev_MiniProject.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 
@@ -13,18 +18,28 @@ public class ActivityController : Controller
 {
     private readonly ApplicationActivitiesDbContext _activitiesContext;
     private readonly UserManager<UserAccount> _userManager;
+    private readonly ApplicationUserUtilDbContext _UserUtilDbContext;
+    private readonly CommentServices _ComSer;
+    private readonly FileUploadServcies _fileUploader;
 
-    public ActivityController(ApplicationActivitiesDbContext activitiesContext, UserManager<UserAccount> userManager)
+    public ActivityController(ApplicationActivitiesDbContext activitiesContext, ApplicationUserUtilDbContext UserUtilDbContext, UserManager<UserAccount> userManager, IWebHostEnvironment env)
     {
         _activitiesContext = activitiesContext;
         _userManager = userManager;
+        _UserUtilDbContext = UserUtilDbContext;
+        _ComSer = new CommentServices(_UserUtilDbContext, _userManager);
+        _fileUploader = new FileUploadServcies(env);
     }
 
     [HttpGet("Create")]
     [HttpGet("createactivity")]
     public IActionResult Create()
     {
-        return View(new ActivityViewModel());
+        var now = DateTime.Now;
+        return View(new ActivityViewModel 
+        { 
+            EventDate = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0)
+        });
     }
 
     [HttpPost("Create")]
@@ -42,6 +57,7 @@ public class ActivityController : Controller
 
         var activity = new Activity
         {
+            Id = Guid.NewGuid(),
             Name = model.Name,
             Description = model.Description,
             ImageUrl = model.ImageUrl,
@@ -51,13 +67,48 @@ public class ActivityController : Controller
             OwnerId = user.Id,
             EventDate = model.EventDate,
             Location = model.Location,
-            MapUrl = model.mapURL,
+            MapUrl = model.MapUrl,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
 
+        // add the activity first so we have a valid Id for the keywords
         _activitiesContext.Activities.Add(activity);
         await _activitiesContext.SaveChangesAsync();
+
+        // parse comma‑separated keywords and insert into the join table
+        if (!string.IsNullOrWhiteSpace(model.KeywordInput))
+        {
+            var keywordList = model.KeywordInput
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(k => k.Trim())
+                .Where(k => !string.IsNullOrEmpty(k))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (keywordList.Any())
+            {
+                foreach (var kw in keywordList)
+                {
+                    _activitiesContext.ActivityKeywords.Add(new ActivityKeyword
+                    {
+                        Id = Guid.NewGuid(),
+                        ActivityId = activity.Id,
+                        Keyword = kw
+                    });
+                }
+
+                await _activitiesContext.SaveChangesAsync();
+            }
+        }
+
+        if (_fileUploader.FileIsExist(model.ActivityImage))
+        {
+            await _fileUploader.Upload(model.ActivityImage, activity.Id.ToString());
+            activity.ImageUrl = Path.Combine("image", "UserProfile", activity.Id + _fileUploader.LastExt);
+            _activitiesContext.Activities.Update(activity);
+            await _activitiesContext.SaveChangesAsync();
+        }
 
         return RedirectToAction("Index", "Home");
     }
@@ -65,12 +116,70 @@ public class ActivityController : Controller
     [HttpGet("Detail/{id}")]
     [HttpGet("ActivityDetail/{id}")]
     [AllowAnonymous]
-    public async Task<IActionResult> Detail(int id)
+    public async Task<IActionResult> Detail(Guid id)
     {
-        var activity = await _activitiesContext.Activities.FindAsync(id);
+        // include keywords so the view can render them
+        Activity activity = await _activitiesContext.Activities
+            .Where(a => a.Id == id)
+            .Include(a => a.Keywords)
+            .Include(a => a.Participants)
+            .FirstOrDefaultAsync();
         if (activity == null)
             return NotFound();
 
-        return View("ActivityDetail", activity);
+        // look up owner name
+        string ownerName = "";
+        if (activity.OwnerId != Guid.Empty)
+        {
+            var owner = await _userManager.FindByIdAsync(activity.OwnerId.ToString());
+            if (owner != null)
+                ownerName = owner.RealUserName ?? owner.UserName;
+        }
+
+        ActivityDTO dto = new ActivityDTO()
+        {
+            Act = activity,
+            Comments = await _ComSer.ShowCommentDTOs(id),
+            OwnerName = ownerName
+        };
+
+        var currentUser = await _userManager.GetUserAsync(User);
+        if (currentUser != null)
+        {
+            dto.IsOwner = activity.OwnerId == currentUser.Id;
+            dto.IsJoined = activity.Participants.Any(p => p.Id == currentUser.Id);
+        }
+
+        return View("ActivityDetail", dto);
+    }
+
+    [HttpPost("Join/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Join(Guid id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+
+        var activity = await _activitiesContext.Activities
+            .Include(a => a.Participants)
+            .FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null)
+            return NotFound();
+
+        if (activity.OwnerId == user.Id)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        if (activity.Participants.Any(p => p.Id == user.Id))
+            return RedirectToAction(nameof(Detail), new { id });
+
+        if (activity.Participants.Count >= activity.MaxPeople)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        activity.Participants.Add(user);
+        activity.UpdatedAt = DateTime.Now;
+        await _activitiesContext.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Detail), new { id });
     }
 }

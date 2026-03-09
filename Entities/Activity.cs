@@ -6,7 +6,7 @@ namespace KMITL_WebDev_MiniProject.Entites;
 public class Activity
 {
 	[Key]
-	public int Id { get; set; }
+	public Guid Id { get; set; }
 
 	[Required]
 	[StringLength(100, MinimumLength = 3)]
@@ -31,6 +31,8 @@ public class Activity
 	public Guid OwnerId { get; set; }
 
 	public ICollection<UserAccount> CoOwners { get; set; } = new List<UserAccount>();
+
+	public ICollection<UserAccount> Participants { get; set; } = new List<UserAccount>();
 
 	[Required]
 	public DateTime EventDate { get; set; }

@@ -4,6 +4,7 @@ using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 public class SearchController(ApplicationUsersDbContext dbContext, ApplicationActivitiesDbContext dbContext2,IWebHostEnvironment Env) : Controller
@@ -43,18 +44,28 @@ public class SearchController(ApplicationUsersDbContext dbContext, ApplicationAc
 
 		if(type=="People" || type == "All")
 		{
-			user_query = dbContext.Users.Where(u => u.RealUserName.Contains(keyword)).ToList();		// query user
+			user_query = dbContext.Users
+				.Where(u =>
+					string.IsNullOrEmpty(keyword) ||
+					(u.RealUserName != null && u.RealUserName.Contains(keyword)) ||
+					(u.UserName != null && u.UserName.Contains(keyword)))
+				.ToList();		// query user
 			foreach (var user in user_query)
 			{
 				response.Result_User.Add(				// add in json
-					new { name = $"{user.RealUserName}", image = $"{Url.Content("~/" +  user.ImagePath)}", id = $"{user.Id}"}
+					new { name = user.RealUserName ?? user.UserName ?? "Unknown", image = $"{Url.Content("~/" +  user.ImagePath)}", id = $"{user.Id}"}
 				);
 				// Console.Write(Url.Content("~/" +  user.ImagePath) +"|||||||||||||||||"+ user.ImagePath + "-----------------------\n");
 			}
 		}
 		if(type=="Activity" || type == "All")
 		{
-			activities_query = dbContext2.Activities.Where(u => u.Name.Contains(keyword)).ToList();
+			activities_query = dbContext2.Activities
+				.Where(a =>
+					string.IsNullOrEmpty(keyword) ||
+					EF.Functions.Like(a.Name, $"%{keyword}%") ||
+					a.Keywords.Any(k => EF.Functions.Like(k.Keyword, $"%{keyword}%")))
+				.ToList();
 			foreach (var activity in activities_query)
 			{
 				response.Result_Activity.Add(

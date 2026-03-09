@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MvcMovie.Migrations
+namespace MvcMovie.Migrations.Activitys
 {
     /// <inheritdoc />
-    public partial class AddActivitiesTable : Migration
+    public partial class Activities : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,8 +19,7 @@ namespace MvcMovie.Migrations
                 name: "Activities",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Name = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Description = table.Column<string>(type: "longtext", nullable: true)
@@ -53,17 +52,17 @@ namespace MvcMovie.Migrations
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ActivityId = table.Column<int>(type: "int", nullable: false),
                     Keyword = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ActivityId1 = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActivityKeywords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ActivityKeywords_Activities_ActivityId",
-                        column: x => x.ActivityId,
+                        name: "FK_ActivityKeywords_Activities_ActivityId1",
+                        column: x => x.ActivityId1,
                         principalTable: "Activities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -80,9 +79,9 @@ namespace MvcMovie.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Sex = table.Column<uint>(type: "int unsigned", nullable: false),
                     DateOfBirth = table.Column<DateOnly>(type: "date", nullable: false),
-                    ImageURL = table.Column<string>(type: "longtext", nullable: true)
+                    ImagePath = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ActivityId = table.Column<int>(type: "int", nullable: true),
+                    ActivityId = table.Column<Guid>(type: "char(36)", nullable: true, collation: "ascii_general_ci"),
                     UserName = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "longtext", nullable: true)
@@ -128,9 +127,9 @@ namespace MvcMovie.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ActivityKeywords_ActivityId",
+                name: "IX_ActivityKeywords_ActivityId1",
                 table: "ActivityKeywords",
-                column: "ActivityId");
+                column: "ActivityId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserAccount_ActivityId",
