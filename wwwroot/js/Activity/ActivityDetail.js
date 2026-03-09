@@ -10,6 +10,10 @@ if (comment_bar) {
 // for submit comment and update comment section 
 async function update_comment(e){
 	const content = e.currentTarget.value;
+	// if user don't write any comment and press enter || click icon submit
+	if(content.length < 1){
+		return 
+	}
 	const act_id = e.currentTarget.getAttribute("act-id");
 	const response = await fetch(`/Comment/CreateComment`, {
 		method: "POST",

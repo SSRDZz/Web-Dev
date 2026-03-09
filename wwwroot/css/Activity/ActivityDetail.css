@@ -154,6 +154,8 @@ h2 {
     z-index: 15;
     
     cursor: pointer;
+
+    opacity: 0.8;
 }
 
 hr {
