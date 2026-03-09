@@ -4,16 +4,19 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MvcMovie.Migrations.ApplicationUsers
+namespace MvcMovie.Migrations.Activitys
 {
     /// <inheritdoc />
-    public partial class AddUserCoOwnedActivities : Migration
+    public partial class ActInitCompact : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateTable(
-                name: "Activity",
+                name: "Activities",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
@@ -22,6 +25,8 @@ namespace MvcMovie.Migrations.ApplicationUsers
                     Description = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    KeywordsText = table.Column<string>(type: "varchar(2000)", maxLength: 2000, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     MaxPeople = table.Column<int>(type: "int", nullable: false),
                     RecruitingMode = table.Column<int>(type: "int", nullable: false),
@@ -38,50 +43,30 @@ namespace MvcMovie.Migrations.ApplicationUsers
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Activity", x => x.Id);
+                    table.PrimaryKey("PK_Activities", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ActivityKeyword",
+                name: "ActivityUsers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ActivityId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Keyword = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    UserId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ActivityKeyword", x => x.Id);
+                    table.PrimaryKey("PK_ActivityUsers", x => new { x.ActivityId, x.UserId, x.Role });
                     table.ForeignKey(
-                        name: "FK_ActivityKeyword_Activity_ActivityId",
+                        name: "FK_ActivityUsers_Activities_ActivityId",
                         column: x => x.ActivityId,
-                        principalTable: "Activity",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "ActivityUserAccount",
-                columns: table => new
-                {
-                    CoOwnedActivitiesId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CoOwnersId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ActivityUserAccount", x => new { x.CoOwnedActivitiesId, x.CoOwnersId });
-                    table.ForeignKey(
-                        name: "FK_ActivityUserAccount_Activity_CoOwnedActivitiesId",
-                        column: x => x.CoOwnedActivitiesId,
-                        principalTable: "Activity",
+                        principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ActivityUserAccount_AspNetUsers_CoOwnersId",
-                        column: x => x.CoOwnersId,
+                        name: "FK_ActivityUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -89,27 +74,29 @@ namespace MvcMovie.Migrations.ApplicationUsers
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ActivityKeyword_ActivityId",
-                table: "ActivityKeyword",
-                column: "ActivityId");
+                name: "IX_Activities_EventDate",
+                table: "Activities",
+                column: "EventDate");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ActivityUserAccount_CoOwnersId",
-                table: "ActivityUserAccount",
-                column: "CoOwnersId");
+                name: "IX_Activities_OwnerId",
+                table: "Activities",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActivityUsers_UserId_Role",
+                table: "ActivityUsers",
+                columns: new[] { "UserId", "Role" });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ActivityKeyword");
+                name: "ActivityUsers");
 
             migrationBuilder.DropTable(
-                name: "ActivityUserAccount");
-
-            migrationBuilder.DropTable(
-                name: "Activity");
+                name: "Activities");
         }
     }
 }

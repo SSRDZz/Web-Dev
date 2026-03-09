@@ -4,7 +4,6 @@ using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.DTO;
-using MvcMovie.Migrations.ApplicationUserUtil;
 using KMITL_WebDev_MiniProject.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
@@ -60,6 +59,11 @@ public class ActivityController : Controller
             Id = Guid.NewGuid(),
             Name = model.Name,
             Description = model.Description,
+            KeywordsText = string.Join(", ", (model.KeywordInput ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(k => k.Trim())
+                .Where(k => !string.IsNullOrWhiteSpace(k))
+                .Distinct(StringComparer.OrdinalIgnoreCase)),
             ImageUrl = model.ImageUrl,
             MaxPeople = model.MaxPeople,
             RecruitingMode = (int)model.RecruitingMode,
@@ -72,35 +76,8 @@ public class ActivityController : Controller
             UpdatedAt = DateTime.Now
         };
 
-        // add the activity first so we have a valid Id for the keywords
         _activitiesContext.Activities.Add(activity);
         await _activitiesContext.SaveChangesAsync();
-
-        // parse comma‑separated keywords and insert into the join table
-        if (!string.IsNullOrWhiteSpace(model.KeywordInput))
-        {
-            var keywordList = model.KeywordInput
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(k => k.Trim())
-                .Where(k => !string.IsNullOrEmpty(k))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            if (keywordList.Any())
-            {
-                foreach (var kw in keywordList)
-                {
-                    _activitiesContext.ActivityKeywords.Add(new ActivityKeyword
-                    {
-                        Id = Guid.NewGuid(),
-                        ActivityId = activity.Id,
-                        Keyword = kw
-                    });
-                }
-
-                await _activitiesContext.SaveChangesAsync();
-            }
-        }
 
         if (_fileUploader.FileIsExist(model.ActivityImage))
         {
@@ -121,26 +98,32 @@ public class ActivityController : Controller
         // include keywords so the view can render them
         Activity activity = await _activitiesContext.Activities
             .Where(a => a.Id == id)
-            .Include(a => a.Keywords)
-            .Include(a => a.Participants)
+            .Include(a => a.ActivityUsers)
+                .ThenInclude(au => au.User)
             .FirstOrDefaultAsync();
         if (activity == null)
             return NotFound();
 
         // look up owner name
         string ownerName = "";
+        string ownerImagePath = "image/UserProfile/guest_picture.jpg";
         if (activity.OwnerId != Guid.Empty)
         {
             var owner = await _userManager.FindByIdAsync(activity.OwnerId.ToString());
             if (owner != null)
+            {
                 ownerName = owner.RealUserName ?? owner.UserName;
+                if (!string.IsNullOrWhiteSpace(owner.ImagePath))
+                    ownerImagePath = owner.ImagePath;
+            }
         }
 
         ActivityDTO dto = new ActivityDTO()
         {
             Act = activity,
             Comments = await _ComSer.ShowCommentDTOs(id),
-            OwnerName = ownerName
+            OwnerName = ownerName,
+            OwnerImagePath = ownerImagePath
         };
 
         var currentUser = await _userManager.GetUserAsync(User);
@@ -162,7 +145,7 @@ public class ActivityController : Controller
             return Challenge();
 
         var activity = await _activitiesContext.Activities
-            .Include(a => a.Participants)
+            .Include(a => a.ActivityUsers)
             .FirstOrDefaultAsync(a => a.Id == id);
         if (activity == null)
             return NotFound();
@@ -170,13 +153,18 @@ public class ActivityController : Controller
         if (activity.OwnerId == user.Id)
             return RedirectToAction(nameof(Detail), new { id });
 
-        if (activity.Participants.Any(p => p.Id == user.Id))
+        if (activity.ActivityUsers.Any(au => au.UserId == user.Id && au.Role == ActivityUserRole.Participant))
             return RedirectToAction(nameof(Detail), new { id });
 
-        if (activity.Participants.Count >= activity.MaxPeople)
+        if (activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant) >= activity.MaxPeople)
             return RedirectToAction(nameof(Detail), new { id });
 
-        activity.Participants.Add(user);
+        activity.ActivityUsers.Add(new ActivityUser
+        {
+            ActivityId = activity.Id,
+            UserId = user.Id,
+            Role = ActivityUserRole.Participant
+        });
         activity.UpdatedAt = DateTime.Now;
         await _activitiesContext.SaveChangesAsync();
 

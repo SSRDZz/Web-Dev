@@ -64,7 +64,7 @@ public class SearchController(ApplicationUsersDbContext dbContext, ApplicationAc
 				.Where(a =>
 					string.IsNullOrEmpty(keyword) ||
 					EF.Functions.Like(a.Name, $"%{keyword}%") ||
-					a.Keywords.Any(k => EF.Functions.Like(k.Keyword, $"%{keyword}%")))
+					(a.KeywordsText != null && EF.Functions.Like(a.KeywordsText, $"%{keyword}%")))
 				.ToList();
 			foreach (var activity in activities_query)
 			{

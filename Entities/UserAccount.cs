@@ -26,9 +26,5 @@ public class UserAccount: IdentityUser<Guid>
 	[Required]
 	public string ImagePath {get; set;}
 
-	// many-to-many: activities this user co-owns
-	public ICollection<Activity> CoOwnedActivities { get; set; } = new List<Activity>();
-
-	// many-to-many: activities this user is participating in
-	public ICollection<Activity> ParticipatingActivities { get; set; } = new List<Activity>();
+	public ICollection<ActivityUser> ActivityUsers { get; set; } = new List<ActivityUser>();
 }

@@ -25,8 +25,8 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var activities = await _activitiesContext.Activities
-            .Include(a => a.Keywords)
-            .Include(a => a.Participants)
+            .Include(a => a.ActivityUsers)
+                .ThenInclude(au => au.User)
             .ToListAsync();
         var previews = new List<ActivityPreviewViewModel>(activities.Count);
         foreach (var act in activities)
@@ -80,6 +80,7 @@ public class HomeController : Controller
         }
         var suggestions = _activitiesContext.Activities
             .Where(a => a.Name.StartsWith(keyword))
+            .OrderBy(a => a.Name)
             .Select(a => a.Name)
             .Take(4)
             .ToList();

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MvcMovie.Migrations.Activitys
 {
     [DbContext(typeof(ApplicationActivitiesDbContext))]
-    [Migration("20260306003354_Activities")]
-    partial class Activities
+    [Migration("20260309213032_ActInitCompact")]
+    partial class ActInitCompact
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,10 @@ namespace MvcMovie.Migrations.Activitys
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("KeywordsText")
+                        .HasMaxLength(2000)
+                        .HasColumnType("varchar(2000)");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -84,28 +88,22 @@ namespace MvcMovie.Migrations.Activitys
                     b.ToTable("Activities");
                 });
 
-            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.ActivityKeyword", b =>
+            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.ActivityUser", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("ActivityId")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("ActivityId")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("ActivityId1")
-                        .HasColumnType("char(36)");
+                    b.HasKey("ActivityId", "UserId", "Role");
 
-                    b.Property<string>("Keyword")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                    b.HasIndex("UserId", "Role");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityId1");
-
-                    b.ToTable("ActivityKeywords");
+                    b.ToTable("ActivityUsers", (string)null);
                 });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.UserAccount", b =>
@@ -116,9 +114,6 @@ namespace MvcMovie.Migrations.Activitys
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<Guid?>("ActivityId")
-                        .HasColumnType("char(36)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext");
@@ -183,33 +178,39 @@ namespace MvcMovie.Migrations.Activitys
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId");
-
                     b.HasIndex("RealUserName")
                         .IsUnique();
 
-                    b.ToTable("UserAccount");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.ActivityKeyword", b =>
+            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.ActivityUser", b =>
                 {
-                    b.HasOne("KMITL_WebDev_MiniProject.Entites.Activity", null)
-                        .WithMany("Keywords")
-                        .HasForeignKey("ActivityId1");
-                });
+                    b.HasOne("KMITL_WebDev_MiniProject.Entites.Activity", "Activity")
+                        .WithMany("ActivityUsers")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.UserAccount", b =>
-                {
-                    b.HasOne("KMITL_WebDev_MiniProject.Entites.Activity", null)
-                        .WithMany("CoOwners")
-                        .HasForeignKey("ActivityId");
+                    b.HasOne("KMITL_WebDev_MiniProject.Entites.UserAccount", "User")
+                        .WithMany("ActivityUsers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.Activity", b =>
                 {
-                    b.Navigation("CoOwners");
+                    b.Navigation("ActivityUsers");
+                });
 
-                    b.Navigation("Keywords");
+            modelBuilder.Entity("KMITL_WebDev_MiniProject.Entites.UserAccount", b =>
+                {
+                    b.Navigation("ActivityUsers");
                 });
 #pragma warning restore 612, 618
         }

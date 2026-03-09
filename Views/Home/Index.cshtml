@@ -45,7 +45,7 @@
                 <p><strong>Participants:</strong> @activity.Act.Participants.Count / @activity.Act.MaxPeople</p>
                 @if (activity.Act.Keywords != null && activity.Act.Keywords.Any())
                 {
-                    <p><strong>Keywords:</strong> @string.Join(", ", activity.Act.Keywords.Select(k => k.Keyword))</p>
+                    <p><strong>Keywords:</strong> @string.Join(", ", activity.Act.Keywords)</p>
                 }
             </div>
         </div>
