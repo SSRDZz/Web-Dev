@@ -14,11 +14,14 @@
         </div>
       
         <form asp-controller="Search" asp-action="Index" method="GET" class="search-container">
-            <input name="keyword" id="keyword" class="search-input" placeholder="Search for anything" value="@ViewData["CurrentKeyword"]" >
+            <input name="keyword" id="keyword" class="search-input" placeholder="Search for anything" value="@ViewData["CurrentKeyword"]" autocomplete="off">
             
             <div id="submit-button">
                 <img src="/image/search.svg" alt="Search" />
             </div>	
+
+            <ul class="suggestion-box" style="display: none;">
+                </ul>
 
             <button type="submit" style="display:none"></button>
         </form>
@@ -72,9 +75,7 @@
             sidebar.classList.toggle('show');
         };
     </script>
-    <script src="~/js/Search/SearchUser.js"></script>
     <script src="~/js/Layout/site.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
-@* <script src="~/js/Search/SearchUser.js"></script> *@

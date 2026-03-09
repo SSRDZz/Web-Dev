@@ -67,30 +67,4 @@ public class SearchController(ApplicationUsersDbContext dbContext, ApplicationAc
 		return Json(response);
 
 	}
-
-
-
-
-	[HttpGet]
-	[Authorize]
-	public IActionResult SearchByUsername(string Username)
-	{
-		if(string.IsNullOrEmpty(Username))
-			return PartialView(new List<SearchUserViewModel>());
-
-		List<UserAccount> users = dbContext.Users.Where(u => u.RealUserName.Contains(Username)).ToList();
-		List<SearchUserViewModel> res = new List<SearchUserViewModel>();
-
-		for(int i = 0; i < users.Count; i++)
-		{
-			res.Add(new SearchUserViewModel()
-			{
-				Id = users[i].Id,
-				Username = users[i].RealUserName,
-				ImagePath = users[i].ImagePath
-			});
-		}
-
-		return PartialView(res);
-	}
 };
