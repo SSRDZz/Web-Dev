@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = Model?.Name ?? "Activity Details";
+    var ownerParticipant = Model?.Participants?.FirstOrDefault(p => p.Id == Model!.OwnerId);
+    var ownerDisplayName = ownerParticipant?.RealUserName ?? ownerParticipant?.UserName ?? Model?.OwnerId.ToString() ?? "Unknown";
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
@@ -30,6 +32,13 @@
                     <p><strong>Event Date:</strong> @Model?.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
                     <p><strong>Location:</strong> @Model?.Location</p>
                     <p><strong>Participants:</strong> @Model?.Participants.Count / @Model?.MaxPeople</p>
+                    @if (Model?.OwnerId != Guid.Empty)
+                    {
+                        <p>
+                            <strong>Owner:</strong>
+                            <a href="@Url.Action("ProfileOther", "User", new { Id = Model!.OwnerId })">@ownerDisplayName</a>
+                        </p>
+                    }
                     @if (!string.IsNullOrEmpty(Model?.MapUrl))
                     {
                         <p><strong>Map:</strong></p>
@@ -58,7 +67,7 @@
                             <div style="margin: 10px 0;">
                                 @foreach (var participant in Model.Participants)
                                 {
-                                    <a href="@Url.Action("Profile", "User", new { id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
+                                    <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
                                         <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
                                         <span style="font-weight: 500;">@participant.RealUserName</span>
                                     </a>
@@ -87,7 +96,17 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="user-meta">Activity Owner</div>
+            <div class="user-meta">
+                Activity Owner:
+                @if (Model?.OwnerId != Guid.Empty)
+                {
+                    <strong><a href="@Url.Action("ProfileOther", "User", new { Id = Model!.OwnerId })">@ownerDisplayName</a></strong>
+                }
+                else
+                {
+                    <strong>Unknown</strong>
+                }
+            </div>
             <p><strong>Created:</strong> @Model?.CreatedAt.ToString("MMM dd, yyyy")</p>
             <p><strong>Last Updated:</strong> @Model?.UpdatedAt.ToString("MMM dd, yyyy")</p>
         </div>

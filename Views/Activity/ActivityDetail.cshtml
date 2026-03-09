@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = Model?.Act.Name ?? "Activity Details";
+    var ownerParticipant = Model?.Act.Participants?.FirstOrDefault(p => p.Id == Model.Act.OwnerId);
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
@@ -49,6 +50,16 @@
                             <span>Owner Selection</span>
                         }
                     </p>
+                    @if (Model?.Act.OwnerId != Guid.Empty)
+                    {
+                        <p><strong>Owner:</strong></p>
+                        <div style="margin: 10px 0;">
+                            <a href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
+                                <img src="@Url.Content("~/" + (ownerParticipant?.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
+                                <span style="font-weight: 500;">@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
+                            </a>
+                        </div>
+                    }
                     @if (Model?.Act.ShowParticipants == true)
                     {
                         <p><strong>Show Participants:</strong> Yes</p>
@@ -58,7 +69,7 @@
                             <div style="margin: 10px 0;">
                                 @foreach (var participant in Model.Act.Participants)
                                 {
-                                    <a href="@Url.Action("Profile", "User", new { id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
+                                    <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
                                         <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
                                         <span style="font-weight: 500;">@participant.RealUserName</span>
                                     </a>
