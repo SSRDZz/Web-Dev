@@ -2,7 +2,10 @@
 html {
     padding: 0px;
     margin: 0px;
-    min-height: 100vh;     
+
+    /* this fix for problem element don't render full page */
+    min-height: 100%;     
+
 }
 
 
@@ -148,7 +151,9 @@ body {
     display: flex;
     flex-direction: column;
     transition: 0.3s ease;
-
+ 
+    position: fixed;
+    z-index: 999;
     
 }
 
@@ -198,7 +203,13 @@ body {
 }
 
 /* Content Area */
-.content-area { flex: 1; padding: 25px; background-color: #fff; }
+.content-area { 
+    flex: 1; 
+    padding: 25px; 
+    background-color: #fff; 
+
+    padding-left:  275px;
+}
 
 
 /* anchor */
@@ -239,6 +250,10 @@ a:hover {
 
     .sidebar.show {
         left: 0;
+    }
+
+    .content-area{
+        padding-left: 25px;
     }
 }
 
