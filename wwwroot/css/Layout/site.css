@@ -181,13 +181,22 @@ body {
 
 .btn-create {
     margin-top: auto;
+    padding: 12px;
+
     background-color: #FF7061;
     color: white;
     border: none;
-    padding: 12px;
     border-radius: 25px;
+
     font-weight: bold;
+    
     cursor: pointer;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-self: center; 
 }
 
 /* for icon in side bar */
