@@ -26,7 +26,7 @@
                         <span>Available</span>
                     }
                 </div>
-                <h3>@Model?.Act.Name</h3>
+                <h1>@Model?.Act.Name</h1>
                 <p>@Model?.Act.Description</p>
                 <div class="activity-info">
                     <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
@@ -135,7 +135,12 @@
     <div>
         <h2>Comment Section</h2>
         @* <label>Comment</label> *@
-        <input type="text" id="create-comment" act-id="@Model.Act.Id" placeholder="Join the conversation">
+        <div class="comment-box">
+            <input type="text" id="create-comment" act-id="@Model.Act.Id" placeholder="Join the conversation">
+            <div id="comment-button">
+                <img src="/image/man.svg" alt="Comment" />
+            </div>	
+        </div>
     </div>
     <hr />
     <section id="comment-section">

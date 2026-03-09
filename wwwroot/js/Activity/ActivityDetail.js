@@ -1,24 +1,30 @@
-const search_bar = document.getElementById("create-comment");
-if (search_bar) {
-	search_bar.addEventListener("keypress", async (e) => {
+const comment_bar = document.getElementById("create-comment");
+if (comment_bar) {
+	comment_bar.addEventListener("keypress", (e) => {
 		if (e.key != "Enter")
 			return;
-		const content = e.currentTarget.value;
-		const act_id = e.currentTarget.getAttribute("act-id");
-		const response = await fetch(`/Comment/CreateComment`, {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ ActivityId: act_id, Content: content })
-		});
-
-		if (!response.ok)
-			return;
-
-		const html = await response.text();
-		document.getElementById("comment-section").innerHTML = html;
-		search_bar.value = "";
+		update_comment(e)
 	});
 }
+
+// for submit comment and update comment section 
+async function update_comment(e){
+	const content = e.currentTarget.value;
+	const act_id = e.currentTarget.getAttribute("act-id");
+	const response = await fetch(`/Comment/CreateComment`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify({ ActivityId: act_id, Content: content })
+	});
+
+	if (!response.ok)
+		return;
+
+	const html = await response.text();
+	document.getElementById("comment-section").innerHTML = html;
+	comment_bar.value = "";
+}
+
 
 function parseLatLngFromMapUrl(raw) {
 	if (!raw) return null;
@@ -93,3 +99,12 @@ if (document.readyState === 'loading') {
 } else {
 	initLeafletMap();
 }
+
+function comment_button(){
+    const icon = document.querySelector("#comment-button");
+    const comment_bar = document.querySelector("#create-comment");
+    icon.addEventListener('click',function(){
+        update_comment({ currentTarget: comment_bar })
+    });
+}
+comment_button()
