@@ -4,10 +4,26 @@
     ViewData["Title"] = Model?.Act.Name ?? "Activity Details";
 }
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+
 <div class="activity-grid">
     <div class="card">
         <div class="card-header">
             <div class="detail">
+                <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (Model?.Act.Participants.Count >= Model?.Act.MaxPeople ? "full" : "available"))">
+                    @if (Model?.Act.EventDate < DateTime.Now)
+                    {
+                        <span>Closed</span>
+                    }
+                    else if (Model?.Act.Participants.Count >= Model?.Act.MaxPeople)
+                    {
+                        <span>Full</span>
+                    }
+                    else
+                    {
+                        <span>Available</span>
+                    }
+                </div>
                 <h3>@Model?.Act.Name</h3>
                 <p>@Model?.Act.Description</p>
                 <div class="activity-info">
@@ -16,7 +32,8 @@
                     <p><strong>Participants:</strong> @Model?.Act.Participants.Count / @Model?.Act.MaxPeople</p>
                     @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
                     {
-                        <p><strong>Map URL:</strong> <a href="@Model?.Act.MapUrl" target="_blank">View on Map</a></p>
+                        <p><strong>Map:</strong></p>
+                        <div id="activity-map" data-map-url="@Model.Act.MapUrl" style="width: 100%; height: 300px; border-radius: 10px; margin: 8px 0;"></div>
                     }
                     <p><strong>Recruiting Mode:</strong> 
                         @if (Model?.Act.RecruitingMode == 1)
@@ -32,7 +49,23 @@
                             <span>Owner Selection</span>
                         }
                     </p>
-                    <p><strong>Show Participants:</strong> @(Model?.Act.ShowParticipants == true ? "Yes" : "No")</p>
+                    @if (Model?.Act.ShowParticipants == true)
+                    {
+                        <p><strong>Show Participants:</strong> Yes</p>
+                        @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
+                        {
+                            <p><strong>Participant List:</strong></p>
+                            <div style="margin: 10px 0;">
+                                @foreach (var participant in Model.Act.Participants)
+                                {
+                                    <a href="@Url.Action("Profile", "User", new { id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
+                                        <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
+                                        <span style="font-weight: 500;">@participant.RealUserName</span>
+                                    </a>
+                                }
+                            </div>
+                        }
+                    }
                     @* keywords *@
                     @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
                     {
@@ -122,6 +155,13 @@
         margin: 8px 0;
     }
 
+    #activity-map {
+        width: 100%;
+        height: 300px;
+        border-radius: 10px;
+        margin: 8px 0;
+    }
+
     .card-header {
         display: flex;
         justify-content: space-between;
@@ -150,6 +190,37 @@
     .join-btn:hover {
         background: #e85d52;
     }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .status-badge.available {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .status-badge.full {
+        background-color: #FF9800;
+        color: white;
+    }
+
+    .status-badge.closed {
+        background-color: #9E9E9E;
+        color: white;
+    }
+
+    .user-meta {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 10px;
+    }
 </style>
 
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script src="~/js/Activity/ActivityDetail.js"></script>

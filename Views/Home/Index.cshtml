@@ -4,6 +4,20 @@
     @foreach(var activity in Model)
     {
         <div class="card">
+            <div class="status-badge @(activity.Act.EventDate < DateTime.Now ? "closed" : (activity.Act.Participants.Count >= activity.Act.MaxPeople ? "full" : "available"))">
+                @if (activity.Act.EventDate < DateTime.Now)
+                {
+                    <span>Closed</span>
+                }
+                else if (activity.Act.Participants.Count >= activity.Act.MaxPeople)
+                {
+                    <span>Full</span>
+                }
+                else
+                {
+                    <span>Available</span>
+                }
+            </div>
             <div class="card-header">
                 <div class="user-meta">Activity Owner: <strong>@activity.OwnerName</strong></div>
                 <a href="@Url.Action("Detail","Activity", new { id = activity.Act.Id })" class="join-btn">
@@ -111,6 +125,30 @@
     .join-btn:hover {
         background: #e85d52;
         text-decoration: none;
+        color: white;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .status-badge.available {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .status-badge.full {
+        background-color: #FF9800;
+        color: white;
+    }
+
+    .status-badge.closed {
+        background-color: #9E9E9E;
         color: white;
     }
 </style>
