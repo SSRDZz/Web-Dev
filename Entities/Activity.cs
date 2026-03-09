@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace KMITL_WebDev_MiniProject.Entites;
 
@@ -14,7 +15,15 @@ public class Activity
 
 	public string? Description { get; set; }
 
-	public ICollection<ActivityKeyword> Keywords { get; set; } = new List<ActivityKeyword>();
+	[StringLength(2000)]
+	public string? KeywordsText { get; set; }
+
+	[NotMapped]
+	public ICollection<string> Keywords => (KeywordsText ?? string.Empty)
+		.Split(',', StringSplitOptions.RemoveEmptyEntries)
+		.Select(k => k.Trim())
+		.Where(k => !string.IsNullOrWhiteSpace(k))
+		.ToList();
 
 	[Url]
 	public string? ImageUrl { get; set; }
@@ -30,9 +39,21 @@ public class Activity
 	[Required]
 	public Guid OwnerId { get; set; }
 
-	public ICollection<UserAccount> CoOwners { get; set; } = new List<UserAccount>();
+	public ICollection<ActivityUser> ActivityUsers { get; set; } = new List<ActivityUser>();
 
-	public ICollection<UserAccount> Participants { get; set; } = new List<UserAccount>();
+	[NotMapped]
+	public ICollection<UserAccount> CoOwners => ActivityUsers
+		.Where(au => au.Role == ActivityUserRole.CoOwner)
+		.Select(au => au.User)
+		.Where(u => u != null)
+		.ToList();
+
+	[NotMapped]
+	public ICollection<UserAccount> Participants => ActivityUsers
+		.Where(au => au.Role == ActivityUserRole.Participant)
+		.Select(au => au.User)
+		.Where(u => u != null)
+		.ToList();
 
 	[Required]
 	public DateTime EventDate { get; set; }

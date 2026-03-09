@@ -23,10 +23,8 @@ public class ApplicationUsersDbContext: IdentityDbContext<UserAccount, IdentityR
 
             entity.Property(u => u.PhoneNumber).HasMaxLength(20);
 
-            // Note: CoOwnedActivities and ParticipatingActivities relationships 
-            // are configured in ApplicationActivitiesDbContext
-            entity.Ignore(u => u.CoOwnedActivities);
-            entity.Ignore(u => u.ParticipatingActivities);
+            // Activity user-role relationships are configured in ApplicationActivitiesDbContext.
+            entity.Ignore(u => u.ActivityUsers);
         });
 	}
 }

@@ -77,7 +77,7 @@
                     }
                     @if (Model is KMITL_WebDev_MiniProject.Entites.Activity act && act.Keywords != null && act.Keywords.Any())
                     {
-                        <p><strong>Keywords:</strong> @string.Join(", ", act.Keywords.Select(k => k.Keyword))</p>
+                        <p><strong>Keywords:</strong> @string.Join(", ", act.Keywords)</p>
                     }
                 </div>
             </div>

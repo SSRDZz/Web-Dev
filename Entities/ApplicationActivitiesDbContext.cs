@@ -9,7 +9,7 @@ public class ApplicationActivitiesDbContext : DbContext
 	public ApplicationActivitiesDbContext(DbContextOptions<ApplicationActivitiesDbContext> options) : base(options) { }
 
 	public DbSet<Activity> Activities { get; set; }
-	public DbSet<ActivityKeyword> ActivityKeywords { get; set; }
+	public DbSet<ActivityUser> ActivityUsers { get; set; }
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
@@ -31,32 +31,24 @@ public class ApplicationActivitiesDbContext : DbContext
 			entity.HasIndex(a => a.OwnerId);
 		entity.HasIndex(a => a.EventDate);
 
-		// configure many-to-many with UserAccount for co‑owners
-		entity
-			.HasMany(a => a.CoOwners)
-			.WithMany(u => u.CoOwnedActivities)
-			.UsingEntity(join => join.ToTable("ActivityCoOwners"));
-
-		// configure many-to-many with UserAccount for participants
-		entity
-			.HasMany(a => a.Participants)
-			.WithMany(u => u.ParticipatingActivities)
-			.UsingEntity<Dictionary<string, object>>(
-				"ActivityParticipants",
-				j => j.HasOne<UserAccount>().WithMany().HasForeignKey("ParticipantsId"),
-				j => j.HasOne<Activity>().WithMany().HasForeignKey("ActivityId"));
+		entity.HasMany(a => a.ActivityUsers)
+			.WithOne(au => au.Activity)
+			.HasForeignKey(au => au.ActivityId)
+			.OnDelete(DeleteBehavior.Cascade);
 		});
-		builder.Entity<ActivityKeyword>(entity =>
-		{
-			entity.HasKey(k => k.Id);
-			entity.Property(k => k.Keyword).IsRequired().HasMaxLength(100);
-			entity.Property(k => k.ActivityId).IsRequired();
 
-			// explicit relationship to avoid mismatched column types
-			entity.HasOne(k => k.Activity)
-				.WithMany(a => a.Keywords)
-				.HasForeignKey(k => k.ActivityId)
+		builder.Entity<ActivityUser>(entity =>
+		{
+			entity.ToTable("ActivityUsers");
+			entity.HasKey(au => new { au.ActivityId, au.UserId, au.Role });
+			entity.Property(au => au.Role).HasConversion<int>();
+
+			entity.HasOne(au => au.User)
+				.WithMany(u => u.ActivityUsers)
+				.HasForeignKey(au => au.UserId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			entity.HasIndex(au => new { au.UserId, au.Role });
 		});
 	}
 }
