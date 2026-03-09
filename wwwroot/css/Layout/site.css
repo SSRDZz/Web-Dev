@@ -41,27 +41,84 @@ body {
 
     display: flex;
     justify-content: center;
+    position: relative;
 
 }
 
 
 .search-input {
     padding: 8px 15px;
-    width:100%;
+    width: 100%;
     outline: none;
     margin: 0 10px;
 
     border: 2px solid transparent;
     border-radius: 20px;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden;
+    position: relative;
+    z-index: 10;
+    background-color: white;
 }
 
 .search-input:focus{
     border-color: #007bff;
 
     outline: none;
-
 }
 
+#submit-button{
+    position: absolute;
+    top: 50%;
+    right: 1rem; 
+    transform: translateY(-50%);
+    
+    display: flex;
+    align-items: center;    
+    
+    width: 1.5rem;
+    z-index: 15;
+    
+    cursor: pointer;
+}
+
+#submit-button img {
+    width: 90%;
+    height: auto; 
+}
+
+/* suggestion box */
+.suggestion-box{
+    position: absolute;
+    top: calc(100% - 15px);
+    left: 0;
+    right: 0;
+
+    background: white;
+    border: 2px solid #d0d0d0;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+
+    z-index: 5; 
+    list-style: none;
+    overflow-y: auto;
+    max-height: 200px;
+
+    margin: 0 10px;
+    padding-top: 10px;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    margin: 0;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa; 
+}
 
 /* user profile */
 .user-icon {
@@ -91,6 +148,16 @@ body {
     display: flex;
     flex-direction: column;
     transition: 0.3s ease;
+
+    
+}
+
+.sidebar a:hover{
+    text-decoration: none;
+}
+
+.sidebar a:not(.active):hover{
+    background-color: #ececec;
 }
 
 .nav-item {
@@ -99,7 +166,7 @@ body {
     text-decoration: none;
     color: #333;
     border-radius: 8px;
-    margin-bottom: 5px;
+    margin-bottom: 15px; 
 }
 
 .nav-item.active { background-color: #e0e0e0; font-weight: bold; }
@@ -116,6 +183,18 @@ body {
     border-radius: 25px;
     font-weight: bold;
     cursor: pointer;
+}
+
+/* for icon in side bar */
+.sidebar-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-item img {
+    padding-right: 5px;
+    height: 20px;
 }
 
 /* Content Area */
