@@ -34,7 +34,11 @@
 
 
         <div class="profile-buttons">
-            <a asp-controller="User" asp-action="ProfileEdit">Edit</a>
+            <a asp-controller="User" asp-action="ProfileEdit">
+                <button>
+                    Edit
+                </button>
+            </a>
 
             <form asp-controller="Auth" asp-action="Logout" method="POST">
                 <button type="submit">Logout</button>
