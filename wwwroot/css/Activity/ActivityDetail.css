@@ -4,6 +4,7 @@ h2 {
 
     width: fit-content;
     margin: 15px 0;
+    padding-bottom: 8px;
 }
 
 .activity-grid {
@@ -13,10 +14,20 @@ h2 {
 
     padding: 15px
 }
-/* 
+
 .card {
-    padding: 15px;
-} */
+    background-color: #FCFCFD;
+
+    border-radius: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    /* https://getcssscan.com/css-box-shadow-examples */
+
+    width: 100%;
+    height: auto;
+
+    padding: 36px;     
+    box-sizing: border-box;
+}
 
 /* card head -- top */
 .card-header {
@@ -26,6 +37,16 @@ h2 {
     width: 100%;
 }
 
+/* card-text */
+.card-text {
+    padding-right: 20px;
+
+    flex-shrink: 1;
+
+    min-width: 300px;
+    width: 50%;   
+}
+
 /* detail */
 .detail {
     min-width: 200px;
@@ -33,7 +54,7 @@ h2 {
     overflow-wrap: break-word;
 
     margin-right: 10px;
-    flex-shrink: 0;
+    
 }
 .activity-info {
     margin-top: 15px;
@@ -49,6 +70,10 @@ h2 {
     height: 300px;
     border-radius: 10px;
     margin: 8px 0;
+
+    max-width: 100%;
+    overflow: hidden; 
+    display: block;
 }
 
 
@@ -57,10 +82,37 @@ h2 {
     max-width: 350px;
     min-width: 250px;
 
-    flex-shrink: 1;
+    flex-shrink: 2;
     flex-grow: 0;
 
+    position: relative;
+    border-radius: 10px;
+
     
+}
+
+.card-image div{
+    border-radius: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    padding: 8px;
+
+    display: flex;          
+    justify-content: center;
+    align-items: center;
+
+    background-color: #FFFFFF;
+    border: 1px solid #ddd;
+}
+
+.card-image > div > img{
+    width:100%; 
+    max-height: 300px; 
+    border-radius:10px; 
+
+    object-fit: cover;
+    object-position: center;
+    display: block;
 }
 
 .join-btn {
@@ -112,6 +164,14 @@ h2 {
 
 
 /* comment section */
+#comment  {
+    padding: 10px 36px; 
+}
+
+#comment h2 {
+    margin-bottom: 30px; 
+}
+
 .comment-box {
     position: relative;
 }
@@ -121,7 +181,7 @@ h2 {
     height: 50px;
 
     padding: 10px 25px;
-    
+
     border: 1px solid #ddd;
     border-radius: 50px;
 
@@ -161,17 +221,46 @@ h2 {
 hr {
     border: none;
     border-bottom: 2px solid #E9E9EB;
-    margin: 0px 10px;
+    margin: 30px 10px;
 }
 
 
 
 /* phone screen */
 @media (max-width: 768px) {
+    .card {
+        /* border-radius: 0; */
+        /* background-color: #FFFFFF; */
+        /* box-shadow: none; */
+
+        padding: 20px;
+    }
+
+    /* make it have border replace .card */
+    .activity-grid {
+        /* background-color: #FCFCFD; */
+
+        /* border-radius: 20px; */
+        /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+        
+        padding: 0;
+    }
+
     .card-header {
         display: flex;
         flex-direction: column;
         align-items: start  ;
+    }
+
+    .card-text {
+        width: 100%;
+        min-width: 0;
+
+        padding-right: 0;
+    }
+
+    .detail {
+        margin: 0;
     }
 
     .card-image {
@@ -180,6 +269,10 @@ hr {
 
         margin: 20px 0;
 
+    }
+
+    #comment{
+        padding: 5px 20px;
     }
 
     #create-comment {

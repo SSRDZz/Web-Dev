@@ -9,8 +9,8 @@
 
 <div class="activity-grid">
     <div class="card">
-        <div class="card-header">
-            <div class="detail">
+        <div class="card-header">   
+            <div class="card-text">
                 <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (Model?.Act.Participants.Count >= Model?.Act.MaxPeople ? "full" : "available"))">
                     @if (Model?.Act.EventDate < DateTime.Now)
                     {
@@ -25,76 +25,82 @@
                         <span>Available</span>
                     }
                 </div>
+
                 <h1>@Model?.Act.Name</h1>
-                <p>@Model?.Act.Description</p>
-                <div class="activity-info">
-                    <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
-                    <p><strong>Location:</strong> @Model?.Act.Location</p>
-                    <p><strong>Participants:</strong> @Model?.Act.Participants.Count / @Model?.Act.MaxPeople</p>
-                    @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
-                    {
-                        <p><strong>Map:</strong></p>
-                        <div id="activity-map" data-map-url="@Model.Act.MapUrl" style="width: 100%; height: 300px; border-radius: 10px; margin: 8px 0;"></div>
-                    }
-                    <p><strong>Recruiting Mode:</strong> 
-                        @if (Model?.Act.RecruitingMode == 1)
+                <div class="detail">
+                    <p>@Model?.Act.Description</p>
+                    <div class="activity-info">
+                        <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
+                        <p><strong>Location:</strong> @Model?.Act.Location</p>
+                        <p><strong>Participants:</strong> @Model?.Act.Participants.Count / @Model?.Act.MaxPeople</p>
+                        @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
                         {
-                            <span>First Come, First Served</span>
+                            <p><strong>Map:</strong></p>
+                            <div id="activity-map" data-map-url="@Model.Act.MapUrl"></div>
                         }
-                        else if (Model?.Act.RecruitingMode == 2)
+                        <p><strong>Recruiting Mode:</strong> 
+                            @if (Model?.Act.RecruitingMode == 1)
+                            {
+                                <span>First Come, First Served</span>
+                            }
+                            else if (Model?.Act.RecruitingMode == 2)
+                            {
+                                <span>Random on Event Day</span>
+                            }
+                            else if (Model?.Act.RecruitingMode == 3)
+                            {
+                                <span>Owner Selection</span>
+                            }
+                        </p>
+                        @if (Model?.Act.OwnerId != Guid.Empty)
                         {
-                            <span>Random on Event Day</span>
-                        }
-                        else if (Model?.Act.RecruitingMode == 3)
-                        {
-                            <span>Owner Selection</span>
-                        }
-                    </p>
-                    @if (Model?.Act.OwnerId != Guid.Empty)
-                    {
-                        <p><strong>Owner:</strong></p>
-                        <div style="margin: 10px 0;">
-                            <a href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
-                                <img src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
-                                <span style="font-weight: 500;">@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
-                            </a>
-                        </div>
-                    }
-                    @if (Model?.Act.ShowParticipants == true)
-                    {
-                        <p><strong>Show Participants:</strong> Yes</p>
-                        @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
-                        {
-                            <p><strong>Participant List:</strong></p>
+                            <p><strong>Owner:</strong></p>
                             <div style="margin: 10px 0;">
-                                @foreach (var participant in Model.Act.Participants)
-                                {
-                                    <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
-                                        <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
-                                        <span style="font-weight: 500;">@participant.RealUserName</span>
-                                    </a>
-                                }
+                                <a href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
+                                    <img src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
+                                    <span style="font-weight: 500;">@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
+                                </a>
                             </div>
                         }
-                    }
-                    @* keywords *@
-                    @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
-                    {
-                        <p><strong>Keywords:</strong> @string.Join(", ", Model.Act.Keywords)</p>
-                    }
+                        @if (Model?.Act.ShowParticipants == true)
+                        {
+                            <p><strong>Show Participants:</strong> Yes</p>
+                            @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
+                            {
+                                <p><strong>Participant List:</strong></p>
+                                <div style="margin: 10px 0;">
+                                    @foreach (var participant in Model.Act.Participants)
+                                    {
+                                        <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
+                                            <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
+                                            <span style="font-weight: 500;">@participant.RealUserName</span>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        }
+                        @* keywords *@
+                        @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
+                        {
+                            <p><strong>Keywords:</strong> @string.Join(", ", Model.Act.Keywords)</p>
+                        }
+                    </div>
                 </div>
             </div>
+
             <div class="card-image">
-                @if (!string.IsNullOrEmpty(Model?.Act.ImageUrl))
-                {
-                    <img src="@Url.Content("~/" + (Model?.Act.ImageUrl ?? ""))" alt="@Model?.Act.Name" style="width:100%; border-radius:10px; max-height: 300px; object-fit: cover;">
-                }
-                else
-                {
-                    <div style="background-color: #f0f0f0; height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #999;">No Image</span>
-                    </div>
-                }
+                <div>
+                    @if (!string.IsNullOrEmpty(Model?.Act.ImageUrl))
+                    {
+                        <img src="@Url.Content("~/" + (Model?.Act.ImageUrl ?? ""))" alt="@Model?.Act.Name">
+                    }
+                    else
+                    {
+                        <div style="background-color: #f0f0f0; height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #999;">No Image</span>
+                        </div>
+                    }
+                </div>
                 @if (User?.Identity?.IsAuthenticated == true)
                 {
                     <form asp-action="Join" asp-route-id="@Model.Act.Id" method="post">
@@ -122,6 +128,8 @@
                     <a class="join-btn" href="@Url.Action("Login", "Auth")" style="display:block; text-align:center; text-decoration:none;">Login to Join</a>
                 }
             </div>
+
+
         </div>
         <div class="card-body">
             <h2>Details</h2>
@@ -131,7 +139,7 @@
         </div>
     </div>
 
-    <div>
+    <div class="card" id="comment">
         <h2>Comment Section</h2>
         @* <label>Comment</label> *@
         <div class="comment-box">
@@ -140,11 +148,13 @@
                 <img src="/image/send_submit_comment.svg" alt="Comment" />
             </div>	
         </div>
+
+        <hr />
+        
+        <section id="comment-section">
+            @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
+        </section>
     </div>
-    <hr />
-    <section id="comment-section">
-        @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
-    </section>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
