@@ -21,9 +21,17 @@
 
     <div class="profile-card">
 
-        <div>First Name : @Model.FirstName</div>
-        <div>Last Name : @Model.LastName</div>
-        <div>Sex : @Model.Sex</div>
+        <div>@Model.FirstName @Model.LastName
+            @if (Model?.Sex == "Male")
+            {
+                <img src="/image/MaleSymbol.png">
+            }
+            else
+            {
+                <img src="/image/FemaleSymbol.png">
+            }
+        </div>
+
 
         <div class="profile-buttons">
             <a asp-controller="User" asp-action="ProfileEdit">Edit</a>
@@ -88,6 +96,11 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
+    .profile-card img {
+        width: 20px;
+        height: 30px;
+    }
+
     /* Buttons */
     .profile-buttons {
         margin-top: 20px;
@@ -100,5 +113,11 @@
         border: none;
         border-radius: 6px;
         cursor: pointer;
+    }
+
+    .sexSymbol img {
+        width: 20px;
+        height: 30px;
+        margin-top: 1px;
     }
 </style>

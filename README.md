@@ -18,6 +18,7 @@ docker compose down
 ```
 
 docker exec -it MySQLDB mysql -u root -p
+drop database MyDb;
 
 test account
 email : test@gmail.com
