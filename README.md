@@ -8,6 +8,7 @@ start container (start)
 
 ```
 docker compose up -d
+
 ```
 
 delete container (stop)
@@ -15,6 +16,8 @@ delete container (stop)
 ```
 docker compose down
 ```
+
+docker exec -it MySQLDB mysql -u root -p
 
 test account
 email : test@gmail.com
