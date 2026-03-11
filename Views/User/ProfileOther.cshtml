@@ -3,30 +3,33 @@
 
 <link rel="stylesheet" href="~/css/User/ProfileOther.css" asp-append-version="true" />
 
-<div class="text-center">
-    <h3>Profile</h3>
-    <img src="@Url.Content("~/" + Model.ImagePath)" style="width: 5vw; height: auto;" />
-    <div>
-        <label>Username</label>
-        <span>@Model.RealUserName</span>
-    </div>
-    <div>
-        <label>FirstName</label>
-        <span>@Model.FirstName</span>
-    </div>
-    <div>
-        <label>LastName</label>
-        <span>@Model.LastName</span>
-    </div>
-    <div>
-        <label>Reputation</label>
-        <span id="user-reputation">@Model.Reputation</span>
+<div class="profile-container">
+
+    <div class="profile-banner"></div>
+
+    <div class="profile-avatar">
+        <img src="@Url.Content($"~/{Model.ImagePath}")" asp-append-version="true" />
     </div>
 
     <div class="profile-info">
         <h2>@Model.RealUserName</h2>
         <div class="rating" id="user-reputation">@Model.Reputation ⭐</div>
     </div>
+
+    <div class="profile-card">
+
+        <div>@Model.FirstName @Model.LastName
+            @if (Model?.Sex == "Male")
+            {
+                <img src="/image/MaleSymbol.png">
+            }
+            else
+            {
+                <img src="/image/FemaleSymbol.png">
+            }
+        </div>
+    </div>
+
     <div class="star-rating" id="star-rating" isLike="@Model.IsLike">
         <input type="radio" id="star5" class="star-rating-radio" name="rating" value="5">
         <label for="star5">★</label>
@@ -53,7 +56,7 @@
     const p_radio = p.querySelectorAll('input[name="rating"]');
 
     console.log(p.querySelectorAll('input[name="rating"]'))
-    if(p.getAttribute("isLike") != 0) {
+    if (p.getAttribute("isLike") != 0) {
         p_radio[5 - p.getAttribute("isLike")].checked = "true";
     }
 
@@ -66,7 +69,7 @@
 
         await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
             .then(response => response.text())
-            .then(json => { document.getElementById("user-reputation").innerText = `${json}`; })
+            .then(json => { document.getElementById("user-reputation").innerText = `${json} ⭐`; })
             .catch(err => console.warn("Something went wrong.", err));
     });
 </script>
