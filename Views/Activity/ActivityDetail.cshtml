@@ -69,7 +69,7 @@
                                          src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))"
                                          alt="@Model.OwnerName" />
                                     <span><strong>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ?
-                                                                                Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
+                                                                                                                        Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
                                     </a>
                                 </div>
                             }
@@ -139,6 +139,12 @@
                         {
                             <a class="join-btn join-btn-link" href="@Url.Action("Login", "Auth")">Login to Join</a>
                         }
+
+                        <label class="like-container">
+                            <input type="checkbox" class="likeButton">
+                            <span class="like-icon"></span>
+                            like 0
+                        </label>
                     </div>
                 </div>
                 <div class="card-body">
