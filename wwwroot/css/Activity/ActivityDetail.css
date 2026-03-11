@@ -293,6 +293,13 @@ a:hover {
     gap: 10px;
 }
 
+#attendee-card > a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: inherit;
+}
+
 .user-box:hover {
     background-color: #f0f0f0;
 }

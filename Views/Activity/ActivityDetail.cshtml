@@ -1,9 +1,22 @@
 @model KMITL_WebDev_MiniProject.DTO.ActivityDTO
+@using KMITL_WebDev_MiniProject.Entites
 
 @{
     ViewData["Title"] = Model?.Act.Name ?? "Activity Details";
     var ownerCount = (Model?.Act.OwnerId != Guid.Empty) ? 1 : 0;
     var participantsCountIncludingOwner = (Model?.Act.Participants.Count ?? 0) + ownerCount;
+    var mode = (RecruitingMode?)Model?.Act.RecruitingMode;
+    var isClosed = Model?.Act.EventDate <= DateTime.Now;
+    var normalParticipantsCount = Model?.Act.ActivityUsers?.Count(au => au.Role == ActivityUserRole.Participant) ?? 0;
+    var lockedParticipantsCount = Model?.Act.ActivityUsers?.Count(au => au.Role == ActivityUserRole.Locked) ?? 0;
+    var guestSlots = Math.Max(0, (Model?.Act.MaxPeople ?? 0) - ownerCount);
+    var publicSlots = Math.Max(0, guestSlots - lockedParticipantsCount);
+    var isFullForJoin = mode switch
+    {
+        RecruitingMode.RandomOnEventDay => false,
+        RecruitingMode.OwnerSelect => normalParticipantsCount >= publicSlots,
+        _ => participantsCountIncludingOwner >= (Model?.Act.MaxPeople ?? 0)
+    };
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
@@ -16,12 +29,12 @@
             <div class="card-text">
                 <div class="card-topic">
                     <div
-                        class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (participantsCountIncludingOwner >= (Model?.Act.MaxPeople ?? 0) ? "full" : "available"))">
-                        @if (Model?.Act.EventDate < DateTime.Now)
+                        class="status-badge @(isClosed ? "closed" : (isFullForJoin ? "full" : "available"))">
+                        @if (isClosed)
                         {
                             <span>Closed</span>
                         }
-                        else if (participantsCountIncludingOwner >= (Model?.Act.MaxPeople ?? 0))
+                        else if (isFullForJoin)
                         {
                             <span>Full</span>
                         }
@@ -133,11 +146,11 @@
                                         <button class="join-btn" asp-action="Unjoin" asp-route-id="@Model.Act.Id"
                                                 type="submit">Unjoin</button>
                                     }
-                                    else if (Model.Act.EventDate <= DateTime.Now)
+                                    else if (isClosed)
                                     {
                                         <button class="join-btn" type="button" disabled>Closed</button>
                                     }
-                                    else if (participantsCountIncludingOwner >= Model.Act.MaxPeople)
+                                    else if (isFullForJoin)
                                     {
                                         <button class="join-btn" type="button" disabled>Full</button>
                                     }
@@ -180,13 +193,26 @@
                             <div class="participants-user">
                                 @foreach (var participant in Model.Act.Participants)
                                 {
-                                    <a class="user-box" id="attendee-card"
-                                           href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })">
-                                        <img class="user-img"
-                                             src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))"
-                                             alt="@participant.RealUserName" />
-                                        <span><strong>@participant.RealUserName</strong></span>
-                                    </a>
+                                    var relation = Model.Act.ActivityUsers?.FirstOrDefault(au => au.UserId == participant.Id);
+                                    var isLocked = relation?.Role == ActivityUserRole.Locked;
+                                    <div class="user-box" id="attendee-card">
+                                        <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })">
+                                            <img class="user-img"
+                                                 src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))"
+                                                 alt="@participant.RealUserName" />
+                                            <span><strong>@participant.RealUserName</strong></span>
+                                        </a>
+
+                                        @if (Model.IsOwner && mode == RecruitingMode.OwnerSelect && !isClosed)
+                                        {
+                                            <form asp-action="ToggleLock" asp-route-id="@Model.Act.Id" asp-route-userId="@participant.Id" method="post" style="margin-left:auto;">
+                                                @Html.AntiForgeryToken()
+                                                <button class="join-btn" type="submit" style="padding:6px 12px; width:auto; margin-top:0;">
+                                                    @(isLocked ? "Unlock" : "Lock")
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
                                 }
                             </div>
                         }

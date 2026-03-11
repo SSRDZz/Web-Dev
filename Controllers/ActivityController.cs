@@ -48,6 +48,9 @@ public class ActivityController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ActivityViewModel model)
     {
+        if (!Enum.IsDefined(typeof(RecruitingMode), model.RecruitingMode))
+            ModelState.AddModelError(nameof(model.RecruitingMode), "Invalid recruiting mode.");
+
         if (!ModelState.IsValid)
             return View(model);
 
@@ -129,6 +132,9 @@ public class ActivityController : Controller
         if (id != model.Id)
             return BadRequest();
 
+        if (!Enum.IsDefined(typeof(RecruitingMode), model.RecruitingMode))
+            ModelState.AddModelError(nameof(model.RecruitingMode), "Invalid recruiting mode.");
+
         var activity = await _activitiesContext.Activities.FirstOrDefaultAsync(a => a.Id == id);
         if (activity == null)
             return NotFound();
@@ -176,13 +182,27 @@ public class ActivityController : Controller
     public async Task<IActionResult> Detail(Guid id)
     {
         // include keywords so the view can render them
-        Activity activity = await _activitiesContext.Activities
+        var activity = await _activitiesContext.Activities
             .Where(a => a.Id == id)
             .Include(a => a.ActivityUsers)
                 .ThenInclude(au => au.User)
             .FirstOrDefaultAsync();
         if (activity == null)
             return NotFound();
+
+        if (activity.RecruitingMode == (int)RecruitingMode.RandomOnEventDay && activity.EventDate <= DateTime.Now)
+        {
+            await FinalizeRandomOnEventDayAsync(activity);
+
+            activity = await _activitiesContext.Activities
+                .Where(a => a.Id == id)
+                .Include(a => a.ActivityUsers)
+                    .ThenInclude(au => au.User)
+                .FirstOrDefaultAsync();
+
+            if (activity == null)
+                return NotFound();
+        }
 
         // look up owner name
         string ownerName = "";
@@ -192,13 +212,13 @@ public class ActivityController : Controller
             var owner = await _userManager.FindByIdAsync(activity.OwnerId.ToString());
             if (owner != null)
             {
-                ownerName = owner.RealUserName ?? owner.UserName;
+                ownerName = owner.RealUserName ?? owner.UserName ?? string.Empty;
                 if (!string.IsNullOrWhiteSpace(owner.ImagePath))
                     ownerImagePath = owner.ImagePath;
             }
         }
 
-        UserAccount Owner = await _userManager.GetUserAsync(User);
+        var viewer = await _userManager.GetUserAsync(User);
         ActivityDTO dto = new ActivityDTO()
         {
             Act = activity,
@@ -206,7 +226,7 @@ public class ActivityController : Controller
             OwnerName = ownerName,
             OwnerImagePath = ownerImagePath,
             LikeCount = await FindRelation(activity.Id),
-            IsLike = await IsLike(Owner.Id, activity.Id)
+            IsLike = viewer != null && await IsLike(viewer.Id, activity.Id)
         };
 
         var currentUser = await _userManager.GetUserAsync(User);
@@ -236,15 +256,28 @@ public class ActivityController : Controller
         if (activity.OwnerId == user.Id)
             return RedirectToAction(nameof(Detail), new { id });
 
-        if (activity.ActivityUsers.Any(au => au.UserId == user.Id && au.Role == ActivityUserRole.Participant))
+        if (activity.ActivityUsers.Any(au => au.UserId == user.Id &&
+            (au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked)))
             return RedirectToAction(nameof(Detail), new { id });
 
         if (activity.EventDate <= DateTime.Now)
             return RedirectToAction(nameof(Detail), new { id });
 
-        var participantCountIncludingOwner = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant) + 1;
-        if (participantCountIncludingOwner >= activity.MaxPeople)
+        var normalParticipantCount = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant);
+        var lockedParticipantCount = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Locked);
+        var attendeeCountIncludingOwner = normalParticipantCount + lockedParticipantCount + 1;
+        var guestSlots = Math.Max(0, activity.MaxPeople - 1);
+
+        var mode = (RecruitingMode)activity.RecruitingMode;
+        if (mode == RecruitingMode.FirstComeFirstServe && attendeeCountIncludingOwner >= activity.MaxPeople)
             return RedirectToAction(nameof(Detail), new { id });
+
+        if (mode == RecruitingMode.OwnerSelect)
+        {
+            var publicSlots = Math.Max(0, guestSlots - lockedParticipantCount);
+            if (normalParticipantCount >= publicSlots)
+                return RedirectToAction(nameof(Detail), new { id });
+        }
 
         activity.ActivityUsers.Add(new ActivityUser
         {
@@ -281,6 +314,8 @@ public class ActivityController : Controller
             await _activitiesContext.SaveChangesAsync();
         }
 
+        await FinalizeRandomOnEventDayAsync(activity);
+
         return RedirectToAction(nameof(Detail), new { id });
     }
 
@@ -302,7 +337,8 @@ public class ActivityController : Controller
             return RedirectToAction(nameof(Detail), new { id });
 
         var participantRelation = activity.ActivityUsers
-            .FirstOrDefault(au => au.UserId == user.Id && au.Role == ActivityUserRole.Participant);
+            .FirstOrDefault(au => au.UserId == user.Id &&
+                (au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked));
 
         if (participantRelation == null)
             return RedirectToAction(nameof(Detail), new { id });
@@ -314,9 +350,89 @@ public class ActivityController : Controller
         return RedirectToAction(nameof(Detail), new { id });
     }
 
+    [HttpPost("ToggleLock/{id}/{userId}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleLock(Guid id, Guid userId)
+    {
+        var owner = await _userManager.GetUserAsync(User);
+        if (owner == null)
+            return Challenge();
+
+        var activity = await _activitiesContext.Activities
+            .Include(a => a.ActivityUsers)
+            .FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null)
+            return NotFound();
+
+        if (activity.OwnerId != owner.Id)
+            return Forbid();
+
+        if (activity.RecruitingMode != (int)RecruitingMode.OwnerSelect)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        if (activity.EventDate <= DateTime.Now)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        var relation = activity.ActivityUsers.FirstOrDefault(au =>
+            au.UserId == userId && (au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked));
+
+        if (relation == null)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        var newRole = relation.Role == ActivityUserRole.Locked
+            ? ActivityUserRole.Participant
+            : ActivityUserRole.Locked;
+
+        // Role is part of composite key {ActivityId, UserId, Role}, so replace the row instead of mutating key.
+        activity.ActivityUsers.Remove(relation);
+        activity.ActivityUsers.Add(new ActivityUser
+        {
+            ActivityId = id,
+            UserId = userId,
+            Role = newRole
+        });
+
+        activity.UpdatedAt = DateTime.Now;
+        await _activitiesContext.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Detail), new { id });
+    }
+
     private static DateTime ToMinutePrecision(DateTime value)
     {
         return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0, value.Kind);
+    }
+
+    private async Task FinalizeRandomOnEventDayAsync(Activity activity)
+    {
+        if (activity.RecruitingMode != (int)RecruitingMode.RandomOnEventDay)
+            return;
+
+        if (activity.EventDate > DateTime.Now)
+            return;
+
+        var guestSlots = Math.Max(0, activity.MaxPeople - 1);
+        var participants = activity.ActivityUsers
+            .Where(au => au.Role == ActivityUserRole.Participant)
+            .ToList();
+
+        if (participants.Count <= guestSlots)
+            return;
+
+        var winnerIds = participants
+            .OrderBy(_ => Guid.NewGuid())
+            .Take(guestSlots)
+            .Select(au => au.UserId)
+            .ToHashSet();
+
+        var losers = participants.Where(au => !winnerIds.Contains(au.UserId)).ToList();
+        foreach (var loser in losers)
+        {
+            activity.ActivityUsers.Remove(loser);
+        }
+
+        activity.UpdatedAt = DateTime.Now;
+        await _activitiesContext.SaveChangesAsync();
     }
 
     [HttpPost]

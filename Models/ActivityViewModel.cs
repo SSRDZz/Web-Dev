@@ -25,6 +25,7 @@ public class ActivityViewModel
     public int MaxPeople { get; set; }
 
     [Required]
+    [EnumDataType(typeof(RecruitingMode), ErrorMessage = "Invalid recruiting mode.")]
     public RecruitingMode RecruitingMode { get; set; }
 
     public bool ShowParticipants { get; set; } = false;
