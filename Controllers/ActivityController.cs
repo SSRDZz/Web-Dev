@@ -8,6 +8,7 @@ using KMITL_WebDev_MiniProject.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 
@@ -312,5 +313,37 @@ public class ActivityController : Controller
     private static DateTime ToMinutePrecision(DateTime value)
     {
         return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0, value.Kind);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task UpdateRelation(Guid ActID)
+    {
+        UserAccount UserAccount = await _userManager.GetUserAsync(User);
+        ActivityRelation? Rels = await _activitiesContext.Relations.Where(rel => rel.UserID == UserAccount.Id).FirstOrDefaultAsync();
+        
+        if(Rels == null)
+        {
+            Rels = new ActivityRelation()
+            {
+                UserID = UserAccount.Id,
+                ActID = ActID,
+                Relation = 0
+            };
+            await _activitiesContext.Relations.AddAsync(Rels);
+        } else
+        {
+            Rels.Relation ^= 0b1;
+            _activitiesContext.Relations.Entry(Rels);
+        }
+
+        await _activitiesContext.SaveChangesAsync();
+    }
+
+    [HttpGet]
+    [Authorize]
+    public async Task<int> FindRelation(Guid ActID)
+    {
+        return await _activitiesContext.Relations.Where(rel => rel.ActID == ActID && rel.Relation == 1).CountAsync();
     }
 }
