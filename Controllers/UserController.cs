@@ -86,6 +86,8 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 		if(Data == null)
 			return BadRequest();
 
+		Console.WriteLine(Data.value);
+
 		UserAccount TargetUser = await UserMang.FindByIdAsync(Data.Id.ToString());
 		UserAccount OwnUser = await UserMang.GetUserAsync(User);
 
@@ -104,15 +106,15 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 				Id = Guid.NewGuid(),
 				UserSub = OwnUser.Id,
 				UserObj = TargetUser.Id,
-				Relation = 0b01
+				Relation = 0x00 + Data.value
 			});
 		} else if(RepRlt.UserSub == OwnUser.Id)
 		{
-			RepRlt.Relation ^= 0b01;
+			RepRlt.Relation = (RepRlt.Relation & 0xf0) + Data.value;
 			RepDbContext.ReputationRelations.Entry(RepRlt);
 		} else if(RepRlt.UserObj == OwnUser.Id)
 		{
-			RepRlt.Relation ^= 0b10;
+			RepRlt.Relation = (RepRlt.Relation & 0x0f) + (Data.value << 4);//^= 0b10;
 			RepDbContext.ReputationRelations.Entry(RepRlt);
 		}
 
@@ -122,7 +124,7 @@ public class UserController(UserManager<UserAccount> userManager, IWebHostEnviro
 
 	[HttpGet]
 	[Authorize]
-	public async Task<int> FindReputation(Guid TargetID)
+	public async Task<float> FindReputation(Guid TargetID)
 	{
 		return await UserServ.FindUserReputation(TargetID);
 	}

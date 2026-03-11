@@ -25,24 +25,20 @@
         <label>Sex</label>
         <span>@Model.Sex</span>
     </div>
-    <div>
-        <label>Like</label>
-        <input type="checkbox" id="target-checkbox" checked="@Model.IsLike"></input>
-    </div>
-    <div class="star-rating">
-        <input type="radio" id="star5" name="rating" value="5">
+    <div class="star-rating" id="star-rating" isLike="@Model.IsLike">
+        <input type="radio" id="star5" class="star-rating-radio" name="rating" value="5">
         <label for="star5">★</label>
 
-        <input type="radio" id="star4" name="rating" value="4">
+        <input type="radio" id="star4" class="star-rating-radio" name="rating" value="4">
         <label for="star4">★</label>
 
-        <input type="radio" id="star3" name="rating" value="3">
+        <input type="radio" id="star3" class="star-rating-radio" name="rating" value="3">
         <label for="star3">★</label>
 
-        <input type="radio" id="star2" name="rating" value="2">
+        <input type="radio" id="star2" class="star-rating-radio" name="rating" value="2">
         <label for="star2">★</label>
 
-        <input type="radio" id="star1" name="rating" value="1">
+        <input type="radio" id="star1" class="star-rating-radio" name="rating" value="1">
         <label for="star1">★</label>
     </div>
 </div>
@@ -50,15 +46,24 @@
 
 
 <script>
-    document.getElementById("target-checkbox").addEventListener("change", async (e) => {
+    const star_rating = document.getElementById("star-rating");
+    const p = document.getElementById("star-rating")
+    const p_radio = p.querySelectorAll('input[name="rating"]');
+
+    console.log(p.querySelectorAll('input[name="rating"]'))
+    if(p.getAttribute("isLike") != 0) {
+        p_radio[5 - p.getAttribute("isLike")].checked = "true";
+    }
+
+    star_rating.addEventListener("change", async (e) => {
         await fetch('@Url.Action("AddReputation", "User")', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked })
+            body: JSON.stringify({ Id: "@Model.Id", value: star_rating.querySelector('input[name="rating"]:checked').value })
         });
 
         await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
-            .then(response => response.json())
+            .then(response => response.text())
             .then(json => { document.getElementById("user-reputation").innerText = `${json}`; })
             .catch(err => console.warn("Something went wrong.", err));
     });
