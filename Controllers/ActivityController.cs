@@ -68,7 +68,7 @@ public class ActivityController : Controller
             RecruitingMode = (int)model.RecruitingMode,
             ShowParticipants = model.ShowParticipants,
             OwnerId = user.Id,
-            EventDate = model.EventDate,
+            EventDate = ToMinutePrecision(model.EventDate),
             Location = model.Location,
             MapUrl = model.MapUrl,
             CreatedAt = DateTime.Now,
@@ -112,7 +112,7 @@ public class ActivityController : Controller
             MaxPeople = activity.MaxPeople,
             RecruitingMode = (RecruitingMode)activity.RecruitingMode,
             ShowParticipants = activity.ShowParticipants,
-            EventDate = activity.EventDate,
+            EventDate = ToMinutePrecision(activity.EventDate),
             Location = activity.Location,
             MapUrl = activity.MapUrl
         };
@@ -151,7 +151,7 @@ public class ActivityController : Controller
         activity.MaxPeople = model.MaxPeople;
         activity.RecruitingMode = (int)model.RecruitingMode;
         activity.ShowParticipants = model.ShowParticipants;
-        activity.EventDate = model.EventDate;
+        activity.EventDate = ToMinutePrecision(model.EventDate);
         activity.Location = model.Location;
         activity.MapUrl = model.MapUrl;
         activity.UpdatedAt = DateTime.Now;
@@ -234,7 +234,11 @@ public class ActivityController : Controller
         if (activity.ActivityUsers.Any(au => au.UserId == user.Id && au.Role == ActivityUserRole.Participant))
             return RedirectToAction(nameof(Detail), new { id });
 
-        if (activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant) >= activity.MaxPeople)
+        if (activity.EventDate <= DateTime.Now)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        var participantCountIncludingOwner = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant) + 1;
+        if (participantCountIncludingOwner >= activity.MaxPeople)
             return RedirectToAction(nameof(Detail), new { id });
 
         activity.ActivityUsers.Add(new ActivityUser
@@ -245,6 +249,32 @@ public class ActivityController : Controller
         });
         activity.UpdatedAt = DateTime.Now;
         await _activitiesContext.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Detail), new { id });
+    }
+
+    [HttpPost("Close/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Close(Guid id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+
+        var activity = await _activitiesContext.Activities.FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null)
+            return NotFound();
+
+        if (activity.OwnerId != user.Id)
+            return Forbid();
+
+        if (activity.EventDate > DateTime.Now)
+        {
+            // Mark as closed by moving event time to the past.
+            activity.EventDate = DateTime.Now.AddSeconds(-1);
+            activity.UpdatedAt = DateTime.Now;
+            await _activitiesContext.SaveChangesAsync();
+        }
 
         return RedirectToAction(nameof(Detail), new { id });
     }
@@ -277,5 +307,10 @@ public class ActivityController : Controller
         await _activitiesContext.SaveChangesAsync();
 
         return RedirectToAction(nameof(Detail), new { id });
+    }
+
+    private static DateTime ToMinutePrecision(DateTime value)
+    {
+        return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0, value.Kind);
     }
 }

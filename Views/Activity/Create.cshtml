@@ -46,13 +46,13 @@
 
         <div class="form-group">
             <label asp-for="EventDate"></label>
-            <input asp-for="EventDate" type="datetime-local" class="form-control" step="60" />
+            <input asp-for="EventDate" type="datetime-local" class="form-control" step="60" lang="en-GB" />
             <span asp-validation-for="EventDate" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="MaxPeople"></label>
-            <input asp-for="MaxPeople" type="number" class="form-control" min="1" max="1000" />
+            <input asp-for="MaxPeople" type="number" class="form-control" min="1" max="1000" placeholder="Include owner" />
             <span asp-validation-for="MaxPeople" class="text-danger"></span>
         </div>
 

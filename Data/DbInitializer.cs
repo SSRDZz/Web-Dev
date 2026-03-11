@@ -89,19 +89,35 @@ public class DbInitializer
 	{
 		await context.Database.MigrateAsync();
 
-		var ownerIds = await context.Set<UserAccount>()
-			.OrderBy(u => u.Id)
-			.Select(u => u.Id)
-			.Take(2)
+		string[] preferredOwnerEmails = { "Admin@example.com", "Testuser@example.com" };
+
+		var users = await context.Set<UserAccount>()
+			.Select(u => new { u.Id, u.Email })
 			.ToListAsync();
+
+		var userByEmail = users
+			.Where(u => !string.IsNullOrWhiteSpace(u.Email))
+			.ToDictionary(u => u.Email!, u => u.Id, StringComparer.OrdinalIgnoreCase);
+
+		var ownerIds = preferredOwnerEmails
+			.Where(email => userByEmail.ContainsKey(email))
+			.Select(email => userByEmail[email])
+			.Distinct()
+			.ToList();
+
+		if (!ownerIds.Any())
+		{
+			// Fallback for environments where preferred seed users do not exist yet.
+			ownerIds = users.Select(u => u.Id).Take(2).ToList();
+		}
 
 		if (!ownerIds.Any())
 			return;
 
 		if(context.Activities.Any())
 		{
-			// Repair old sample data that used non-existing owner GUIDs.
-			var validOwnerIds = ownerIds.ToHashSet();
+			// Repair only activities whose owner no longer exists.
+			var validOwnerIds = users.Select(u => u.Id).ToHashSet();
 			var activitiesToRepair = await context.Activities
 				.Where(a => !validOwnerIds.Contains(a.OwnerId))
 				.ToListAsync();

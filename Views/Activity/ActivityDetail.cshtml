@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = Model?.Act.Name ?? "Activity Details";
+    var ownerCount = (Model?.Act.OwnerId != Guid.Empty) ? 1 : 0;
+    var participantsCountIncludingOwner = (Model?.Act.Participants.Count ?? 0) + ownerCount;
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
@@ -13,12 +15,12 @@
         <div class="card-header">   
             <div class="card-text">
                 <div class="card-topic">
-                    <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (Model?.Act.Participants.Count >= Model?.Act.MaxPeople ? "full" : "available"))">
+                    <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (participantsCountIncludingOwner >= (Model?.Act.MaxPeople ?? 0) ? "full" : "available"))">
                         @if (Model?.Act.EventDate < DateTime.Now)
                         {
                             <span>Closed</span>
                         }
-                        else if (Model?.Act.Participants.Count >= Model?.Act.MaxPeople)
+                        else if (participantsCountIncludingOwner >= (Model?.Act.MaxPeople ?? 0))
                         {
                             <span>Full</span>
                         }
@@ -35,7 +37,7 @@
                     <div class="activity-info">
                         <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
                         <p><strong>Location:</strong> @Model?.Act.Location</p>
-                        <p><strong>Participants:</strong> @Model?.Act.Participants.Count / @Model?.Act.MaxPeople</p>
+                        <p><strong>Participants:</strong> @participantsCountIncludingOwner / @Model?.Act.MaxPeople</p>
                         @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
                         {
                             <p><strong>Map:</strong></p>
@@ -92,6 +94,13 @@
                 @if (Model?.IsOwner == true)
                 {
                     <a class="join-btn join-btn-link" href="@Url.Action("Edit", "Activity", new { id = Model.Act.Id })">Edit Activity</a>
+                    @if (Model.Act.EventDate > DateTime.Now)
+                    {
+                        <form asp-action="Close" asp-route-id="@Model.Act.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <button class="join-btn" type="submit" ">Close Activity</button>
+                        </form>
+                    }
                 }
                 @if (User?.Identity?.IsAuthenticated == true)
                 {
@@ -105,7 +114,11 @@
                         {
                             <button class="join-btn" asp-action="Unjoin" asp-route-id="@Model.Act.Id" type="submit">Unjoin</button>
                         }
-                        else if (Model.Act.Participants.Count >= Model.Act.MaxPeople)
+                        else if (Model.Act.EventDate <= DateTime.Now)
+                        {
+                            <button class="join-btn" type="button" disabled>Closed</button>
+                        }
+                        else if (participantsCountIncludingOwner >= Model.Act.MaxPeople)
                         {
                             <button class="join-btn" type="button" disabled>Full</button>
                         }
