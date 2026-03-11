@@ -1,3 +1,7 @@
+h1 {
+    font-weight: 700;
+}
+
 h2 {
     border-bottom: 3px solid #FFAB77;
     border-radius: 4px;
@@ -6,6 +10,7 @@ h2 {
     margin: 15px 0;
     padding-bottom: 8px;
 }
+
 
 .activity-grid {
     display: grid;
@@ -75,6 +80,15 @@ h2 {
     overflow: hidden; 
     display: block;
 }
+
+.owner-box {
+    display: flex;
+    flex-wrap: nowrap;
+
+    gap: 20px;
+    align-items: center;
+}
+
 
 
 /* card image */
@@ -162,6 +176,88 @@ h2 {
     margin-bottom: 10px;
 }
 
+.card-body > h2 {
+    margin-top: 5px;
+}
+
+
+/* for user -> owner  */
+.user-box {
+    display: flex; 
+    align-items: center;
+
+    padding: 12px; 
+    
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    
+    background: #FCFCFD; 
+    color: #333; 
+    
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+
+    text-decoration: none !important;
+    gap: 10px;
+}
+
+.user-box:hover {
+    background-color: #f0f0f0;
+}
+
+.user-img {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 2px solid #FF7061;
+}
+
+
+
+/* participants */
+#participants {
+    overflow-x: scroll;
+
+    padding: 20px 36px;
+}
+
+#participants > h2 {
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+ /* for user -> participants */
+.participants-user {
+    display: flex;
+    flex-direction: row;
+
+    gap: 20px;
+}
+
+#attendee-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    width: 150px;
+    padding: 30px 10px;
+    text-decoration: none;
+    color: #333;
+
+    gap: 10px;
+
+}
+
+#attendee-card img {
+    width: 60px; 
+    height: 60px; 
+}
+
+
+
 
 /* comment section */
 #comment  {
@@ -227,13 +323,14 @@ hr {
 
 
 /* phone screen */
-@media (max-width: 768px) {
+@media (max-width: 1000px) {
     .card {
         /* border-radius: 0; */
         /* background-color: #FFFFFF; */
         /* box-shadow: none; */
 
         padding: 20px;
+        padding-bottom: 30px;
     }
 
     /* make it have border replace .card */
@@ -249,28 +346,37 @@ hr {
     .card-header {
         display: flex;
         flex-direction: column;
-        align-items: start  ;
+        align-items: start ;
     }
 
     .card-text {
+        display: contents; /* สลายตัว / แยกออก*/
+
         width: 100%;
         min-width: 0;
 
         padding-right: 0;
     }
 
-    .detail {
-        margin: 0;
+    .card-topic {
+        order: 1;
     }
 
+    
     .card-image {
         width: 100%;
         max-width: 750px;
-
+        
         margin: 20px 0;
-
+        
+        order:2;
+        
     }
-
+    
+    .detail {
+        margin: 0;
+        order: 3;
+    }
     #comment{
         padding: 5px 20px;
     }

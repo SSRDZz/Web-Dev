@@ -104,6 +104,22 @@ if (document.readyState === 'loading') {
 	initLeafletMap();
 }
 
+
+
+
+
+function show_participants(){
+	const div = document. querySelector("#participants");
+	console.log(div.childElementCount)
+	if (!div) return;
+	if (div.childElementCount > 0) {
+        div.style.display = "block";
+    }
+    else {
+        div.style.display = "none";
+    }
+}
+
 function comment_button(){
     const icon = document.querySelector("#comment-button");
     const comment_bar = document.querySelector("#create-comment");
@@ -111,4 +127,6 @@ function comment_button(){
         update_comment({ currentTarget: comment_bar })
     });
 }
+
+show_participants()
 comment_button()

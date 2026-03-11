@@ -6,29 +6,32 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
 <link rel="stylesheet" href="~/css/Activity/ActivityDetail.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/Layout/Scrollbar.css" asp-append-version="true"/>
 
 <div class="activity-grid">
     <div class="card">
         <div class="card-header">   
             <div class="card-text">
-                <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (Model?.Act.Participants.Count >= Model?.Act.MaxPeople ? "full" : "available"))">
-                    @if (Model?.Act.EventDate < DateTime.Now)
-                    {
-                        <span>Closed</span>
-                    }
-                    else if (Model?.Act.Participants.Count >= Model?.Act.MaxPeople)
-                    {
-                        <span>Full</span>
-                    }
-                    else
-                    {
-                        <span>Available</span>
-                    }
-                </div>
+                <div class="card-topic">
+                    <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (Model?.Act.Participants.Count >= Model?.Act.MaxPeople ? "full" : "available"))">
+                        @if (Model?.Act.EventDate < DateTime.Now)
+                        {
+                            <span>Closed</span>
+                        }
+                        else if (Model?.Act.Participants.Count >= Model?.Act.MaxPeople)
+                        {
+                            <span>Full</span>
+                        }
+                        else
+                        {
+                            <span>Available</span>
+                        }
+                    </div>
 
-                <h1>@Model?.Act.Name</h1>
-                <div class="detail">
+                    <h1>@Model?.Act.Name</h1>
                     <p>@Model?.Act.Description</p>
+                </div>
+                <div class="detail">
                     <div class="activity-info">
                         <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
                         <p><strong>Location:</strong> @Model?.Act.Location</p>
@@ -52,37 +55,22 @@
                                 <span>Owner Selection</span>
                             }
                         </p>
-                        @if (Model?.Act.OwnerId != Guid.Empty)
-                        {
-                            <p><strong>Owner:</strong></p>
-                            <div style="margin: 10px 0;">
-                                <a href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
-                                    <img src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
-                                    <span style="font-weight: 500;">@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
-                                </a>
-                            </div>
-                        }
-                        @if (Model?.Act.ShowParticipants == true)
-                        {
-                            <p><strong>Show Participants:</strong> Yes</p>
-                            @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
-                            {
-                                <p><strong>Participant List:</strong></p>
-                                <div style="margin: 10px 0;">
-                                    @foreach (var participant in Model.Act.Participants)
-                                    {
-                                        <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
-                                            <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
-                                            <span style="font-weight: 500;">@participant.RealUserName</span>
-                                        </a>
-                                    }
-                                </div>
-                            }
-                        }
+                        
                         @* keywords *@
                         @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
                         {
                             <p><strong>Keywords:</strong> @string.Join(", ", Model.Act.Keywords)</p>
+                        }
+
+                        @if (Model?.Act.OwnerId != Guid.Empty)
+                        {
+                            <div class="owner-box" style="margin: 10px 0;">
+                                <p><strong>Owner:</strong></p>
+                                <a class="user-box" href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })" >
+                                    <img class="user-img" src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName"/>
+                                    <span style="font-weight: 500;">@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
+                                </a>
+                            </div>
                         }
                     </div>
                 </div>
@@ -96,7 +84,7 @@
                     }
                     else
                     {
-                        <div style="background-color: #f0f0f0; height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <div style="background-color: #f0f0f0; height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center; width:100%;">
                             <span style="color: #999;">No Image</span>
                         </div>
                     }
@@ -138,6 +126,26 @@
             <p><strong>Last Updated:</strong> @Model?.Act.UpdatedAt.ToString("MMM dd, yyyy")</p>
         </div>
     </div>
+
+    @if (Model?.Act.ShowParticipants == true)
+    {
+        <div class="card" id="participants">
+            @* <p><strong>Show Participants:</strong> Yes</p> *@
+            @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
+            {
+                <h2>Participant List:</h2>
+                <div class="participants-user" style="margin: 10px 0;">
+                    @foreach (var participant in Model.Act.Participants)
+                    {
+                        <a class="user-box" id="attendee-card" href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })">
+                            <img class="user-img" src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName"/>
+                            <span style="font-weight: 500;">@participant.RealUserName</span>
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    }
 
     <div class="card" id="comment">
         <h2>Comment Section</h2>
