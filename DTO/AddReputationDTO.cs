@@ -8,4 +8,7 @@ public class AddReputationDTO
 
 	[Required]
 	public bool IsLike {get; set;}
+
+	[Required]
+	public int value {get; set;}
 }
