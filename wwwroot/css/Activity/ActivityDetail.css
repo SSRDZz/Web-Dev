@@ -217,6 +217,26 @@ a:hover {
     color: #999;
 }
 
+.likeButton {
+    display: none;
+}
+
+.like-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background: url("/image/like_off.png");
+    background-size: cover;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.likeButton:checked+.like-icon {
+    background: url("/image/like_on.png");
+    background-size: cover;
+    cursor: pointer;
+}
+
 .status-badge {
     display: inline-block;
     padding: 6px 16px;

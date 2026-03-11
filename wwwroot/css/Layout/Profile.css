@@ -1,0 +1,63 @@
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f3f3f3;
+}
+
+/* Container */
+.profile-container{
+    text-align:center;
+}
+
+/* Banner */
+.profile-banner{
+    background:#d9c3bd;
+    height:180px;
+    width:100%;
+}
+
+/* Avatar */
+.profile-avatar{
+    margin-top:-60px;
+}
+
+.profile-avatar img{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid white;
+}
+
+/* Name + rating */
+.profile-info h2{
+    margin:10px 0 0 0;
+}
+
+.rating{
+    color:gold;
+}
+
+/* Main card */
+.profile-card{
+    margin:30px auto;
+    width:60%;
+    background:#e6e6e6;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+.profile-buttons{
+    margin-top:20px;
+}
+
+.profile-buttons a,
+.profile-buttons button{
+    padding:8px 16px;
+    margin:5px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}

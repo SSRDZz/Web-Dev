@@ -12,10 +12,11 @@
 
 <div class="activity-grid">
     <div class="card">
-        <div class="card-header">   
+        <div class="card-header">
             <div class="card-text">
                 <div class="card-topic">
-                    <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (participantsCountIncludingOwner >= (Model?.Act.MaxPeople ?? 0) ? "full" : "available"))">
+                    <div
+                        class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (participantsCountIncludingOwner >= (Model?.Act.MaxPeople ?? 0) ? "full" : "available"))">
                         @if (Model?.Act.EventDate < DateTime.Now)
                         {
                             <span>Closed</span>
@@ -43,7 +44,7 @@
                             <p><strong>Map:</strong></p>
                             <div id="activity-map" data-map-url="@Model.Act.MapUrl"></div>
                         }
-                        <p><strong>Recruiting Mode:</strong> 
+                        <p><strong>Recruiting Mode:</strong>
                             @if (Model?.Act.RecruitingMode == 1)
                             {
                                 <span>First Come, First Served</span>
@@ -62,12 +63,16 @@
                         {
                             <div class="owner-box">
                                 <p><strong>Owner:</strong></p>
-                                <a class="user-box" href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })">
-                                    <img class="user-img" src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName"/>
-                                    <span><strong>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
-                                </a>
-                            </div>
-                        }
+                                <a class="user-box"
+                                       href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })">
+                                    <img class="user-img"
+                                         src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))"
+                                         alt="@Model.OwnerName" />
+                                    <span><strong>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ?
+                                                                                                                        Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
+                                    </a>
+                                </div>
+                            }
 
                         @* keywords *@
                         @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
@@ -86,107 +91,121 @@
                         }
                     </div>
                 </div>
-            </div>
 
-            <div class="card-image">
-                <div>
-                    @if (!string.IsNullOrEmpty(Model?.Act.ImageUrl))
-                    {
-                        <img src="@Url.Content("~/" + (Model?.Act.ImageUrl ?? ""))" alt="@Model?.Act.Name">
-                    }
-                    else
-                    {
-                        <div class="no-image-placeholder">
-                            <span>No Image</span>
-                        </div>
-                    }
-                </div>
-                @if (Model?.IsOwner == true)
-                {
-                    <a class="join-btn join-btn-link" href="@Url.Action("Edit", "Activity", new { id = Model.Act.Id })">Edit Activity</a>
-                    @if (Model.Act.EventDate > DateTime.Now)
-                    {
-                        <form asp-action="Close" asp-route-id="@Model.Act.Id" method="post">
-                            @Html.AntiForgeryToken()
-                            <button class="join-btn" type="submit" ">Close Activity</button>
-                        </form>
-                    }
-                }
-                @if (User?.Identity?.IsAuthenticated == true)
-                {
-                    <form asp-action="Join" asp-route-id="@Model.Act.Id" method="post">
-                        @Html.AntiForgeryToken()
-                        @if (Model.IsOwner)
+                <div class="card-image">
+                    <div>
+                        @if (!string.IsNullOrEmpty(Model?.Act.ImageUrl))
                         {
-                            <button class="join-btn" type="button" disabled>You are owner</button>
-                        }
-                        else if (Model.IsJoined)
-                        {
-                            <button class="join-btn" asp-action="Unjoin" asp-route-id="@Model.Act.Id" type="submit">Unjoin</button>
-                        }
-                        else if (Model.Act.EventDate <= DateTime.Now)
-                        {
-                            <button class="join-btn" type="button" disabled>Closed</button>
-                        }
-                        else if (participantsCountIncludingOwner >= Model.Act.MaxPeople)
-                        {
-                            <button class="join-btn" type="button" disabled>Full</button>
+                            <img src="@Url.Content("~/" + (Model?.Act.ImageUrl ?? ""))" alt="@Model?.Act.Name">
                         }
                         else
                         {
-                            <button class="join-btn" type="submit">Join!</button>
+                            <div class="no-image-placeholder">
+                                <span>No Image</span>
+                            </div>
                         }
-                    </form>
-                }
-                else
-                {
-                    <a class="join-btn join-btn-link" href="@Url.Action("Login", "Auth")">Login to Join</a>
-                }
-            </div>
-        </div>
-        <div class="card-body">
-            <h2>Details</h2>
-            <div class="user-meta">Activity Owner: <strong>@Model?.OwnerName</strong></div>
-            <p><strong>Created:</strong> @Model?.Act.CreatedAt.ToString("MMM dd, yyyy")</p>
-            <p><strong>Last Updated:</strong> @Model?.Act.UpdatedAt.ToString("MMM dd, yyyy")</p>
-        </div>
-    </div>
-
-    @if (Model?.Act.ShowParticipants == true)
-    {
-        <div class="card" id="participants">
-            @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
-            {
-                <h2>Participant List:</h2>
-                <div class="participants-user">
-                    @foreach (var participant in Model.Act.Participants)
+                    </div>
+                    @if (Model?.IsOwner == true)
                     {
-                        <a class="user-box" id="attendee-card" href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })">
-                            <img class="user-img" src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName"/>
-                            <span><strong>@participant.RealUserName</strong></span>
-                        </a>
+                        <a class="join-btn join-btn-link" href="@Url.Action("Edit", "Activity", new { id = Model.Act.Id })">Edit
+                            Activity</a>
+                            @if (Model.Act.EventDate > DateTime.Now)
+                            {
+                                <form asp-action="Close" asp-route-id="@Model.Act.Id" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="join-btn" type="submit" ">Close Activity</button>
+                                </form>
+                            }
+                        }
+                        @if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <form asp-action=" Join" asp-route-id="@Model.Act.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                @if (Model.IsOwner)
+                                {
+                                    <button class="join-btn" type="button" disabled>You are owner</button>
+                                }
+                                else if (Model.IsJoined)
+                                {
+                                    <button class="join-btn" asp-action="Unjoin" asp-route-id="@Model.Act.Id"
+                                            type="submit">Unjoin</button>
+                                }
+                                else if (Model.Act.EventDate <= DateTime.Now)
+                                {
+                                    <button class="join-btn" type="button" disabled>Closed</button>
+                                }
+                                else if (participantsCountIncludingOwner >= Model.Act.MaxPeople)
+                                {
+                                    <button class="join-btn" type="button" disabled>Full</button>
+                                }
+                                else
+                                {
+                                    <button class="join-btn" type="submit">Join!</button>
+                                }
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="join-btn join-btn-link" href="@Url.Action("Login", "Auth")">Login to Join</a>
+                        }
+
+                        <label class="like-container">
+                            <input type="checkbox" class="likeButton">
+                            <span class="like-icon"></span>
+                            like 0
+                        </label>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h2>Details</h2>
+                    <div class="user-meta">Activity Owner: <strong>@Model?.OwnerName</strong></div>
+                    <p><strong>Created:</strong> @Model?.Act.CreatedAt.ToString("MMM dd, yyyy")</p>
+                    <p><strong>Last Updated:</strong> @Model?.Act.UpdatedAt.ToString("MMM dd, yyyy")</p>
+                </div>
+
+                <section id="comment-section">
+                    @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
+                </section>
+            </div>
+
+            @if (Model?.Act.ShowParticipants == true)
+            {
+                <div class="card" id="participants">
+                    @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
+                    {
+                        <h2>Participant List:</h2>
+                        <div class="participants-user">
+                            @foreach (var participant in Model.Act.Participants)
+                            {
+                                <a class="user-box" id="attendee-card"
+                                       href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })">
+                                    <img class="user-img"
+                                         src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))"
+                                         alt="@participant.RealUserName" />
+                                    <span><strong>@participant.RealUserName</strong></span>
+                                </a>
+                            }
+                        </div>
                     }
                 </div>
             }
-        </div>
-    }
 
-    <div class="card" id="comment">
-        <h2>Comment Section</h2>
-        <div class="comment-box">
-            <input type="text" id="create-comment" act-id="@Model.Act.Id" placeholder="Join the conversation">
-            <div id="comment-button">
-                <img src="/image/send_submit_comment.svg" alt="Comment" />
+            <div class="card" id="comment">
+                <h2>Comment Section</h2>
+                <div class="comment-box">
+                    <input type="text" id="create-comment" act-id="@Model.Act.Id" placeholder="Join the conversation">
+                    <div id="comment-button">
+                        <img src="/image/send_submit_comment.svg" alt="Comment" />
+                    </div>
+                </div>
+
+                <hr />
+
+                <section id="comment-section">
+                    @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
+                </section>
             </div>
         </div>
 
-        <hr />
-
-        <section id="comment-section">
-            @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
-        </section>
-    </div>
-</div>
-
-<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-<script src="~/js/Activity/ActivityDetail.js"></script>
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+        <script src="~/js/Activity/ActivityDetail.js"></script>
