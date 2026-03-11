@@ -2,7 +2,10 @@
 html {
     padding: 0px;
     margin: 0px;
-    min-height: 100vh;     
+
+    /* this fix for problem element don't render full page */
+    min-height: 100%;     
+
 }
 
 
@@ -148,7 +151,9 @@ body {
     display: flex;
     flex-direction: column;
     transition: 0.3s ease;
-
+ 
+    position: fixed;
+    z-index: 999;
     
 }
 
@@ -176,13 +181,22 @@ body {
 
 .btn-create {
     margin-top: auto;
+    padding: 12px;
+
     background-color: #FF7061;
     color: white;
     border: none;
-    padding: 12px;
     border-radius: 25px;
+
     font-weight: bold;
+    
     cursor: pointer;
+
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-self: center; 
 }
 
 /* for icon in side bar */
@@ -198,7 +212,13 @@ body {
 }
 
 /* Content Area */
-.content-area { flex: 1; padding: 25px; background-color: #fff; }
+.content-area { 
+    flex: 1; 
+    padding: 25px; 
+    background-color: #fff; 
+
+    padding-left:  275px;
+}
 
 
 /* anchor */
@@ -239,6 +259,10 @@ a:hover {
 
     .sidebar.show {
         left: 0;
+    }
+
+    .content-area{
+        padding-left: 25px;
     }
 }
 
