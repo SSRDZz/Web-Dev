@@ -64,7 +64,7 @@
                                 <p><strong>Owner:</strong></p>
                                 <a class="user-box" href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })">
                                     <img class="user-img" src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName"/>
-                                    <span>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
+                                    <span><strong>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
                                 </a>
                             </div>
                         }
@@ -153,7 +153,7 @@
                     {
                         <a class="user-box" id="attendee-card" href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })">
                             <img class="user-img" src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName"/>
-                            <span>@participant.RealUserName</span>
+                            <span><strong>@participant.RealUserName</strong></span>
                         </a>
                     }
                 </div>

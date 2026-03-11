@@ -7,9 +7,12 @@
 	foreach(ShowCommentDTO show in Model) 
 	{
 		<div class="comment-detail-container">
-			<img src="@Url.Content("~/" + show.ImagePath)"/>
-			<div>@show.UserName</div>
-			<div>@show.Content</div>
+			<div class="Profile">
+				<img src="@Url.Content("~/" + show.ImagePath)"/>
+				<div><strong>@show.UserName</strong></div>
+			</div>
+
+			<div class="Content">@show.Content</div>
 		</div>
 	}
 }
