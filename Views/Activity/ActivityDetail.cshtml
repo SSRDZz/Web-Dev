@@ -92,6 +92,7 @@
                             }
                         </div>
                     </div>
+                </div>
 
                     <div class="card-image">
                         <div>
@@ -121,7 +122,7 @@
                             }
                             @if (User?.Identity?.IsAuthenticated == true)
                             {
-                                <form asp-action=" Join" asp-route-id="@Model.Act.Id" method="post">
+                                <form asp-action="Join" asp-route-id="@Model.Act.Id" method="post">
                                     @Html.AntiForgeryToken()
                                     @if (Model.IsOwner)
                                     {
@@ -151,10 +152,10 @@
                                 <a class="join-btn join-btn-link" href="@Url.Action("Login", "Auth")">Login to Join</a>
                             }
 
-                            <label class="like-container">
+                            <label class="like-container" style="margin: 10px 0; display:flex; gap:10px; align-item:center; width: 30%;">
+                                <div id="like-continaer-result" style="min-width: 50%;  word-break:keep-all;">like @Model.LikeCount</div>
                                 <input type="checkbox" class="likeButton" id="likeButton" checked="@Model.IsLike">
-                                <span class="like-icon"></span>
-                                <div id="like-continaer-result">like @Model.LikeCount</div>
+                                <span class="like-icon" style="margin:0; align-self:center"></span>
                             </label>
                         </div>
                     </div>
