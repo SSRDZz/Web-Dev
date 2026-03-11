@@ -9,7 +9,8 @@ public class ApplicationActivitiesDbContext : DbContext
 	public ApplicationActivitiesDbContext(DbContextOptions<ApplicationActivitiesDbContext> options) : base(options) { }
 
 	public DbSet<Activity> Activities { get; set; }
-	public DbSet<ActivityUser> ActivityUsers { get; set; }
+	public DbSet<ActivityUser> ActivityUsers { get; set;}
+	public DbSet<ActivityRelation> Relations {get; set;}
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
