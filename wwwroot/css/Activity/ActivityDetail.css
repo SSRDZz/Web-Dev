@@ -207,13 +207,14 @@ a:hover {
 }
 
 .no-image-placeholder {
-    width: 100%;
+    /* width: 100%; */
+    width: 300px;
     height: 300px;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f0f0f0;
+    background-color:    #f0f0f0;
     color: #999;
 }
 
