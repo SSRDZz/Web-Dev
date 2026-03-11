@@ -317,17 +317,17 @@ public class ActivityController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task UpdateRelation(Guid ActID)
+    public async Task UpdateRelation([FromBody] ActIDDTO Data)
     {
         UserAccount UserAccount = await _userManager.GetUserAsync(User);
         ActivityRelation? Rels = await _activitiesContext.Relations.Where(rel => rel.UserID == UserAccount.Id).FirstOrDefaultAsync();
-        
+
         if(Rels == null)
         {
             Rels = new ActivityRelation()
             {
                 UserID = UserAccount.Id,
-                ActID = ActID,
+                ActID = Data.ActID,
                 Relation = 0
             };
             await _activitiesContext.Relations.AddAsync(Rels);
