@@ -90,6 +90,87 @@ public class ActivityController : Controller
         return RedirectToAction("Index", "Home");
     }
 
+    [HttpGet("Edit/{id}")]
+    public async Task<IActionResult> Edit(Guid id)
+    {
+        var activity = await _activitiesContext.Activities.FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null)
+            return NotFound();
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+
+        if (activity.OwnerId != user.Id)
+            return Forbid();
+
+        var model = new ActivityViewModel
+        {
+            Id = activity.Id,
+            Name = activity.Name,
+            Description = activity.Description,
+            KeywordInput = activity.KeywordsText,
+            ImageUrl = activity.ImageUrl,
+            MaxPeople = activity.MaxPeople,
+            RecruitingMode = (RecruitingMode)activity.RecruitingMode,
+            ShowParticipants = activity.ShowParticipants,
+            EventDate = activity.EventDate,
+            Location = activity.Location,
+            MapUrl = activity.MapUrl
+        };
+
+        return View(model);
+    }
+
+    [HttpPost("Edit/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Guid id, ActivityViewModel model)
+    {
+        if (id != model.Id)
+            return BadRequest();
+
+        var activity = await _activitiesContext.Activities.FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null)
+            return NotFound();
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+
+        if (activity.OwnerId != user.Id)
+            return Forbid();
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        activity.Name = model.Name;
+        activity.Description = model.Description;
+        activity.KeywordsText = string.Join(", ", (model.KeywordInput ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(k => k.Trim())
+            .Where(k => !string.IsNullOrWhiteSpace(k))
+            .Distinct(StringComparer.OrdinalIgnoreCase));
+        activity.ImageUrl = model.ImageUrl;
+        activity.MaxPeople = model.MaxPeople;
+        activity.RecruitingMode = (int)model.RecruitingMode;
+        activity.ShowParticipants = model.ShowParticipants;
+        activity.EventDate = model.EventDate;
+        activity.Location = model.Location;
+        activity.MapUrl = model.MapUrl;
+        activity.UpdatedAt = DateTime.Now;
+
+        if (_fileUploader.FileIsExist(model.ActivityImage))
+        {
+            await _fileUploader.Upload(model.ActivityImage, activity.Id.ToString());
+            activity.ImageUrl = Path.Combine("image", "UserProfile", activity.Id + _fileUploader.LastExt);
+        }
+
+        _activitiesContext.Activities.Update(activity);
+        await _activitiesContext.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Detail), new { id = activity.Id });
+    }
+
     [HttpGet("Detail/{id}")]
     [HttpGet("ActivityDetail/{id}")]
     [AllowAnonymous]
@@ -165,6 +246,36 @@ public class ActivityController : Controller
             UserId = user.Id,
             Role = ActivityUserRole.Participant
         });
+        activity.UpdatedAt = DateTime.Now;
+        await _activitiesContext.SaveChangesAsync();
+
+        return RedirectToAction(nameof(Detail), new { id });
+    }
+
+    [HttpPost("Unjoin/{id}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Unjoin(Guid id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Challenge();
+
+        var activity = await _activitiesContext.Activities
+            .Include(a => a.ActivityUsers)
+            .FirstOrDefaultAsync(a => a.Id == id);
+        if (activity == null)
+            return NotFound();
+
+        if (activity.OwnerId == user.Id)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        var participantRelation = activity.ActivityUsers
+            .FirstOrDefault(au => au.UserId == user.Id && au.Role == ActivityUserRole.Participant);
+
+        if (participantRelation == null)
+            return RedirectToAction(nameof(Detail), new { id });
+
+        activity.ActivityUsers.Remove(participantRelation);
         activity.UpdatedAt = DateTime.Now;
         await _activitiesContext.SaveChangesAsync();
 

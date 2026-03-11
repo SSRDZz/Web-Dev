@@ -1,0 +1,100 @@
+@model KMITL_WebDev_MiniProject.Models.ActivityViewModel
+
+@{
+    ViewData["Title"] = "Edit Activity";
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+
+<div class="create-activity-container">
+    <h2>Edit Activity</h2>
+
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="activity-form">
+        <input asp-for="Id" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" placeholder="Enter activity name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe your activity in detail..."></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Location"></label>
+            <input asp-for="Location" class="form-control" placeholder="Event location" />
+            <span asp-validation-for="Location" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="KeywordInput">Keywords (comma-separated)</label>
+            <input asp-for="KeywordInput" class="form-control" placeholder="keyword1, keyword2, ..." />
+            <span asp-validation-for="KeywordInput" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MapUrl">Map Location</label>
+            <div id="create-activity-map"></div>
+            <input asp-for="MapUrl" id="map-url-input" class="form-control" placeholder="latitude,longitude" readonly />
+            <small class="map-help">Click on map to select location (latitude, longitude)</small>
+            <span asp-validation-for="MapUrl" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EventDate"></label>
+            <input asp-for="EventDate" type="datetime-local" class="form-control" step="60" />
+            <span asp-validation-for="EventDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MaxPeople"></label>
+            <input asp-for="MaxPeople" type="number" class="form-control" min="1" max="1000" />
+            <span asp-validation-for="MaxPeople" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="RecruitingMode"></label>
+            <select asp-for="RecruitingMode" class="form-control" asp-items="Html.GetEnumSelectList<RecruitingMode>()">
+                <option value="">-- Select Recruiting Mode --</option>
+            </select>
+            <span asp-validation-for="RecruitingMode" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ActivityImage">Upload New Image</label>
+            <input asp-for="ActivityImage" type="file" class="form-control" />
+            <span asp-validation-for="ActivityImage" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ImageUrl"></label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="Image URL (optional)" />
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+
+        <div class="form-group form-check">
+            <input asp-for="ShowParticipants" class="form-check-input" />
+            <label asp-for="ShowParticipants" class="form-check-label">
+                Show participant list publicly
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="~/js/Activity/Create.js"></script>
+}

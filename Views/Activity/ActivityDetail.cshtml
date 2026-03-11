@@ -94,6 +94,10 @@
                         <span style="color: #999;">No Image</span>
                     </div>
                 }
+                @if (Model?.IsOwner == true)
+                {
+                    <a class="join-btn" href="@Url.Action("Edit", "Activity", new { id = Model.Act.Id })" style="display:block; text-align:center; text-decoration:none;">Edit Activity</a>
+                }
                 @if (User?.Identity?.IsAuthenticated == true)
                 {
                     <form asp-action="Join" asp-route-id="@Model.Act.Id" method="post">
@@ -104,7 +108,7 @@
                         }
                         else if (Model.IsJoined)
                         {
-                            <button class="join-btn" type="button" disabled>Joined</button>
+                            <button class="join-btn" asp-action="Unjoin" asp-route-id="@Model.Act.Id" type="submit">Unjoin</button>
                         }
                         else if (Model.Act.Participants.Count >= Model.Act.MaxPeople)
                         {
