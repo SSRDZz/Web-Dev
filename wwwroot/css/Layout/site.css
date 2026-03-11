@@ -34,7 +34,19 @@ body {
     max-width: 100%
 }
 
-.logo { color: white; font-weight: bold; font-size: 1.5rem; }
+.Logo { 
+    color: white; 
+    font-weight: bold; 
+    font-size: 1.5rem; 
+
+    height: 100%
+}
+
+.Logo img {
+    height: 25px;
+    width: auto;
+    display: block;
+}
 
 
 /* search bar */
@@ -244,7 +256,7 @@ a:hover {
     }
 
     /* make logo disappeat is better that search bar disappear */
-    .logo { 
+    .Logo { 
         display: none;
     }  
 
