@@ -64,7 +64,6 @@ public class ActivityController : Controller
                 .Select(k => k.Trim())
                 .Where(k => !string.IsNullOrWhiteSpace(k))
                 .Distinct(StringComparer.OrdinalIgnoreCase)),
-            ImageUrl = model.ImageUrl,
             MaxPeople = model.MaxPeople,
             RecruitingMode = (int)model.RecruitingMode,
             ShowParticipants = model.ShowParticipants,
@@ -110,7 +109,6 @@ public class ActivityController : Controller
             Name = activity.Name,
             Description = activity.Description,
             KeywordInput = activity.KeywordsText,
-            ImageUrl = activity.ImageUrl,
             MaxPeople = activity.MaxPeople,
             RecruitingMode = (RecruitingMode)activity.RecruitingMode,
             ShowParticipants = activity.ShowParticipants,
@@ -150,7 +148,6 @@ public class ActivityController : Controller
             .Select(k => k.Trim())
             .Where(k => !string.IsNullOrWhiteSpace(k))
             .Distinct(StringComparer.OrdinalIgnoreCase));
-        activity.ImageUrl = model.ImageUrl;
         activity.MaxPeople = model.MaxPeople;
         activity.RecruitingMode = (int)model.RecruitingMode;
         activity.ShowParticipants = model.ShowParticipants;
