@@ -3,7 +3,8 @@
 @{
     ViewData["Title"] = Model?.Name ?? "Activity Details";
     var ownerParticipant = Model?.Participants?.FirstOrDefault(p => p.Id == Model!.OwnerId);
-    var ownerDisplayName = ownerParticipant?.RealUserName ?? ownerParticipant?.UserName ?? Model?.OwnerId.ToString() ?? "Unknown";
+    var ownerDisplayName = ownerParticipant?.RealUserName ?? ownerParticipant?.UserName ?? Model?.OwnerId.ToString() ??
+"Unknown";
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
@@ -12,7 +13,8 @@
     <div class="card">
         <div class="card-header">
             <div class="detail">
-                <div class="status-badge @(Model?.EventDate < DateTime.Now ? "closed" : (Model?.Participants.Count >= Model?.MaxPeople ? "full" : "available"))">
+                <div
+                    class="status-badge @(Model?.EventDate < DateTime.Now ? "closed" : (Model?.Participants.Count >= Model?.MaxPeople ? "full" : "available"))">
                     @if (Model?.EventDate < DateTime.Now)
                     {
                         <span>Closed</span>
@@ -42,9 +44,10 @@
                     @if (!string.IsNullOrEmpty(Model?.MapUrl))
                     {
                         <p><strong>Map:</strong></p>
-                        <div id="activity-map" data-map-url="@Model.MapUrl" style="width: 100%; height: 300px; border-radius: 10px; margin: 8px 0;"></div>
+                        <div id="activity-map" data-map-url="@Model.MapUrl"
+                             style="width: 100%; height: 300px; border-radius: 10px; margin: 8px 0;"></div>
                     }
-                    <p><strong>Recruiting Mode:</strong> 
+                    <p><strong>Recruiting Mode:</strong>
                         @if (Model?.RecruitingMode == 1)
                         {
                             <span>First Come, First Served</span>
@@ -67,15 +70,20 @@
                             <div style="margin: 10px 0;">
                                 @foreach (var participant in Model.Participants)
                                 {
-                                    <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
-                                        <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
+                                    <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })"
+                                           style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;"
+                                           onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
+                                        <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))"
+                                             alt="@participant.RealUserName"
+                                             style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
                                         <span style="font-weight: 500;">@participant.RealUserName</span>
                                     </a>
                                 }
                             </div>
                         }
                     }
-                    @if (Model is KMITL_WebDev_MiniProject.Entites.Activity act && act.Keywords != null && act.Keywords.Any())
+                    @if (Model is KMITL_WebDev_MiniProject.Entites.Activity act && act.Keywords != null &&
+                                                                                                                                            act.Keywords.Any())
                     {
                         <p><strong>Keywords:</strong> @string.Join(", ", act.Keywords.Select(k => k.Keyword))</p>
                     }
@@ -84,7 +92,8 @@
             <div class="card-image">
                 @if (!string.IsNullOrEmpty(Model?.ImageUrl))
                 {
-                    <img src="@Model.ImageUrl" alt="@Model?.Name" style="width:100%; border-radius:10px; max-height: 300px; object-fit: cover;">
+                    <img src="@Model.ImageUrl" alt="@Model?.Name"
+                         style="width:100%; border-radius:10px; max-height: 300px; object-fit: cover;">
                 }
                 else
                 {
@@ -100,111 +109,112 @@
                 Activity Owner:
                 @if (Model?.OwnerId != Guid.Empty)
                 {
-                    <strong><a href="@Url.Action("ProfileOther", "User", new { Id = Model!.OwnerId })">@ownerDisplayName</a></strong>
-                }
+                    <strong><a
+                        href="@Url.Action("ProfileOther", "User", new { Id = Model!.OwnerId })">@ownerDisplayName</a></strong>
+                    }
                 else
-                {
-                    <strong>Unknown</strong>
-                }
+                    {
+                        <strong>Unknown</strong>
+                    }
+                </div>
+                <p><strong>Created:</strong> @Model?.CreatedAt.ToString("MMM dd, yyyy")</p>
+                <p><strong>Last Updated:</strong> @Model?.UpdatedAt.ToString("MMM dd, yyyy")</p>
             </div>
-            <p><strong>Created:</strong> @Model?.CreatedAt.ToString("MMM dd, yyyy")</p>
-            <p><strong>Last Updated:</strong> @Model?.UpdatedAt.ToString("MMM dd, yyyy")</p>
         </div>
     </div>
-</div>
 
-<style>
-    .activity-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, max(1000px, 1fr));
-        gap: 200px;
-    }
+    <style>
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, max(1000px, 1fr));
+            gap: 200px;
+        }
 
-    .card {
-        padding: 15px;
-    }
+        .card {
+            padding: 15px;
+        }
 
-    .detail {
-        min-width: 100px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
+        .detail {
+            min-width: 100px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
 
-    .activity-info {
-        margin-top: 15px;
-        line-height: 1.8;
-    }
+        .activity-info {
+            margin-top: 15px;
+            line-height: 1.8;
+        }
 
-    .activity-info p {
-        margin: 8px 0;
-    }
+        .activity-info p {
+            margin: 8px 0;
+        }
 
-    #activity-map {
-        width: 100%;
-        height: 300px;
-        border-radius: 10px;
-        margin: 8px 0;
-    }
+        #activity-map {
+            width: 100%;
+            height: 300px;
+            border-radius: 10px;
+            margin: 8px 0;
+        }
 
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        width: 100%;
-    }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
 
-    .card-image {
-        max-width: 350px;
-        flex-shrink: 0;
-    }
+        .card-image {
+            max-width: 350px;
+            flex-shrink: 0;
+        }
 
-    .join-btn {
-        background: #FF7061;
-        color: white;
-        border: none;
-        padding: 15px 50px;
-        border-radius: 10px;
-        cursor: pointer;
-        margin-top: 15px;
-        width: 100%;
-        font-size: 16px;
-        transition: background-color 0.2s;
-    }
+        .join-btn {
+            background: #FF7061;
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
 
-    .join-btn:hover {
-        background: #e85d52;
-    }
+        .join-btn:hover {
+            background: #e85d52;
+        }
 
-    .status-badge {
-        display: inline-block;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
 
-    .status-badge.available {
-        background-color: #4CAF50;
-        color: white;
-    }
+        .status-badge.available {
+            background-color: #4CAF50;
+            color: white;
+        }
 
-    .status-badge.full {
-        background-color: #FF9800;
-        color: white;
-    }
+        .status-badge.full {
+            background-color: #FF9800;
+            color: white;
+        }
 
-    .status-badge.closed {
-        background-color: #9E9E9E;
-        color: white;
-    }
+        .status-badge.closed {
+            background-color: #9E9E9E;
+            color: white;
+        }
 
-    .user-meta {
-        font-size: 16px;
-        color: #666;
-        margin-bottom: 10px;
-    }
-</style>
+        .user-meta {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+    </style>
 
-<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-<script src="~/js/Activity/ActivityDetail.js"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="~/js/Activity/ActivityDetail.js"></script>
