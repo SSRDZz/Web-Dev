@@ -1,45 +1,136 @@
 @model KMITL_WebDev_MiniProject.Models.ProfileOtherViewModel
 
-<div class="text-center">
-    <h3>Profile</h3>
-    <img src="@Url.Content("~/" +  Model.ImagePath)" style="width: 5vw; height: auto;"/>
-    <div>
-        <label>Username</label>
-        <span>@Model.RealUserName</span>
-    </div>
-    <div>
-        <label>FirstName</label>
-        <span>@Model.FirstName</span>
-    </div>
-    <div>
-        <label>LastName</label>
-        <span>@Model.LastName</span>
-    </div>
-    <div>
-        <label>Reputation</label>
-        <span id="user-reputation">@Model.Reputation</span>
-    </div>
-    <div>
-        <label>Sex</label>
-        <span>@Model.Sex</span>
-    </div>
-    <div>
-        <label>Like</label>
-        <input type="checkbox" id="target-checkbox" checked="@Model.IsLike"></input>
-    </div>
-</div>
+<div class="profile-container">
 
-<script>
-    document.getElementById("target-checkbox").addEventListener("change", async (e) => {
-        await fetch('@Url.Action("AddReputation", "User")', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked})
-        });
+    <div class="profile-banner"></div>
 
-        await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
-        .then(response => response.json())
-        .then(json => { document.getElementById("user-reputation").innerText = `${json}`; })
-        .catch(err => console.warn("Something went wrong.", err));
-    });
-</script>
+    <div class="profile-avatar">
+        <img src="@Url.Content($"~/{Model.ImagePath}")" asp-append-version="true" />
+    </div>
+
+    <div class="profile-info">
+        <h2>@Model.RealUserName</h2>
+        <div class="rating" id="user-reputation">@Model.Reputation ⭐</div>
+    </div>
+
+    <div class="profile-card">
+
+        <div>@Model.FirstName @Model.LastName
+            @if (Model?.Sex == "Male")
+            {
+                <img src="/image/MaleSymbol.png">
+            }
+            else
+            {
+                <img src="/image/FemaleSymbol.png">
+            }
+        </div>
+        <div>
+            <label>Like</label>
+            <input type="checkbox" id="target-checkbox" checked="@Model.IsLike"></input>
+        </div>
+
+        <script>
+                    document.getElementById("target-checkbox").addEventListener("change", async (e) => {
+                        await fetch('@Url.Action("AddReputation", "User")', {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked })
+                        });
+
+                        await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
+                            .then(response => response.json())
+                            .then(json => { document.getElementById("user-reputation").innerText = `${json} ⭐`; })
+                            .catch(err => console.warn("Something went wrong.", err));
+                    });
+        </script>
+    </div>
+
+    <style>
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f3f3f3;
+            }
+
+            /* Container */
+            .profile-container {
+                text-align: center;
+            }
+
+            /* Banner */
+            .profile-banner {
+                background: #ff9a8f;
+                height: 180px;
+                width: 100%;
+            }
+
+            /* Avatar */
+            .profile-avatar {
+                margin-top: -60px;
+            }
+
+            .profile-avatar img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 5px solid white;
+            }
+
+            /* Name + rating */
+            .profile-info h2 {
+                margin: 10px 0 0 0;
+            }
+
+            .rating {
+                color: gold;
+            }
+
+            /* Main card */
+            .profile-card {
+                margin: 30px auto;
+                width: 60%;
+                background: #e6e6e6;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .profile-card img {
+                width: 20px;
+                height: 20px;
+            }
+
+            /* Buttons */
+            .profile-buttons {
+                margin-top: 20px;
+            }
+
+            .edit-btn {
+                padding: 8px 16px;
+                margin: 5px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                background: #ff9a8f;
+                color: white;
+            }
+
+            .submit-btn {
+                padding: 8px 16px;
+                margin: 5px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            .profile-buttons a,
+            @*.profile-buttons button {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }*@
+    </style>

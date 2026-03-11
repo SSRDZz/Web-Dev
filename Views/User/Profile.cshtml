@@ -35,13 +35,13 @@
 
         <div class="profile-buttons">
             <a asp-controller="User" asp-action="ProfileEdit">
-                <button>
+                <button class="edit-btn">
                     Edit
                 </button>
             </a>
 
             <form asp-controller="Auth" asp-action="Logout" method="POST">
-                <button type="submit">Logout</button>
+                <button type="submit" class="submit-btn">Logout</button>
             </form>
         </div>
 
@@ -110,12 +110,30 @@
         margin-top: 20px;
     }
 
-    .profile-buttons a,
-    .profile-buttons button {
+    .edit-btn {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        background: #ff9a8f;
+        color: white;
+    }
+
+    .submit-btn {
         padding: 8px 16px;
         margin: 5px;
         border: none;
         border-radius: 6px;
         cursor: pointer;
     }
+
+    .profile-buttons a,
+    @*.profile-buttons button {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }*@
 </style>
