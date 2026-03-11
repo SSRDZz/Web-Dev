@@ -69,7 +69,7 @@
                                          src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))"
                                          alt="@Model.OwnerName" />
                                     <span><strong>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ?
-                                                                                                                        Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
+                                                                                                                                                                Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
                                     </a>
                                 </div>
                             }
@@ -141,7 +141,7 @@
                         }
 
                         <label class="like-container">
-                            <input type="checkbox" class="likeButton">
+                            <input type="checkbox" class="likeButton" id="likeButton">
                             <span class="like-icon"></span>
                             like 0
                         </label>

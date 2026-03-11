@@ -105,9 +105,6 @@ if (document.readyState === 'loading') {
 }
 
 
-
-
-
 function show_participants(){
 	const div = document. querySelector("#participants");
 	console.log(div.childElementCount)
@@ -127,6 +124,19 @@ function comment_button(){
         update_comment({ currentTarget: comment_bar })
     });
 }
+
+document.getElementById("likeButton").addEventListener("change", async (e) => {
+        await fetch('/Activity/UpdateRelation', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked})
+        });
+
+        await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
+        .then(response => response.json())
+        .then(json => { document.getElementById("user-reputation").innerText = `${json}`; })
+        .catch(err => console.warn("Something went wrong.", err));
+    });
 
 show_participants()
 comment_button()
