@@ -4,13 +4,15 @@
 <div class="activity-grid" id="activity-grid">
     @foreach(var activity in Model)
     {
+            var ownerCount = activity.Act.OwnerId != Guid.Empty ? 1 : 0;
+            var participantsCountIncludingOwner = activity.Act.Participants.Count + ownerCount;
         <div class="card">
-            <div class="status-badge @(activity.Act.EventDate < DateTime.Now ? "closed" : (activity.Act.Participants.Count >= activity.Act.MaxPeople ? "full" : "available"))">
+                <div class="status-badge @(activity.Act.EventDate < DateTime.Now ? "closed" : (participantsCountIncludingOwner >= activity.Act.MaxPeople ? "full" : "available"))">
                 @if (activity.Act.EventDate < DateTime.Now)
                 {
                     <span>Closed</span>
                 }
-                else if (activity.Act.Participants.Count >= activity.Act.MaxPeople)
+                    else if (participantsCountIncludingOwner >= activity.Act.MaxPeople)
                 {
                     <span>Full</span>
                 }
@@ -42,7 +44,7 @@
                 <p>@activity.Act.Description</p>
                 <p><strong>Event Date:</strong> @activity.Act.EventDate.ToString("MMM dd, yyyy HH:mm")</p>
                 <p><strong>Location:</strong> @activity.Act.Location</p>
-                <p><strong>Participants:</strong> @activity.Act.Participants.Count / @activity.Act.MaxPeople</p>
+                <p><strong>Participants:</strong> @participantsCountIncludingOwner / @activity.Act.MaxPeople</p>
                 @if (activity.Act.Keywords != null && activity.Act.Keywords.Any())
                 {
                     <p><strong>Keywords:</strong> @string.Join(", ", activity.Act.Keywords)</p>
