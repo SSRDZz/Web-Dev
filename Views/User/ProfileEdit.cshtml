@@ -3,34 +3,122 @@
 }
 
 @model KMITL_WebDev_MiniProject.Models.ProfileViewModel
-
-
-<h3>Profile</h3>
-<img src="@Url.Content("~/" + Model.ImagePath)" style="width: 30vw; height: auto;" />
-<div asp-validation-summary="All"></div>
-<form asp-action="ProfileUpdate" method="POST" enctype="multipart/form-data">
-	<input asp-for="ImagePath" type="hidden" />
-	<input asp-for="RealUserName" type="hidden" />
-	<input asp-for="Reputation" type="hidden" />
-	<input asp-for="Sex" type="hidden" />
-	<div>
-		<label asp-for="FirstName"></label>
-		<input asp-for="FirstName" required />
-		<span asp-validation-for="FirstName"></span>
+<div class="profile-container">
+	<div class="profile-banner"></div>
+	<h3>Profile</h3>
+	<div class="profile-avatar">
+		<img src="@Url.Content("~/" + Model.ImagePath)" />
 	</div>
-	<div>
-		<label asp-for="LastName"></label>
-		<input asp-for="LastName" required />
-		<span asp-validation-for="LastName"></span>
-	</div>
-	<div>
-		<label></label>
-		<input name="newPicture" type="file" accept=".jpg,.jpeg,.png" />
-		<span></span>
-	</div>
-	<button type="submit">Save</button>
-</form>
+	<div asp-validation-summary="All"></div>
+	<form asp-action="ProfileUpdate" method="POST" enctype="multipart/form-data">
+		<input asp-for="ImagePath" type="hidden" />
+		<input asp-for="RealUserName" type="hidden" />
+		<input asp-for="Reputation" type="hidden" />
+		<input asp-for="Sex" type="hidden" />
+		<div>
+			<label asp-for="FirstName"></label>
+			<input asp-for="FirstName" required />
+			<span asp-validation-for="FirstName"></span>
+		</div>
+		<div>
+			<label asp-for="LastName"></label>
+			<input asp-for="LastName" required />
+			<span asp-validation-for="LastName"></span>
+		</div>
+		<div>
+			<label></label>
+			<input name="newPicture" type="file" accept=".jpg,.jpeg,.png" />
+			<span></span>
+		</div>
+		<button type="submit" class="save-btn">Save</button>
+	</form>
+</div>
 
 <style>
+	body {
+		margin: 0;
+		font-family: Arial, Helvetica, sans-serif;
+		background: #f3f3f3;
+	}
 
+	/* Container */
+	.profile-container {
+		text-align: center;
+	}
+
+	/* Banner */
+	.profile-banner {
+		background: #ff9a8f;
+		height: 180px;
+		width: 100%;
+	}
+
+	/* Avatar */
+	.profile-avatar {
+		margin-top: -60px;
+	}
+
+	.profile-avatar img {
+		width: 120px;
+		height: 120px;
+		border-radius: 50%;
+		object-fit: cover;
+		border: 5px solid white;
+	}
+
+	/* Name + rating */
+	.profile-info h2 {
+		margin: 10px 0 0 0;
+	}
+
+	.rating {
+		color: gold;
+	}
+
+	/* Main card */
+	.profile-card {
+		margin: 30px auto;
+		width: 60%;
+		background: #e6e6e6;
+		padding: 30px;
+		border-radius: 15px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+
+	.profile-card img {
+		width: 20px;
+		height: 20px;
+	}
+
+	/* Buttons */
+	.profile-buttons {
+		margin-top: 20px;
+	}
+
+	.save-btn {
+		padding: 8px 16px;
+		margin: 5px;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+		background: #ff9a8f;
+		color: white;
+	}
+
+	.choose-btn {
+		padding: 8px 16px;
+		margin: 5px;
+		border: none;
+		border-radius: 6px;
+		cursor: pointer;
+	}
+
+	.profile-buttons a,
+	@*.profile-buttons button {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }*@
 </style>
