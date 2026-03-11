@@ -18,4 +18,8 @@ public class ActivityDTO
 	public bool IsJoined { get; set; }
 
 	public bool IsOwner { get; set; }
+
+	public bool IsLike {get; set;}
+
+	public int LikeCount {get; set;}
 }

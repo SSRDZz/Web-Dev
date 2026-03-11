@@ -1,136 +1,71 @@
 @model KMITL_WebDev_MiniProject.Models.ProfileOtherViewModel
 
-<div class="profile-container">
+<link rel="stylesheet" href="~/css/User/ProfileOther.css" asp-append-version="true" />
 
-    <div class="profile-banner"></div>
-
-    <div class="profile-avatar">
-        <img src="@Url.Content($"~/{Model.ImagePath}")" asp-append-version="true" />
+<div class="text-center">
+    <h3>Profile</h3>
+    <img src="@Url.Content("~/" + Model.ImagePath)" style="width: 5vw; height: auto;" />
+    <div>
+        <label>Username</label>
+        <span>@Model.RealUserName</span>
+    </div>
+    <div>
+        <label>FirstName</label>
+        <span>@Model.FirstName</span>
+    </div>
+    <div>
+        <label>LastName</label>
+        <span>@Model.LastName</span>
+    </div>
+    <div>
+        <label>Reputation</label>
+        <span id="user-reputation">@Model.Reputation</span>
     </div>
 
     <div class="profile-info">
         <h2>@Model.RealUserName</h2>
         <div class="rating" id="user-reputation">@Model.Reputation ⭐</div>
     </div>
+    <div class="star-rating" id="star-rating" isLike="@Model.IsLike">
+        <input type="radio" id="star5" class="star-rating-radio" name="rating" value="5">
+        <label for="star5">★</label>
 
-    <div class="profile-card">
+        <input type="radio" id="star4" class="star-rating-radio" name="rating" value="4">
+        <label for="star4">★</label>
 
-        <div>@Model.FirstName @Model.LastName
-            @if (Model?.Sex == "Male")
-            {
-                <img src="/image/MaleSymbol.png">
-            }
-            else
-            {
-                <img src="/image/FemaleSymbol.png">
-            }
-        </div>
-        <div>
-            <label>Like</label>
-            <input type="checkbox" id="target-checkbox" checked="@Model.IsLike"></input>
-        </div>
+        <input type="radio" id="star3" class="star-rating-radio" name="rating" value="3">
+        <label for="star3">★</label>
 
-        <script>
-                    document.getElementById("target-checkbox").addEventListener("change", async (e) => {
-                        await fetch('@Url.Action("AddReputation", "User")', {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked })
-                        });
+        <input type="radio" id="star2" class="star-rating-radio" name="rating" value="2">
+        <label for="star2">★</label>
 
-                        await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
-                            .then(response => response.json())
-                            .then(json => { document.getElementById("user-reputation").innerText = `${json} ⭐`; })
-                            .catch(err => console.warn("Something went wrong.", err));
-                    });
-        </script>
+        <input type="radio" id="star1" class="star-rating-radio" name="rating" value="1">
+        <label for="star1">★</label>
     </div>
+</div>
 
-    <style>
-            body {
-                margin: 0;
-                font-family: Arial, Helvetica, sans-serif;
-                background: #f3f3f3;
-            }
 
-            /* Container */
-            .profile-container {
-                text-align: center;
-            }
 
-            /* Banner */
-            .profile-banner {
-                background: #ff9a8f;
-                height: 180px;
-                width: 100%;
-            }
+<script>
+    const star_rating = document.getElementById("star-rating");
+    const p = document.getElementById("star-rating")
+    const p_radio = p.querySelectorAll('input[name="rating"]');
 
-            /* Avatar */
-            .profile-avatar {
-                margin-top: -60px;
-            }
+    console.log(p.querySelectorAll('input[name="rating"]'))
+    if(p.getAttribute("isLike") != 0) {
+        p_radio[5 - p.getAttribute("isLike")].checked = "true";
+    }
 
-            .profile-avatar img {
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: 5px solid white;
-            }
+    star_rating.addEventListener("change", async (e) => {
+        await fetch('@Url.Action("AddReputation", "User")', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Id: "@Model.Id", value: star_rating.querySelector('input[name="rating"]:checked').value })
+        });
 
-            /* Name + rating */
-            .profile-info h2 {
-                margin: 10px 0 0 0;
-            }
-
-            .rating {
-                color: gold;
-            }
-
-            /* Main card */
-            .profile-card {
-                margin: 30px auto;
-                width: 60%;
-                background: #e6e6e6;
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            }
-
-            .profile-card img {
-                width: 20px;
-                height: 20px;
-            }
-
-            /* Buttons */
-            .profile-buttons {
-                margin-top: 20px;
-            }
-
-            .edit-btn {
-                padding: 8px 16px;
-                margin: 5px;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                background: #ff9a8f;
-                color: white;
-            }
-
-            .submit-btn {
-                padding: 8px 16px;
-                margin: 5px;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-
-            .profile-buttons a,
-            @*.profile-buttons button {
-        padding: 8px 16px;
-        margin: 5px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-    }*@
-    </style>
+        await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
+            .then(response => response.text())
+            .then(json => { document.getElementById("user-reputation").innerText = `${json}`; })
+            .catch(err => console.warn("Something went wrong.", err));
+    });
+</script>

@@ -78,7 +78,7 @@ public class UserServices
 		return await UserMang.Users.AnyAsync(u => u.RealUserName == RealName);
 	}
 
-	public async Task<int> FindUserReputation(Guid Id)
+	public async Task<float> FindUserReputation(Guid Id)
 	{
 		List<ReputationRelation> RepRltList = await RepDbContext.ReputationRelations
 			.Where(rlt => rlt.UserSub == Id || rlt.UserObj == Id)
@@ -91,28 +91,31 @@ public class UserServices
 
 		foreach(ReputationRelation Rlt in RepRltList)
 		{
+			Console.WriteLine(Rlt.Relation);
 			if(Rlt.UserSub == Id)
-				sum += (Rlt.Relation & 0b10) >> 1;
-			else
-				sum += Rlt.Relation & 0b01;
+				sum += (Rlt.Relation & 0xf0) >> 4;
+			else	
+				sum += Rlt.Relation & 0x0f;
 		}
-
-		return sum;
+		Console.Write("Sum: ");
+		Console.WriteLine(sum);
+		return (float)sum/RepRltList.Count;
 	}
 
-	public async Task<bool> FindIsLike(Guid OwnID, Guid TargetID)
+	public async Task<int> FindIsLike(Guid OwnID, Guid TargetID)
 	{
 		ReputationRelation? RepRlt = await RepDbContext.ReputationRelations
 			.Where(rlt => (rlt.UserObj == OwnID && rlt.UserSub == TargetID) || (rlt.UserSub == OwnID && rlt.UserObj == TargetID))
 			.FirstOrDefaultAsync();
 		
 		if(RepRlt == null)
-			return false;
-		else if((RepRlt.UserSub == OwnID && (RepRlt.Relation & 0b01) == 0b01) || 
-				(RepRlt.UserObj == OwnID && (RepRlt.Relation & 0b10) == 0b10))
-			return true;
-		else 
-			return false;
+			return 0;
+		else if(RepRlt.UserSub == OwnID && (RepRlt.Relation & 0x0f) > 0)
+			return RepRlt.Relation & 0x0f;
+		else if(RepRlt.UserObj == OwnID && ((RepRlt.Relation & 0xf0) >> 4) > 0)
+			return (RepRlt.Relation & 0xf0) >> 4;
+
+		return 0;
 	}
 
 	public async Task CheckProfileExist(UserAccount Acnt)

@@ -17,7 +17,7 @@ namespace KMITL_WebDev_MiniProject.Models
 		public string RealUserName {get; set;}
 
 		[Required(ErrorMessage="Reputation Error")]
-		public int Reputation {get; set;}
+		public float Reputation {get; set;}
 		
 		[Required]
 		public string ImagePath {get; set;}

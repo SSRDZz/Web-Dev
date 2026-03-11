@@ -105,9 +105,6 @@ if (document.readyState === 'loading') {
 }
 
 
-
-
-
 function show_participants(){
 	const div = document. querySelector("#participants");
 	console.log(div.childElementCount)

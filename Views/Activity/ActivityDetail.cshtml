@@ -69,7 +69,7 @@
                                          src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))"
                                          alt="@Model.OwnerName" />
                                     <span><strong>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ?
-                                                                                                                        Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
+                                                                                                                                                                Model?.Act.OwnerId.ToString() : Model.OwnerName)</strong></span>
                                     </a>
                                 </div>
                             }
@@ -150,9 +150,9 @@
                         }
 
                         <label class="like-container">
-                            <input type="checkbox" class="likeButton">
+                            <input type="checkbox" class="likeButton" id="likeButton" checked="@Model.IsLike">
                             <span class="like-icon"></span>
-                            like 0
+                            <div id="like-continaer-result">like @Model.LikeCount</div>
                         </label>
                     </div>
                 </div>
@@ -207,5 +207,19 @@
             </div>
         </div>
 
-        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-        <script src="~/js/Activity/ActivityDetail.js"></script>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+<script src="~/js/Activity/ActivityDetail.js"></script>
+<script>
+    document.getElementById("likeButton").addEventListener("change", async (e) => {
+        await fetch('@Url.Action("UpdateRelation", "Activity")', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ActID: "@Model.Act.Id"})
+        });
+
+        await fetch('@Url.Action("FindRelation", "Activity")' + "/@Model.Act.Id")
+        .then(response => response.text())
+        .then(json => { document.getElementById("like-continaer-result").innerText = `like ${json}`; })
+        .catch(err => console.warn("Something went wrong.", err));
+    });
+</script>

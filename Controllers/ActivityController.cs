@@ -8,6 +8,8 @@ using KMITL_WebDev_MiniProject.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography.X509Certificates;
+using MvcMovie.Migrations.Activitys;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 
@@ -196,12 +198,15 @@ public class ActivityController : Controller
             }
         }
 
+        UserAccount Owner = await _userManager.GetUserAsync(User);
         ActivityDTO dto = new ActivityDTO()
         {
             Act = activity,
             Comments = await _ComSer.ShowCommentDTOs(id),
             OwnerName = ownerName,
-            OwnerImagePath = ownerImagePath
+            OwnerImagePath = ownerImagePath,
+            LikeCount = await FindRelation(activity.Id),
+            IsLike = await IsLike(Owner.Id, activity.Id)
         };
 
         var currentUser = await _userManager.GetUserAsync(User);
@@ -312,5 +317,44 @@ public class ActivityController : Controller
     private static DateTime ToMinutePrecision(DateTime value)
     {
         return new DateTime(value.Year, value.Month, value.Day, value.Hour, value.Minute, 0, value.Kind);
+    }
+
+    [HttpPost]
+    [Authorize]
+    public async Task UpdateRelation([FromBody] ActIDDTO Data)
+    {
+        UserAccount UserAccount = await _userManager.GetUserAsync(User);
+        ActivityRelation? Rels = await _activitiesContext.Relations.Where(rel => rel.UserID == UserAccount.Id && rel.ActID == Data.ActID).FirstOrDefaultAsync();
+
+        if(Rels == null)
+        {
+            Rels = new ActivityRelation()
+            {
+                UserID = UserAccount.Id,
+                ActID = Data.ActID,
+                Relation = 1
+            };
+            await _activitiesContext.Relations.AddAsync(Rels);
+        } else
+        {
+            Rels.Relation ^= 0b1;
+            _activitiesContext.Relations.Entry(Rels);
+        }
+
+        await _activitiesContext.SaveChangesAsync();
+    }
+
+    [HttpGet("FindRelation/{ActID}")]
+    [Authorize]
+    public async Task<int> FindRelation(Guid ActID)
+    {
+        return await _activitiesContext.Relations.Where(rel => rel.ActID == ActID && rel.Relation == 1).CountAsync();
+    }
+
+    [HttpGet("IsLike/{UserID}&{ActID}")]
+    [Authorize]
+    public async Task<bool> IsLike(Guid UserID, Guid ActID)
+    {
+        return await _activitiesContext.Relations.Where(rel => rel.UserID == UserID && rel.ActID == ActID && rel.Relation == 1).FirstOrDefaultAsync() != null;
     }
 }
