@@ -146,6 +146,23 @@ h2 {
     background: #e85d52;
 }
 
+.join-btn-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.no-image-placeholder {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    color: #999;
+}
+
 .status-badge {
     display: inline-block;
     padding: 6px 16px;

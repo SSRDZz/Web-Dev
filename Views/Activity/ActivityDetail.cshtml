@@ -5,98 +5,93 @@
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+<link rel="stylesheet" href="~/css/Activity/ActivityDetail.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/Layout/Scrollbar.css" asp-append-version="true" />
 
 <div class="activity-grid">
     <div class="card">
-        <div class="card-header">
-            <div class="detail">
-                <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (Model?.Act.Participants.Count >= Model?.Act.MaxPeople ? "full" : "available"))">
-                    @if (Model?.Act.EventDate < DateTime.Now)
+        <div class="card-header">   
+            <div class="card-text">
+                <div class="card-topic">
+                    <div class="status-badge @(Model?.Act.EventDate < DateTime.Now ? "closed" : (Model?.Act.Participants.Count >= Model?.Act.MaxPeople ? "full" : "available"))">
+                        @if (Model?.Act.EventDate < DateTime.Now)
+                        {
+                            <span>Closed</span>
+                        }
+                        else if (Model?.Act.Participants.Count >= Model?.Act.MaxPeople)
+                        {
+                            <span>Full</span>
+                        }
+                        else
+                        {
+                            <span>Available</span>
+                        }
+                    </div>
+
+                    <h1>@Model?.Act.Name</h1>
+                    <p>@Model?.Act.Description</p>
+                </div>
+                <div class="detail">
+                    <div class="activity-info">
+                        <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
+                        <p><strong>Location:</strong> @Model?.Act.Location</p>
+                        <p><strong>Participants:</strong> @Model?.Act.Participants.Count / @Model?.Act.MaxPeople</p>
+                        @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
+                        {
+                            <p><strong>Map:</strong></p>
+                            <div id="activity-map" data-map-url="@Model.Act.MapUrl"></div>
+                        }
+                        <p><strong>Recruiting Mode:</strong> 
+                            @if (Model?.Act.RecruitingMode == 1)
+                            {
+                                <span>First Come, First Served</span>
+                            }
+                            else if (Model?.Act.RecruitingMode == 2)
+                            {
+                                <span>Random on Event Day</span>
+                            }
+                            else if (Model?.Act.RecruitingMode == 3)
+                            {
+                                <span>Owner Selection</span>
+                            }
+                        </p>
+
+                        @if (Model?.Act.OwnerId != Guid.Empty)
+                        {
+                            <div class="owner-box">
+                                <p><strong>Owner:</strong></p>
+                                <a class="user-box" href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })">
+                                    <img class="user-img" src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName"/>
+                                    <span>@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
+                                </a>
+                            </div>
+                        }
+
+                        @* keywords *@
+                        @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
+                        {
+                            <p><strong>Keywords:</strong> @string.Join(", ", Model.Act.Keywords)</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-image">
+                <div>
+                    @if (!string.IsNullOrEmpty(Model?.Act.ImageUrl))
                     {
-                        <span>Closed</span>
-                    }
-                    else if (Model?.Act.Participants.Count >= Model?.Act.MaxPeople)
-                    {
-                        <span>Full</span>
+                        <img src="@Url.Content("~/" + (Model?.Act.ImageUrl ?? ""))" alt="@Model?.Act.Name">
                     }
                     else
                     {
-                        <span>Available</span>
-                    }
-                </div>
-                <h3>@Model?.Act.Name</h3>
-                <p>@Model?.Act.Description</p>
-                <div class="activity-info">
-                    <p><strong>Event Date:</strong> @Model?.Act.EventDate.ToString("MMMM dd, yyyy HH:mm")</p>
-                    <p><strong>Location:</strong> @Model?.Act.Location</p>
-                    <p><strong>Participants:</strong> @Model?.Act.Participants.Count / @Model?.Act.MaxPeople</p>
-                    @if (!string.IsNullOrEmpty(Model?.Act.MapUrl))
-                    {
-                        <p><strong>Map:</strong></p>
-                        <div id="activity-map" data-map-url="@Model.Act.MapUrl" style="width: 100%; height: 300px; border-radius: 10px; margin: 8px 0;"></div>
-                    }
-                    <p><strong>Recruiting Mode:</strong> 
-                        @if (Model?.Act.RecruitingMode == 1)
-                        {
-                            <span>First Come, First Served</span>
-                        }
-                        else if (Model?.Act.RecruitingMode == 2)
-                        {
-                            <span>Random on Event Day</span>
-                        }
-                        else if (Model?.Act.RecruitingMode == 3)
-                        {
-                            <span>Owner Selection</span>
-                        }
-                    </p>
-                    @if (Model?.Act.OwnerId != Guid.Empty)
-                    {
-                        <p><strong>Owner:</strong></p>
-                        <div style="margin: 10px 0;">
-                            <a href="@Url.Action("ProfileOther", "User", new { Id = Model!.Act.OwnerId })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
-                                <img src="@Url.Content("~/" + (Model?.OwnerImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@Model.OwnerName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
-                                <span style="font-weight: 500;">@(string.IsNullOrWhiteSpace(Model?.OwnerName) ? Model?.Act.OwnerId.ToString() : Model.OwnerName)</span>
-                            </a>
+                        <div class="no-image-placeholder">
+                            <span>No Image</span>
                         </div>
                     }
-                    @if (Model?.Act.ShowParticipants == true)
-                    {
-                        <p><strong>Show Participants:</strong> Yes</p>
-                        @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
-                        {
-                            <p><strong>Participant List:</strong></p>
-                            <div style="margin: 10px 0;">
-                                @foreach (var participant in Model.Act.Participants)
-                                {
-                                    <a href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })" style="display: flex; align-items: center; padding: 8px; margin-bottom: 8px; border-radius: 8px; background: #f9f9f9; text-decoration: none; color: #333; transition: background 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='#f9f9f9'">
-                                        <img src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px; border: 2px solid #FF7061;" />
-                                        <span style="font-weight: 500;">@participant.RealUserName</span>
-                                    </a>
-                                }
-                            </div>
-                        }
-                    }
-                    @* keywords *@
-                    @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
-                    {
-                        <p><strong>Keywords:</strong> @string.Join(", ", Model.Act.Keywords)</p>
-                    }
                 </div>
-            </div>
-            <div class="card-image">
-                @if (!string.IsNullOrEmpty(Model?.Act.ImageUrl))
-                {
-                    <img src="@Url.Content("~/" + (Model?.Act.ImageUrl ?? ""))" alt="@Model?.Act.Name" style="width:100%; border-radius:10px; max-height: 300px; object-fit: cover;">
-                }
-                else
-                {
-                    <div style="background-color: #f0f0f0; height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #999;">No Image</span>
-                    </div>
-                }
                 @if (Model?.IsOwner == true)
                 {
-                    <a class="join-btn" href="@Url.Action("Edit", "Activity", new { id = Model.Act.Id })" style="display:block; text-align:center; text-decoration:none;">Edit Activity</a>
+                    <a class="join-btn join-btn-link" href="@Url.Action("Edit", "Activity", new { id = Model.Act.Id })">Edit Activity</a>
                 }
                 @if (User?.Identity?.IsAuthenticated == true)
                 {
@@ -122,119 +117,53 @@
                 }
                 else
                 {
-                    <a class="join-btn" href="@Url.Action("Login", "Auth")" style="display:block; text-align:center; text-decoration:none;">Login to Join</a>
+                    <a class="join-btn join-btn-link" href="@Url.Action("Login", "Auth")">Login to Join</a>
                 }
             </div>
         </div>
         <div class="card-body">
+            <h2>Details</h2>
             <div class="user-meta">Activity Owner: <strong>@Model?.OwnerName</strong></div>
             <p><strong>Created:</strong> @Model?.Act.CreatedAt.ToString("MMM dd, yyyy")</p>
             <p><strong>Last Updated:</strong> @Model?.Act.UpdatedAt.ToString("MMM dd, yyyy")</p>
         </div>
     </div>
 
-    <div>
-        <label>Comment</label>
-        <input type="text" id="create-comment" act-id="@Model.Act.Id"/>
+    @if (Model?.Act.ShowParticipants == true)
+    {
+        <div class="card" id="participants">
+            @if (Model?.Act.Participants != null && Model.Act.Participants.Any())
+            {
+                <h2>Participant List:</h2>
+                <div class="participants-user">
+                    @foreach (var participant in Model.Act.Participants)
+                    {
+                        <a class="user-box" id="attendee-card" href="@Url.Action("ProfileOther", "User", new { Id = participant.Id })">
+                            <img class="user-img" src="@Url.Content("~/" + (participant.ImagePath ?? "image/UserProfile/guest_picture.jpg"))" alt="@participant.RealUserName"/>
+                            <span>@participant.RealUserName</span>
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    }
+
+    <div class="card" id="comment">
+        <h2>Comment Section</h2>
+        <div class="comment-box">
+            <input type="text" id="create-comment" act-id="@Model.Act.Id" placeholder="Join the conversation">
+            <div id="comment-button">
+                <img src="/image/send_submit_comment.svg" alt="Comment" />
+            </div>
+        </div>
+
+        <hr />
+
+        <section id="comment-section">
+            @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
+        </section>
     </div>
-    
-    <section id="comment-section">
-        @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
-    </section>
 </div>
-
-<style>
-    .activity-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, max(1000px, 1fr));
-        gap: 200px;
-    }
-
-    .card {
-        padding: 15px;
-    }
-
-    .detail {
-        min-width: 100px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-
-    .activity-info {
-        margin-top: 15px;
-        line-height: 1.8;
-    }
-
-    .activity-info p {
-        margin: 8px 0;
-    }
-
-    #activity-map {
-        width: 100%;
-        height: 300px;
-        border-radius: 10px;
-        margin: 8px 0;
-    }
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        width: 100%;
-    }
-
-    .card-image {
-        max-width: 350px;
-        flex-shrink: 0;
-    }
-
-    .join-btn {
-        background: #FF7061;
-        color: white;
-        border: none;
-        padding: 15px 50px;
-        border-radius: 10px;
-        cursor: pointer;
-        margin-top: 15px;
-        width: 100%;
-        font-size: 16px;
-        transition: background-color 0.2s;
-    }
-
-    .join-btn:hover {
-        background: #e85d52;
-    }
-
-    .status-badge {
-        display: inline-block;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-
-    .status-badge.available {
-        background-color: #4CAF50;
-        color: white;
-    }
-
-    .status-badge.full {
-        background-color: #FF9800;
-        color: white;
-    }
-
-    .status-badge.closed {
-        background-color: #9E9E9E;
-        color: white;
-    }
-
-    .user-meta {
-        font-size: 16px;
-        color: #666;
-        margin-bottom: 10px;
-    }
-</style>
 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script src="~/js/Activity/ActivityDetail.js"></script>
