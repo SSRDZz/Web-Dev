@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @using KMITL_WebDev_MiniProject.Entites
 @inject UserManager<UserAccount> UserManager
+@inject ApplicationActivitiesDbContext ActivitiesDb
 
 @{
     // ดึงข้อมูล User ปัจจุบัน
@@ -13,6 +15,32 @@
     if (user != null && !string.IsNullOrEmpty(user.ImagePath))
     {
         displayPath = user.ImagePath;
+    }
+
+    var myActivities = new List<Activity>();
+    var favouriteActivities = new List<Activity>();
+
+    if (user != null)
+    {
+        myActivities = await ActivitiesDb.Activities
+            .Where(a => a.OwnerId == user.Id || a.ActivityUsers.Any(au => au.UserId == user.Id))
+            .OrderByDescending(a => a.UpdatedAt)
+            .Take(8)
+            .ToListAsync();
+
+        var favouriteActivityIds = await ActivitiesDb.Relations
+            .Where(r => r.UserID == user.Id && r.Relation == 1)
+            .Select(r => r.ActID)
+            .ToListAsync();
+
+        if (favouriteActivityIds.Any())
+        {
+            favouriteActivities = await ActivitiesDb.Activities
+                .Where(a => favouriteActivityIds.Contains(a.Id))
+                .OrderByDescending(a => a.UpdatedAt)
+                .Take(8)
+                .ToListAsync();
+        }
     }
 }
 
@@ -78,8 +106,42 @@
                 </a>
                 
                 <div class="nav-section">Your activity</div>
+                @if (user == null)
+                {
+                    <div class="sidebar-empty">Login to see your activities</div>
+                }
+                else if (myActivities.Count == 0)
+                {
+                    <div class="sidebar-empty">No activity yet</div>
+                }
+                else
+                {
+                    foreach (var activity in myActivities)
+                    {
+                        <a asp-controller="Activity" asp-action="Detail" asp-route-id="@activity.Id" class="sidebar-sub-item" title="@activity.Name">
+                            @activity.Name
+                        </a>
+                    }
+                }
                 <hr class="nav-divider">
                 <div class="nav-section">Favourite</div>
+                @if (user == null)
+                {
+                    <div class="sidebar-empty">Login to see favourite activities</div>
+                }
+                else if (favouriteActivities.Count == 0)
+                {
+                    <div class="sidebar-empty">No favourites yet</div>
+                }
+                else
+                {
+                    foreach (var activity in favouriteActivities)
+                    {
+                        <a asp-controller="Activity" asp-action="Detail" asp-route-id="@activity.Id" class="sidebar-sub-item" title="@activity.Name">
+                            @activity.Name
+                        </a>
+                    }
+                }
             </nav>
             
             <a class="btn-create" asp-controller="Activity" asp-action="Create">Create Activity</a>
