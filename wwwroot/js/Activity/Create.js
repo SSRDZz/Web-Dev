@@ -11,7 +11,7 @@ function parseLatLng(value) {
 }
 
 (function initCreateMap() {
-    const mapContainer = document.getElementById("create-activity-map");
+    const mapContainer = document.getElementById("activity-map");
     const mapUrlInput = document.getElementById("map-url-input");
 
     if (!mapContainer || !mapUrlInput || typeof L === "undefined") return;
@@ -25,7 +25,7 @@ function parseLatLng(value) {
     const startLng = existing ? existing.lng : defaultLng;
     const startZoom = existing ? 15 : defaultZoom;
 
-    const map = L.map("create-activity-map").setView([startLat, startLng], startZoom);
+    const map = L.map("activity-map").setView([startLat, startLng], startZoom);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
