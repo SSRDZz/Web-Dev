@@ -74,12 +74,21 @@
                                 </div>
                             }
 
-                            @* keywords *@
-                            @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
-                            {
-                                <p><strong>Keywords:</strong> @string.Join(", ", Model.Act.Keywords)</p>
-                            }
-                        </div>
+                        @* keywords *@
+                        @if (Model?.Act.Keywords != null && Model.Act.Keywords.Any())
+                        {
+                            @* <p class="keyword"><strong>Keywords:</strong> @string.Join(" ", Model.Act.Keywords)</p> *@
+                            <div class="Keyword-Container"> 
+                                <strong>Keywords:</strong>  
+                                <div class="Keyword">
+                                    @foreach (var keys in Model.Act.Keywords){
+                                        <div class="Keyword-item">
+                                            @keys
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
 

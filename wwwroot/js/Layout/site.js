@@ -77,6 +77,8 @@ function renderSuggestion(data){
         return;
     }
 
+    console.log(data)
+
     suggestion_box.innerHTML = data.map(item => `<li class="suggestion-item">${item}</li>`).join('');
     suggestion_box.style.display = 'block';
 

@@ -28,6 +28,20 @@ body {
     
 }   
 
+.Logo {
+    padding: 20px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.Logo img {
+    height: 25px;
+    width: auto;
+    display: block;
+}
+
 /* big box */
 .Login-box {
     background-color: #FFFFFF;
@@ -67,6 +81,10 @@ input {
 }
 
 @media (max-width: 500px){
+    .Logo {
+        display: none;
+    }
+
     .Login-box{
         margin: 0px;
         border-radius: 0px;

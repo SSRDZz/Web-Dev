@@ -11,6 +11,10 @@ h2 {
     padding-bottom: 8px;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 
 .activity-grid {
     display: grid;
@@ -52,6 +56,10 @@ h2 {
     width: 50%;   
 }
 
+.card-topic > p {
+    word-break: break-all;
+}
+
 /* detail */
 .detail {
     min-width: 200px;
@@ -87,6 +95,47 @@ h2 {
 
     gap: 20px;
     align-items: center;
+}
+
+
+
+/* keyword */
+.Keyword-Container {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline; 
+    gap: 10px;
+
+    margin: 15px 0;
+}
+
+
+.Keyword-item {
+    display: inline-block;
+    border: 1px solid #FFAB77;  
+    background-color: #FFF5EE; 
+    color: #E67E22;            
+    
+    border-radius: 8px;        
+    padding: 4px 12px;         
+    font-size: 14px;
+    width: fit-content;
+
+    /* word-break: break-all; */
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+
+.Keyword {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline; 
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-left: 10px;
 }
 
 
@@ -150,6 +199,11 @@ h2 {
     display: block;
     text-align: center;
     text-decoration: none;
+}
+
+
+.join-btn.join-btn-link {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .no-image-placeholder {

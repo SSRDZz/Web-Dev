@@ -79,7 +79,11 @@ public class HomeController : Controller
             return Json(new List<string>());
         }
         var suggestions = _activitiesContext.Activities
-            .Where(a => a.Name.StartsWith(keyword))
+            .Where(a => 
+            a.Name.StartsWith(keyword) ||
+            (a.KeywordsText != null && EF.Functions.Like(a.KeywordsText, $"%{keyword}%"))
+            
+            )
             .OrderBy(a => a.Name)
             .Select(a => a.Name)
             .Take(4)

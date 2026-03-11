@@ -1,4 +1,22 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using KMITL_WebDev_MiniProject.Entites
+@inject UserManager<UserAccount> UserManager
+
+@{
+    // ดึงข้อมูล User ปัจจุบัน
+    var user = await UserManager.GetUserAsync(User);
+    
+    // ตั้งค่า Path เริ่มต้นเป็นรูป Guest
+    string displayPath = "image/UserProfile/guest_picture.jpg";
+
+    // ถ้า Login อยู่และมี ImagePath ให้ใช้ค่าจาก Database
+    if (user != null && !string.IsNullOrEmpty(user.ImagePath))
+    {
+        displayPath = user.ImagePath;
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,7 +28,9 @@
     <header class="custom-header">
         <div class="header-left">
             <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-            <div class="logo">LOGO</div>
+            <div class="Logo">
+                <img src="/image/icon2_C.png" alt="Logo" />
+            </div>
         </div>
       
         <form asp-controller="Search" asp-action="Index" method="GET" class="search-container">
@@ -26,12 +46,13 @@
             <button type="submit" style="display:none"></button>
         </form>
 
-
-        <div class="user-profile">  
-            <div class="user-icon">
-                <a asp-controller="User" asp-action="Profile">?</a>
-            </div>
-        </div>
+        
+        <a asp-controller="User" asp-action="Profile" class="Profile-img">
+            <img src="@Url.Content($"~/{displayPath}")" 
+                asp-append-version="true" 
+                alt="Profile" />
+        </a>
+            
     </header>
 
     <div class="main-container">

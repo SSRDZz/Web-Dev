@@ -29,4 +29,6 @@
 .Content {
 	margin-top: 10px;
 	padding-left: 60px;
+
+	word-break:break-all;
 }

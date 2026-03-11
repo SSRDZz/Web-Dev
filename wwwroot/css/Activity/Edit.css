@@ -1,0 +1,126 @@
+.edit-activity-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.edit-activity-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.activity-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #FF7061; /* main color theme */
+    box-shadow: 0 0 0 3px rgba(255, 112, 97, 0.1);
+}
+
+#activity-map {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+.map-help {
+    display: block;
+    color: #666;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* Checkbox */
+.form-check {
+    display: flex;
+    align-items: center;
+}
+
+.form-check-input {
+    margin-right: 10px;
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+}
+
+.form-check-label {
+    margin: 0 !important;
+    cursor: pointer;
+    font-weight: normal !important;
+}
+
+/* button */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: #FF7061;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #e85d52;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    text-decoration: none;
+}
+
+.text-danger {
+    display: block;
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}

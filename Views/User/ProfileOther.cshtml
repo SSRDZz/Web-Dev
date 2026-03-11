@@ -21,9 +21,10 @@
         <label>Reputation</label>
         <span id="user-reputation">@Model.Reputation</span>
     </div>
-    <div>
-        <label>Sex</label>
-        <span>@Model.Sex</span>
+
+    <div class="profile-info">
+        <h2>@Model.RealUserName</h2>
+        <div class="rating" id="user-reputation">@Model.Reputation ⭐</div>
     </div>
     <div class="star-rating" id="star-rating" isLike="@Model.IsLike">
         <input type="radio" id="star5" class="star-rating-radio" name="rating" value="5">

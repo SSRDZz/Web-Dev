@@ -5,8 +5,9 @@
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+<link rel="stylesheet" href="~/css/Activity/Edit.css" asp-append-version="true" />
 
-<div class="create-activity-container">
+<div class="edit-activity-container">
     <h2>Edit Activity</h2>
 
     <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="activity-form">
@@ -39,7 +40,8 @@
 
         <div class="form-group">
             <label asp-for="MapUrl">Map Location</label>
-            <div id="create-activity-map"></div>
+
+            <div id="activity-map" ></div>
             <input asp-for="MapUrl" id="map-url-input" class="form-control" placeholder="latitude,longitude" readonly />
             <small class="map-help">Click on map to select location (latitude, longitude)</small>
             <span asp-validation-for="MapUrl" class="text-danger"></span>
@@ -72,8 +74,8 @@
         </div>
 
         <div class="form-group form-check">
-            <input asp-for="ShowParticipants" class="form-check-input" />
-            <label asp-for="ShowParticipants" class="form-check-label">
+            <input asp-for="ShowParticipants" class="form-check-input" id="check-participants" />
+            <label class="form-check-label" for="check-participants">
                 Show participant list publicly
             </label>
         </div>
@@ -84,7 +86,6 @@
         </div>
     </form>
 </div>
-
 
 
 @section Scripts {
