@@ -125,18 +125,5 @@ function comment_button(){
     });
 }
 
-document.getElementById("likeButton").addEventListener("change", async (e) => {
-        await fetch('/Activity/UpdateRelation', {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Id: "@Model.Id", IsLike: e.currentTarget.checked})
-        });
-
-        await fetch('@Url.Action("FindReputation", "User")' + "?TargetID=@Model.Id")
-        .then(response => response.json())
-        .then(json => { document.getElementById("user-reputation").innerText = `${json}`; })
-        .catch(err => console.warn("Something went wrong.", err));
-    });
-
 show_participants()
 comment_button()
