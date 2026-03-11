@@ -21,10 +21,6 @@ public class ActivityViewModel
     [Display(Name = "Keywords (comma-separated)")]
     public string? KeywordInput { get; set; }
 
-
-    [Url]
-    public string? ImageUrl { get; set; }
-
     [Range(1, 1000)]
     public int MaxPeople { get; set; }
 

@@ -1,17 +1,18 @@
 @model KMITL_WebDev_MiniProject.Models.ActivityViewModel
 
 @{
-    ViewData["Title"] = "Create Activity";
+    ViewData["Title"] = "Edit Activity";
 }
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
 
 <div class="create-activity-container">
-    <h2>Create New Activity</h2>
-    
-    <form asp-action="Create" method="post" enctype="multipart/form-data" class="activity-form">
+    <h2>Edit Activity</h2>
+
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="activity-form">
+        <input asp-for="Id" type="hidden" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        
+
         <div class="form-group">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control" placeholder="Enter activity name" />
@@ -65,10 +66,11 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="ActivityImage">Upload Image</label>
+            <label asp-for="ActivityImage">Upload New Image</label>
             <input asp-for="ActivityImage" type="file" class="form-control" />
             <span asp-validation-for="ActivityImage" class="text-danger"></span>
         </div>
+
         <div class="form-group form-check">
             <input asp-for="ShowParticipants" class="form-check-input" />
             <label asp-for="ShowParticipants" class="form-check-label">
@@ -77,143 +79,13 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Create Activity</button>
-            <a href="/" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-action="Detail" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
 </div>
 
-<style>
-    .create-activity-container {
-        max-width: 600px;
-        margin: 40px auto;
-        padding: 30px;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    }
 
-    .create-activity-container h2 {
-        text-align: center;
-        color: #333;
-        margin-bottom: 30px;
-    }
-
-    .activity-form {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        color: #333;
-        font-weight: 500;
-    }
-
-    .form-control {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: inherit;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .form-control:focus {
-        outline: none;
-        border-color: #FF7061;
-        box-shadow: 0 0 0 3px rgba(255, 112, 97, 0.1);
-    }
-
-    .form-control textarea {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    #create-activity-map {
-        width: 100%;
-        height: 300px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ddd;
-    }
-
-    .map-help {
-        display: block;
-        color: #666;
-        font-size: 12px;
-        margin-top: 6px;
-    }
-
-    .form-check {
-        display: flex;
-        align-items: center;
-    }
-
-    .form-check-input {
-        margin-right: 10px;
-        cursor: pointer;
-        width: 18px;
-        height: 18px;
-    }
-
-    .form-check-label {
-        margin: 0 !important;
-        cursor: pointer;
-        font-weight: normal !important;
-    }
-
-    .text-danger {
-        display: block;
-        color: #dc3545;
-        font-size: 12px;
-        margin-top: 4px;
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 30px;
-    }
-
-    .btn {
-        flex: 1;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        transition: background-color 0.2s;
-    }
-
-    .btn-primary {
-        background-color: #FF7061;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: #e85d52;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268;
-        text-decoration: none;
-    }
-</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

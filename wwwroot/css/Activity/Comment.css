@@ -1,9 +1,32 @@
+/* comment from user  */
 .comment-detail-container {
-	border: groove 2px black;
-	margin-bottom: 10px;
+	border: 1px solid #ddd;
+	border-radius: 20px; 
+	
+	margin-bottom: 30px;
+	padding: 15px;
 }
 
+.Profile {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+
+
+	gap:20px;
+}
+
+
 .comment-detail-container img {
-	width: 50px;
-	height: auto;
+	width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 1px solid #FF7061;
+}
+
+.Content {
+	margin-top: 10px;
+	padding-left: 60px;
 }

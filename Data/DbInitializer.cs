@@ -89,8 +89,55 @@ public class DbInitializer
 	{
 		await context.Database.MigrateAsync();
 
-		if(context.Activities.Any())
+		string[] preferredOwnerEmails = { "Admin@example.com", "Testuser@example.com" };
+
+		var users = await context.Set<UserAccount>()
+			.Select(u => new { u.Id, u.Email })
+			.ToListAsync();
+
+		var userByEmail = users
+			.Where(u => !string.IsNullOrWhiteSpace(u.Email))
+			.ToDictionary(u => u.Email!, u => u.Id, StringComparer.OrdinalIgnoreCase);
+
+		var ownerIds = preferredOwnerEmails
+			.Where(email => userByEmail.ContainsKey(email))
+			.Select(email => userByEmail[email])
+			.Distinct()
+			.ToList();
+
+		if (!ownerIds.Any())
+		{
+			// Fallback for environments where preferred seed users do not exist yet.
+			ownerIds = users.Select(u => u.Id).Take(2).ToList();
+		}
+
+		if (!ownerIds.Any())
 			return;
+
+		if(context.Activities.Any())
+		{
+			// Repair only activities whose owner no longer exists.
+			var validOwnerIds = users.Select(u => u.Id).ToHashSet();
+			var activitiesToRepair = await context.Activities
+				.Where(a => !validOwnerIds.Contains(a.OwnerId))
+				.ToListAsync();
+
+			if (activitiesToRepair.Any())
+			{
+				foreach (var activity in activitiesToRepair)
+				{
+					activity.OwnerId = ownerIds[0];
+					activity.UpdatedAt = DateTime.Now;
+				}
+
+				await context.SaveChangesAsync();
+			}
+
+			return;
+		}
+
+		var firstOwnerId = ownerIds[0];
+		var secondOwnerId = ownerIds.Count > 1 ? ownerIds[1] : ownerIds[0];
 
 		// Add sample activities
 		var activities = new List<Activity>
@@ -103,7 +150,7 @@ public class DbInitializer
 				MaxPeople = 50,
 				RecruitingMode = 1, // FirstComeFirstServe
 				ShowParticipants = true,
-				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+				OwnerId = firstOwnerId,
 				EventDate = DateTime.Now.AddDays(7),
 				Location = "Central Park",
 				MapUrl = "13.7299,100.7788",
@@ -118,7 +165,7 @@ public class DbInitializer
 				MaxPeople = 30,
 				RecruitingMode = 3, // OwnerSelect
 				ShowParticipants = false,
-				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+				OwnerId = secondOwnerId,
 				EventDate = DateTime.Now.AddDays(14),
 				Location = "Tech Hub Downtown",
 				MapUrl = "13.7367,100.5231",
@@ -133,7 +180,7 @@ public class DbInitializer
 				MaxPeople = 40,
 				RecruitingMode = 1, // FirstComeFirstServe
 				ShowParticipants = true,
-				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+				OwnerId = firstOwnerId,
 				EventDate = DateTime.Now.AddDays(3),
 				Location = "Lumpini Park",
 				MapUrl = "13.7305,100.5418",
@@ -148,7 +195,7 @@ public class DbInitializer
 				MaxPeople = 20,
 				RecruitingMode = 2, // RandomOnEventDay
 				ShowParticipants = true,
-				OwnerId = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+				OwnerId = secondOwnerId,
 				EventDate = DateTime.Now.AddDays(10),
 				Location = "Siam Square",
 				MapUrl = "13.7448,100.5340",

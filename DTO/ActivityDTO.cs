@@ -10,8 +10,10 @@ public class ActivityDTO
 	[Required]
 	public List<ShowCommentDTO> Comments { get; set; }
 
-	// display name of the activity owner (pulled from UserAccount)
 	public string OwnerName { get; set; } = string.Empty;
+
+	// profile image path of the activity owner
+	public string OwnerImagePath { get; set; } = string.Empty;
 
 	public bool IsJoined { get; set; }
 

@@ -68,9 +68,13 @@ input[type=file]{
 }
 
 
-
 form img {
-    height: 80px;
+    width: 80px; 
+    height: 80px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 2px solid #FF7061;
+    
     order: 1;
     
     margin: 10px;

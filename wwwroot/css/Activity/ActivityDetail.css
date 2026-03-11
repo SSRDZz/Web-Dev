@@ -1,0 +1,425 @@
+h1 {
+    font-weight: 700;
+}
+
+h2 {
+    border-bottom: 3px solid #FFAB77;
+    border-radius: 4px;
+
+    width: fit-content;
+    margin: 15px 0;
+    padding-bottom: 8px;
+}
+
+
+.activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, max(1000px, 1fr));
+    gap: 25px;
+
+    padding: 15px
+}
+
+.card {
+    background-color: #FCFCFD;
+
+    border-radius: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    /* https://getcssscan.com/css-box-shadow-examples */
+
+    width: 100%;
+    height: auto;
+
+    padding: 36px;     
+    box-sizing: border-box;
+}
+
+/* card head -- top */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* card-text */
+.card-text {
+    padding-right: 20px;
+
+    flex-shrink: 1;
+
+    min-width: 300px;
+    width: 50%;   
+}
+
+/* detail */
+.detail {
+    min-width: 200px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+
+    margin-right: 10px;
+    
+}
+.activity-info {
+    margin-top: 15px;
+    line-height: 1.8;
+}
+
+.activity-info p {
+    margin: 8px 0;
+}
+
+#activity-map {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    margin: 8px 0;
+
+    max-width: 100%;
+    overflow: hidden; 
+    display: block;
+}
+
+.owner-box {
+    display: flex;
+    flex-wrap: nowrap;
+
+    gap: 20px;
+    align-items: center;
+}
+
+
+
+/* card image */
+.card-image {
+    max-width: 350px;
+    min-width: 250px;
+
+    flex-shrink: 2;
+    flex-grow: 0;
+
+    position: relative;
+    border-radius: 10px;
+
+    
+}
+
+.card-image div{
+    border-radius: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    padding: 8px;
+
+    display: flex;          
+    justify-content: center;
+    align-items: center;
+
+    background-color: #FFFFFF;
+    border: 1px solid #ddd;
+}
+
+.card-image > div > img{
+    width:100%; 
+    max-height: 300px; 
+    border-radius:10px; 
+
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.join-btn {
+    background: #FF7061;
+    color: white;
+    border: none;
+    padding: 15px 50px;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+.join-btn:hover {
+    background: #e85d52;
+}
+
+.join-btn-link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.no-image-placeholder {
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    color: #999;
+}
+
+.likeButton {
+    display: none;
+}
+
+.like-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    background: url("/image/like_off.png");
+    background-size: cover;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.likeButton:checked+.like-icon {
+    background: url("/image/like_on.png");
+    background-size: cover;
+    cursor: pointer;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.status-badge.available {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-badge.full {
+    background-color: #FF9800;
+    color: white;
+}
+
+.status-badge.closed {
+    background-color: #9E9E9E;
+    color: white;
+}
+
+.user-meta {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.card-body > h2 {
+    margin-top: 5px;
+}
+
+
+/* for user -> owner  */
+.user-box {
+    display: flex; 
+    align-items: center;
+
+    padding: 12px; 
+    
+    border-radius: 16px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    
+    background: #FCFCFD; 
+    color: #333; 
+    
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+
+    text-decoration: none !important;
+    gap: 10px;
+}
+
+.user-box:hover {
+    background-color: #f0f0f0;
+}
+
+.user-img {
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+    border: 2px solid #FF7061;
+}
+
+
+
+/* participants */
+#participants {
+    overflow-x: scroll;
+
+    padding: 20px 36px;
+    padding-bottom: 35px;
+}
+
+#participants > h2 {
+    margin-top: 5px;
+    margin-bottom: 25px;
+}
+
+ /* for user -> participants */
+.participants-user {
+    display: flex;
+    flex-direction: row;
+
+    gap: 20px;
+}
+
+#attendee-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    
+    width: 150px;
+    padding: 30px 10px;
+    text-decoration: none;
+    color: #333;
+
+    gap: 10px;
+
+}
+
+#attendee-card img {
+    width: 60px; 
+    height: 60px; 
+}
+
+
+
+
+/* comment section */
+#comment  {
+    padding: 10px 36px; 
+}
+
+#comment h2 {
+    margin-bottom: 30px; 
+}
+
+.comment-box {
+    position: relative;
+}
+
+#create-comment {
+    width: 100%;
+    height: 50px;
+
+    padding: 10px 25px;
+
+    border: 1px solid #ddd;
+    border-radius: 50px;
+
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#create-comment:focus {
+    outline: none;
+    border-color: #FF7061;
+    box-shadow: 0 0 0 3px rgba(255, 112, 97, 0.1);
+}
+
+#create-comment textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+#comment-button {
+    position: absolute;
+    top: 50%;
+    right: 1rem; 
+    transform: translateY(-50%);
+    
+    display: flex;
+    align-items: center;    
+    
+    width: 1.5rem;
+    z-index: 15;
+    
+    cursor: pointer;
+
+    opacity: 0.8;
+}
+
+hr {
+    border: none;
+    border-bottom: 2px solid #E9E9EB;
+    margin: 30px 10px;
+}
+
+
+
+/* phone screen */
+@media (max-width: 1000px) {
+    .card {
+        /* border-radius: 0; */
+        /* background-color: #FFFFFF; */
+        /* box-shadow: none; */
+
+        padding: 20px;
+        padding-bottom: 30px;
+    }
+
+    /* make it have border replace .card */
+    .activity-grid {
+        /* background-color: #FCFCFD; */
+
+        /* border-radius: 20px; */
+        /* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+        
+        padding: 0;
+    }
+
+    .card-header {
+        display: flex;
+        flex-direction: column;
+        align-items: start ;
+    }
+
+    .card-text {
+        display: contents; /* สลายตัว / แยกออก*/
+
+        width: 100%;
+        min-width: 0;
+
+        padding-right: 0;
+    }
+
+    .card-topic {
+        order: 1;
+    }
+
+    
+    .card-image {
+        width: 100%;
+        max-width: 750px;
+        
+        margin: 20px 0;
+        
+        order:2;
+        
+    }
+    
+    .detail {
+        margin: 0;
+        order: 3;
+    }
+    #comment{
+        padding: 5px 20px;
+    }
+
+    #create-comment {
+        width: 100%;
+    }
+}
