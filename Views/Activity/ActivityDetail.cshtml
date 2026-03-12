@@ -178,10 +178,6 @@
                         <p><strong>Created:</strong> @Model?.Act.CreatedAt.ToString("MMM dd, yyyy")</p>
                         <p><strong>Last Updated:</strong> @Model?.Act.UpdatedAt.ToString("MMM dd, yyyy")</p>
                     </div>
-
-                    <section id="comment-section">
-                        @await Html.PartialAsync("~/Views/Activity/Comment.cshtml", Model.Comments)
-                    </section>
                 </div>
 
                 @if (Model?.Act.ShowParticipants == true)
