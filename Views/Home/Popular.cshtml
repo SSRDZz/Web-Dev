@@ -1,0 +1,79 @@
+@model KMITL_WebDev_MiniProject.Models.PopularViewModel
+@using KMITL_WebDev_MiniProject.Entites
+
+@{
+    ViewData["Title"] = "Popular";
+}
+
+<link rel="stylesheet" href="~/css/Home/Popular.css" asp-append-version="true" />
+
+<div class="popular-page">
+    <section class="popular-section">
+        <h2>Popular Posts</h2>
+        @if (Model.PopularPosts.Count == 0)
+        {
+            <p class="empty-state">No liked posts yet.</p>
+        }
+        else
+        {
+            <div class="popular-grid">
+                @foreach (var post in Model.PopularPosts)
+                {
+                    var ownerCount = post.Activity.OwnerId != Guid.Empty ? 1 : 0;
+                    var participantsCountIncludingOwner = post.Activity.Participants.Count + ownerCount;
+                    var mode = (RecruitingMode)post.Activity.RecruitingMode;
+                    var normalParticipantsCount = post.Activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant);
+                    var lockedParticipantsCount = post.Activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Locked);
+                    var guestSlots = Math.Max(0, post.Activity.MaxPeople - ownerCount);
+                    var publicSlots = Math.Max(0, guestSlots - lockedParticipantsCount);
+                    var isClosed = post.Activity.EventDate < DateTime.Now;
+                    var isFullForJoin = mode switch
+                    {
+                        RecruitingMode.RandomOnEventDay => false,
+                        RecruitingMode.OwnerSelect => normalParticipantsCount >= publicSlots,
+                        _ => participantsCountIncludingOwner >= post.Activity.MaxPeople
+                    };
+
+                    <article class="popular-card">
+                        <div class="status-badge @(isClosed ? "closed" : (isFullForJoin ? "full" : "available"))">
+                            @(isClosed ? "Closed" : (isFullForJoin ? "Full" : "Available"))
+                        </div>
+                        <div class="popular-header">
+                            <p class="owner">Owner: <strong>@post.OwnerName</strong></p>
+                            <span class="likes">@post.LikeCount likes</span>
+                        </div>
+                        <h3>@post.Activity.Name</h3>
+                        <p class="desc">@post.Activity.Description</p>
+                        <p><strong>Event Date:</strong> @post.Activity.EventDate.ToString("MMM dd, yyyy HH:mm")</p>
+                        <p><strong>Location:</strong> @post.Activity.Location</p>
+                        <p><strong>Participants:</strong> @participantsCountIncludingOwner / @post.Activity.MaxPeople</p>
+                        <a href="@Url.Action("Detail", "Activity", new { id = post.Activity.Id })" class="view-btn">View Activity</a>
+                    </article>
+                }
+            </div>
+        }
+    </section>
+
+    <section class="popular-section">
+        <h2>Popular People</h2>
+        @if (Model.PopularPeople.Count == 0)
+        {
+            <p class="empty-state">No user reputation data yet.</p>
+        }
+        else
+        {
+            <div class="people-list">
+                @foreach (var person in Model.PopularPeople)
+                {
+                    <a href="@Url.Action("ProfileOther", "User", new { id = person.UserId })" class="people-item">
+                        <img src="@Url.Content("~/" + person.ImagePath)" alt="@person.UserName" />
+                        <div class="meta">
+                            <div class="name">@person.UserName</div>
+                            <div class="score">Score: @person.ReputationScore | Positive: @person.PositiveVotes</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </section>
+</div>

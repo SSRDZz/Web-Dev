@@ -5,7 +5,8 @@ namespace KMITL_WebDev_MiniProject.Entites;
 public enum ActivityUserRole
 {
     CoOwner = 1,
-    Participant = 2
+    Participant = 2,
+    Locked = 3
 }
 
 public class ActivityUser

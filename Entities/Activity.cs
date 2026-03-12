@@ -50,7 +50,7 @@ public class Activity
 
 	[NotMapped]
 	public ICollection<UserAccount> Participants => ActivityUsers
-		.Where(au => au.Role == ActivityUserRole.Participant)
+		.Where(au => au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked)
 		.Select(au => au.User)
 		.Where(u => u != null)
 		.ToList();

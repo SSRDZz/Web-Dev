@@ -1,5 +1,6 @@
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
+using KMITL_WebDev_MiniProject.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
+//builder.Services.AddHostedService<ClosedActivityCleanupService>();
 
 var app = builder.Build();
 

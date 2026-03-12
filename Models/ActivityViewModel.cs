@@ -15,8 +15,6 @@ public class ActivityViewModel
 
     public string? Description { get; set; }
 
-    public ICollection<ActivityKeyword> Keywords { get; set; } = new List<ActivityKeyword>();
-
     // temporary field for user input; controller should split on commas
     [Display(Name = "Keywords (comma-separated)")]
     public string? KeywordInput { get; set; }
@@ -25,6 +23,7 @@ public class ActivityViewModel
     public int MaxPeople { get; set; }
 
     [Required]
+    [EnumDataType(typeof(RecruitingMode), ErrorMessage = "Invalid recruiting mode.")]
     public RecruitingMode RecruitingMode { get; set; }
 
     public bool ShowParticipants { get; set; } = false;

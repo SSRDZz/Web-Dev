@@ -89,55 +89,19 @@ public class DbInitializer
 	{
 		await context.Database.MigrateAsync();
 
-		string[] preferredOwnerEmails = { "Admin@example.com", "Testuser@example.com" };
-
 		var users = await context.Set<UserAccount>()
-			.Select(u => new { u.Id, u.Email })
+			.Select(u => new { u.Id })
 			.ToListAsync();
 
-		var userByEmail = users
-			.Where(u => !string.IsNullOrWhiteSpace(u.Email))
-			.ToDictionary(u => u.Email!, u => u.Id, StringComparer.OrdinalIgnoreCase);
+		var userIds = users.Select(u => u.Id).Distinct().ToList();
 
-		var ownerIds = preferredOwnerEmails
-			.Where(email => userByEmail.ContainsKey(email))
-			.Select(email => userByEmail[email])
-			.Distinct()
-			.ToList();
-
-		if (!ownerIds.Any())
-		{
-			// Fallback for environments where preferred seed users do not exist yet.
-			ownerIds = users.Select(u => u.Id).Take(2).ToList();
-		}
-
-		if (!ownerIds.Any())
+		if (!userIds.Any())
 			return;
+
+		var now = DateTime.Now;
 
 		if(context.Activities.Any())
-		{
-			// Repair only activities whose owner no longer exists.
-			var validOwnerIds = users.Select(u => u.Id).ToHashSet();
-			var activitiesToRepair = await context.Activities
-				.Where(a => !validOwnerIds.Contains(a.OwnerId))
-				.ToListAsync();
-
-			if (activitiesToRepair.Any())
-			{
-				foreach (var activity in activitiesToRepair)
-				{
-					activity.OwnerId = ownerIds[0];
-					activity.UpdatedAt = DateTime.Now;
-				}
-
-				await context.SaveChangesAsync();
-			}
-
 			return;
-		}
-
-		var firstOwnerId = ownerIds[0];
-		var secondOwnerId = ownerIds.Count > 1 ? ownerIds[1] : ownerIds[0];
 
 		// Add sample activities
 		var activities = new List<Activity>
@@ -150,12 +114,12 @@ public class DbInitializer
 				MaxPeople = 50,
 				RecruitingMode = 1, // FirstComeFirstServe
 				ShowParticipants = true,
-				OwnerId = firstOwnerId,
-				EventDate = DateTime.Now.AddDays(7),
+				OwnerId = PickRandom(userIds),
+				EventDate = now.AddDays(7),
 				Location = "Central Park",
 				MapUrl = "13.7299,100.7788",
-				CreatedAt = DateTime.Now,
-				UpdatedAt = DateTime.Now
+				CreatedAt = now,
+				UpdatedAt = now
 			},
 			new Activity
 			{
@@ -165,12 +129,12 @@ public class DbInitializer
 				MaxPeople = 30,
 				RecruitingMode = 3, // OwnerSelect
 				ShowParticipants = false,
-				OwnerId = secondOwnerId,
-				EventDate = DateTime.Now.AddDays(14),
+				OwnerId = PickRandom(userIds),
+				EventDate = now.AddDays(14),
 				Location = "Tech Hub Downtown",
 				MapUrl = "13.7367,100.5231",
-				CreatedAt = DateTime.Now,
-				UpdatedAt = DateTime.Now
+				CreatedAt = now,
+				UpdatedAt = now
 			},
 			new Activity
 			{
@@ -180,12 +144,12 @@ public class DbInitializer
 				MaxPeople = 40,
 				RecruitingMode = 1, // FirstComeFirstServe
 				ShowParticipants = true,
-				OwnerId = firstOwnerId,
-				EventDate = DateTime.Now.AddDays(3),
+				OwnerId = PickRandom(userIds),
+				EventDate = now.AddDays(3),
 				Location = "Lumpini Park",
 				MapUrl = "13.7305,100.5418",
-				CreatedAt = DateTime.Now,
-				UpdatedAt = DateTime.Now
+				CreatedAt = now,
+				UpdatedAt = now
 			},
 			new Activity
 			{
@@ -195,25 +159,50 @@ public class DbInitializer
 				MaxPeople = 20,
 				RecruitingMode = 2, // RandomOnEventDay
 				ShowParticipants = true,
-				OwnerId = secondOwnerId,
-				EventDate = DateTime.Now.AddDays(10),
+				OwnerId = PickRandom(userIds),
+				EventDate = now.AddDays(10),
 				Location = "Siam Square",
 				MapUrl = "13.7448,100.5340",
-				CreatedAt = DateTime.Now,
-				UpdatedAt = DateTime.Now
+				CreatedAt = now,
+				UpdatedAt = now
 			}
 		};
 
 		await context.Activities.AddRangeAsync(activities);
 		await context.SaveChangesAsync();
+
+		// Add random participants from current users for seeded activities.
+		foreach (var activity in activities)
+		{
+			var candidateUserIds = userIds.Where(id => id != activity.OwnerId).ToList();
+			if (!candidateUserIds.Any())
+				continue;
+
+			var maxGuests = Math.Max(0, activity.MaxPeople - 1);
+			var randomCount = Random.Shared.Next(0, Math.Min(maxGuests, candidateUserIds.Count) + 1);
+			var selected = candidateUserIds
+				.OrderBy(_ => Guid.NewGuid())
+				.Take(randomCount)
+				.ToList();
+
+			foreach (var userId in selected)
+			{
+				context.ActivityUsers.Add(new ActivityUser
+				{
+					ActivityId = activity.Id,
+					UserId = userId,
+					Role = activity.RecruitingMode == 3 && Random.Shared.NextDouble() < 0.35
+						? ActivityUserRole.Locked
+						: ActivityUserRole.Participant
+				});
+			}
+		}
+
+		await context.SaveChangesAsync();
 	}
 
-
-	public static async Task<string> GuestImage(IWebHostEnvironment env)
+	private static Guid PickRandom(List<Guid> ids)
 	{
-		string path = Path.Combine(env.WebRootPath, "image", "guest_picture.jpg");
-		byte[] fileBytes = await File.ReadAllBytesAsync(path);
-		string base64Form = Convert.ToBase64String(fileBytes);
-		return base64Form;
+		return ids[Random.Shared.Next(ids.Count)];
 	}
 }

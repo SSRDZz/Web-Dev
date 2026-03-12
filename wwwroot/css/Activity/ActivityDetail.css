@@ -344,6 +344,33 @@ a:hover {
 
 }
 
+#attendee-card > a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+#attendee-card > a span {
+    width: 100%;
+    text-align: center;
+    word-break: break-word;
+}
+
+#attendee-card form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-left: 0 !important;
+}
+
+#attendee-card form .join-btn {
+    margin-top: 0;
+}
+
 #attendee-card img {
     width: 60px; 
     height: 60px; 

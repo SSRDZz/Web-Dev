@@ -208,6 +208,24 @@ body {
 .nav-section { margin-top: 20px; font-size: 0.8rem; color: #888; padding: 0 15px; }
 .nav-divider { margin: 10px 15px; border: 0.5px solid #eee; }
 
+.sidebar-sub-item {
+    display: block;
+    margin: 6px 15px;
+    padding: 6px 10px;
+    color: #555;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar-empty {
+    margin: 6px 15px;
+    color: #9a9a9a;
+    font-size: 0.85rem;
+}
+
 .btn-create {
     margin-top: auto;
     padding: 12px;

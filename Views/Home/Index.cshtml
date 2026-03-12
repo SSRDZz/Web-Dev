@@ -1,4 +1,5 @@
 ﻿@model List<KMITL_WebDev_MiniProject.Models.ActivityPreviewViewModel>
+@using KMITL_WebDev_MiniProject.Entites
 
 <link rel="stylesheet" href="~/css/Home/Index.css" asp-append-version="true"/>
 <div class="activity-grid" id="activity-grid">
@@ -6,13 +7,25 @@
     {
             var ownerCount = activity.Act.OwnerId != Guid.Empty ? 1 : 0;
             var participantsCountIncludingOwner = activity.Act.Participants.Count + ownerCount;
+            var mode = (RecruitingMode)activity.Act.RecruitingMode;
+            var normalParticipantsCount = activity.Act.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant);
+            var lockedParticipantsCount = activity.Act.ActivityUsers.Count(au => au.Role == ActivityUserRole.Locked);
+            var guestSlots = Math.Max(0, activity.Act.MaxPeople - ownerCount);
+            var publicSlots = Math.Max(0, guestSlots - lockedParticipantsCount);
+            var isClosed = activity.Act.EventDate < DateTime.Now;
+            var isFullForJoin = mode switch
+            {
+                RecruitingMode.RandomOnEventDay => false,
+                RecruitingMode.OwnerSelect => normalParticipantsCount >= publicSlots,
+                _ => participantsCountIncludingOwner >= activity.Act.MaxPeople
+            };
         <div class="card">
-                <div class="status-badge @(activity.Act.EventDate < DateTime.Now ? "closed" : (participantsCountIncludingOwner >= activity.Act.MaxPeople ? "full" : "available"))">
-                @if (activity.Act.EventDate < DateTime.Now)
+                <div class="status-badge @(isClosed ? "closed" : (isFullForJoin ? "full" : "available"))">
+                @if (isClosed)
                 {
                     <span>Closed</span>
                 }
-                    else if (participantsCountIncludingOwner >= activity.Act.MaxPeople)
+                    else if (isFullForJoin)
                 {
                     <span>Full</span>
                 }

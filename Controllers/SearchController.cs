@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using KMITL_WebDev_MiniProject.Data;
 using KMITL_WebDev_MiniProject.Entites;
 using KMITL_WebDev_MiniProject.Models;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
-public class SearchController(ApplicationUsersDbContext dbContext, ApplicationActivitiesDbContext dbContext2,IWebHostEnvironment Env) : Controller
+public class SearchController(ApplicationUsersDbContext dbContext, ApplicationActivitiesDbContext dbContext2) : Controller
 {
 	private ApplicationUsersDbContext dbContext {get; init;} = dbContext;
 	private ApplicationActivitiesDbContext dbContext2 {get; init;} = dbContext2;
