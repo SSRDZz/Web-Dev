@@ -5,11 +5,8 @@ using KMITL_WebDev_MiniProject.Models;
 using Microsoft.AspNetCore.Identity;
 using KMITL_WebDev_MiniProject.DTO;
 using KMITL_WebDev_MiniProject.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
-using MvcMovie.Migrations.Activitys;
 
 namespace KMITL_WebDev_MiniProject.Controllers;
 
@@ -17,18 +14,22 @@ namespace KMITL_WebDev_MiniProject.Controllers;
 [Route("Activity")]
 public class ActivityController : Controller
 {
+    private const string DefaultOwnerImagePath = "image/UserProfile/guest_picture.jpg";
+
     private readonly ApplicationActivitiesDbContext _activitiesContext;
     private readonly UserManager<UserAccount> _userManager;
-    private readonly ApplicationUserUtilDbContext _UserUtilDbContext;
-    private readonly CommentServices _ComSer;
+    private readonly CommentServices _commentService;
     private readonly FileUploadServcies _fileUploader;
 
-    public ActivityController(ApplicationActivitiesDbContext activitiesContext, ApplicationUserUtilDbContext UserUtilDbContext, UserManager<UserAccount> userManager, IWebHostEnvironment env)
+    public ActivityController(
+        ApplicationActivitiesDbContext activitiesContext,
+        ApplicationUserUtilDbContext userUtilDbContext,
+        UserManager<UserAccount> userManager,
+        IWebHostEnvironment env)
     {
         _activitiesContext = activitiesContext;
         _userManager = userManager;
-        _UserUtilDbContext = UserUtilDbContext;
-        _ComSer = new CommentServices(_UserUtilDbContext, _userManager);
+        _commentService = new CommentServices(userUtilDbContext, _userManager);
         _fileUploader = new FileUploadServcies(env);
     }
 
@@ -37,8 +38,8 @@ public class ActivityController : Controller
     public IActionResult Create()
     {
         var now = DateTime.Now;
-        return View(new ActivityViewModel 
-        { 
+        return View(new ActivityViewModel
+        {
             EventDate = new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0)
         });
     }
@@ -48,45 +49,31 @@ public class ActivityController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ActivityViewModel model)
     {
-        if (!Enum.IsDefined(typeof(RecruitingMode), model.RecruitingMode))
-            ModelState.AddModelError(nameof(model.RecruitingMode), "Invalid recruiting mode.");
+        ValidateRecruitingMode(model.RecruitingMode);
 
         if (!ModelState.IsValid)
             return View(model);
 
-        // determine owner from logged-in user
-        var user = await _userManager.GetUserAsync(User);
+        var user = await GetCurrentUserAsync();
         if (user == null)
             return Forbid();
 
         var activity = new Activity
         {
             Id = Guid.NewGuid(),
-            Name = model.Name,
-            Description = model.Description,
-            KeywordsText = string.Join(", ", (model.KeywordInput ?? string.Empty)
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(k => k.Trim())
-                .Where(k => !string.IsNullOrWhiteSpace(k))
-                .Distinct(StringComparer.OrdinalIgnoreCase)),
-            MaxPeople = model.MaxPeople,
-            RecruitingMode = (int)model.RecruitingMode,
-            ShowParticipants = model.ShowParticipants,
             OwnerId = user.Id,
-            EventDate = ToMinutePrecision(model.EventDate),
-            Location = model.Location,
-            MapUrl = model.MapUrl,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };
 
+        ApplyModelToActivity(model, activity);
+
         _activitiesContext.Activities.Add(activity);
         await _activitiesContext.SaveChangesAsync();
 
-        if (_fileUploader.FileIsExist(model.ActivityImage))
+        var hasUploadedImage = await UploadActivityImageIfProvidedAsync(model.ActivityImage, activity);
+        if (hasUploadedImage)
         {
-            await _fileUploader.Upload(model.ActivityImage, activity.Id.ToString());
-            activity.ImageUrl = Path.Combine("image", "UserProfile", activity.Id + _fileUploader.LastExt);
             _activitiesContext.Activities.Update(activity);
             await _activitiesContext.SaveChangesAsync();
         }
@@ -101,11 +88,11 @@ public class ActivityController : Controller
         if (activity == null)
             return NotFound();
 
-        var user = await _userManager.GetUserAsync(User);
+        var user = await GetCurrentUserAsync();
         if (user == null)
             return Challenge();
 
-        if (activity.OwnerId != user.Id)
+        if (!IsOwner(activity, user.Id))
             return Forbid();
 
         var model = new ActivityViewModel
@@ -132,43 +119,24 @@ public class ActivityController : Controller
         if (id != model.Id)
             return BadRequest();
 
-        if (!Enum.IsDefined(typeof(RecruitingMode), model.RecruitingMode))
-            ModelState.AddModelError(nameof(model.RecruitingMode), "Invalid recruiting mode.");
+        ValidateRecruitingMode(model.RecruitingMode);
 
         var activity = await _activitiesContext.Activities.FirstOrDefaultAsync(a => a.Id == id);
         if (activity == null)
             return NotFound();
 
-        var user = await _userManager.GetUserAsync(User);
+        var user = await GetCurrentUserAsync();
         if (user == null)
             return Challenge();
 
-        if (activity.OwnerId != user.Id)
+        if (!IsOwner(activity, user.Id))
             return Forbid();
 
         if (!ModelState.IsValid)
             return View(model);
 
-        activity.Name = model.Name;
-        activity.Description = model.Description;
-        activity.KeywordsText = string.Join(", ", (model.KeywordInput ?? string.Empty)
-            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(k => k.Trim())
-            .Where(k => !string.IsNullOrWhiteSpace(k))
-            .Distinct(StringComparer.OrdinalIgnoreCase));
-        activity.MaxPeople = model.MaxPeople;
-        activity.RecruitingMode = (int)model.RecruitingMode;
-        activity.ShowParticipants = model.ShowParticipants;
-        activity.EventDate = ToMinutePrecision(model.EventDate);
-        activity.Location = model.Location;
-        activity.MapUrl = model.MapUrl;
-        activity.UpdatedAt = DateTime.Now;
-
-        if (_fileUploader.FileIsExist(model.ActivityImage))
-        {
-            await _fileUploader.Upload(model.ActivityImage, activity.Id.ToString());
-            activity.ImageUrl = Path.Combine("image", "UserProfile", activity.Id + _fileUploader.LastExt);
-        }
+        ApplyModelToActivity(model, activity);
+        await UploadActivityImageIfProvidedAsync(model.ActivityImage, activity);
 
         _activitiesContext.Activities.Update(activity);
         await _activitiesContext.SaveChangesAsync();
@@ -181,60 +149,37 @@ public class ActivityController : Controller
     [AllowAnonymous]
     public async Task<IActionResult> Detail(Guid id)
     {
-        // include keywords so the view can render them
-        var activity = await _activitiesContext.Activities
-            .Where(a => a.Id == id)
-            .Include(a => a.ActivityUsers)
-                .ThenInclude(au => au.User)
-            .FirstOrDefaultAsync();
+        var activity = await LoadActivityForDetailAsync(id);
         if (activity == null)
             return NotFound();
 
-        if (activity.RecruitingMode == (int)RecruitingMode.RandomOnEventDay && activity.EventDate <= DateTime.Now)
+        if (ShouldFinalizeRandomOnEventDay(activity))
         {
             await FinalizeRandomOnEventDayAsync(activity);
 
-            activity = await _activitiesContext.Activities
-                .Where(a => a.Id == id)
-                .Include(a => a.ActivityUsers)
-                    .ThenInclude(au => au.User)
-                .FirstOrDefaultAsync();
+            activity = await LoadActivityForDetailAsync(id);
 
             if (activity == null)
                 return NotFound();
         }
 
-        // look up owner name
-        string ownerName = "";
-        string ownerImagePath = "image/UserProfile/guest_picture.jpg";
-        if (activity.OwnerId != Guid.Empty)
-        {
-            var owner = await _userManager.FindByIdAsync(activity.OwnerId.ToString());
-            if (owner != null)
-            {
-                ownerName = owner.RealUserName ?? owner.UserName ?? string.Empty;
-                if (!string.IsNullOrWhiteSpace(owner.ImagePath))
-                    ownerImagePath = owner.ImagePath;
-            }
-        }
+        var (ownerName, ownerImagePath) = await GetOwnerDisplayInfoAsync(activity.OwnerId);
 
-        var viewer = await _userManager.GetUserAsync(User);
-        ActivityDTO dto = new ActivityDTO()
+        var currentUser = await GetCurrentUserAsync();
+        var likeCount = await FindRelation(activity.Id);
+        var isLike = currentUser != null && await IsLike(currentUser.Id, activity.Id);
+
+        var dto = new ActivityDTO
         {
             Act = activity,
-            Comments = await _ComSer.ShowCommentDTOs(id),
+            Comments = await _commentService.ShowCommentDTOs(id),
             OwnerName = ownerName,
             OwnerImagePath = ownerImagePath,
-            LikeCount = await FindRelation(activity.Id),
-            IsLike = viewer != null && await IsLike(viewer.Id, activity.Id)
+            LikeCount = likeCount,
+            IsLike = isLike,
+            IsOwner = currentUser != null && IsOwner(activity, currentUser.Id),
+            IsJoined = currentUser != null && activity.Participants.Any(p => p.Id == currentUser.Id)
         };
-
-        var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser != null)
-        {
-            dto.IsOwner = activity.OwnerId == currentUser.Id;
-            dto.IsJoined = activity.Participants.Any(p => p.Id == currentUser.Id);
-        }
 
         return View("ActivityDetail", dto);
     }
@@ -243,41 +188,25 @@ public class ActivityController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Join(Guid id)
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await GetCurrentUserAsync();
         if (user == null)
             return Challenge();
 
-        var activity = await _activitiesContext.Activities
-            .Include(a => a.ActivityUsers)
-            .FirstOrDefaultAsync(a => a.Id == id);
+        var activity = await LoadActivityWithUsersAsync(id);
         if (activity == null)
             return NotFound();
 
-        if (activity.OwnerId == user.Id)
-            return RedirectToAction(nameof(Detail), new { id });
+        if (IsOwner(activity, user.Id))
+            return RedirectToDetail(id);
 
-        if (activity.ActivityUsers.Any(au => au.UserId == user.Id &&
-            (au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked)))
-            return RedirectToAction(nameof(Detail), new { id });
+        if (TryFindParticipantRelation(activity, user.Id) != null)
+            return RedirectToDetail(id);
 
         if (activity.EventDate <= DateTime.Now)
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToDetail(id);
 
-        var normalParticipantCount = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant);
-        var lockedParticipantCount = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Locked);
-        var attendeeCountIncludingOwner = normalParticipantCount + lockedParticipantCount + 1;
-        var guestSlots = Math.Max(0, activity.MaxPeople - 1);
-
-        var mode = (RecruitingMode)activity.RecruitingMode;
-        if (mode == RecruitingMode.FirstComeFirstServe && attendeeCountIncludingOwner >= activity.MaxPeople)
-            return RedirectToAction(nameof(Detail), new { id });
-
-        if (mode == RecruitingMode.OwnerSelect)
-        {
-            var publicSlots = Math.Max(0, guestSlots - lockedParticipantCount);
-            if (normalParticipantCount >= publicSlots)
-                return RedirectToAction(nameof(Detail), new { id });
-        }
+        if (IsJoinFullForCurrentMode(activity))
+            return RedirectToDetail(id);
 
         activity.ActivityUsers.Add(new ActivityUser
         {
@@ -288,14 +217,14 @@ public class ActivityController : Controller
         activity.UpdatedAt = DateTime.Now;
         await _activitiesContext.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Detail), new { id });
+        return RedirectToDetail(id);
     }
 
     [HttpPost("Close/{id}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Close(Guid id)
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await GetCurrentUserAsync();
         if (user == null)
             return Challenge();
 
@@ -303,7 +232,7 @@ public class ActivityController : Controller
         if (activity == null)
             return NotFound();
 
-        if (activity.OwnerId != user.Id)
+        if (!IsOwner(activity, user.Id))
             return Forbid();
 
         if (activity.EventDate > DateTime.Now)
@@ -316,68 +245,61 @@ public class ActivityController : Controller
 
         await FinalizeRandomOnEventDayAsync(activity);
 
-        return RedirectToAction(nameof(Detail), new { id });
+        return RedirectToDetail(id);
     }
 
     [HttpPost("Unjoin/{id}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Unjoin(Guid id)
     {
-        var user = await _userManager.GetUserAsync(User);
+        var user = await GetCurrentUserAsync();
         if (user == null)
             return Challenge();
 
-        var activity = await _activitiesContext.Activities
-            .Include(a => a.ActivityUsers)
-            .FirstOrDefaultAsync(a => a.Id == id);
+        var activity = await LoadActivityWithUsersAsync(id);
         if (activity == null)
             return NotFound();
 
-        if (activity.OwnerId == user.Id)
-            return RedirectToAction(nameof(Detail), new { id });
+        if (IsOwner(activity, user.Id))
+            return RedirectToDetail(id);
 
-        var participantRelation = activity.ActivityUsers
-            .FirstOrDefault(au => au.UserId == user.Id &&
-                (au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked));
+        var participantRelation = TryFindParticipantRelation(activity, user.Id);
 
         if (participantRelation == null)
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToDetail(id);
 
         activity.ActivityUsers.Remove(participantRelation);
         activity.UpdatedAt = DateTime.Now;
         await _activitiesContext.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Detail), new { id });
+        return RedirectToDetail(id);
     }
 
     [HttpPost("ToggleLock/{id}/{userId}")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleLock(Guid id, Guid userId)
     {
-        var owner = await _userManager.GetUserAsync(User);
+        var owner = await GetCurrentUserAsync();
         if (owner == null)
             return Challenge();
 
-        var activity = await _activitiesContext.Activities
-            .Include(a => a.ActivityUsers)
-            .FirstOrDefaultAsync(a => a.Id == id);
+        var activity = await LoadActivityWithUsersAsync(id);
         if (activity == null)
             return NotFound();
 
-        if (activity.OwnerId != owner.Id)
+        if (!IsOwner(activity, owner.Id))
             return Forbid();
 
         if (activity.RecruitingMode != (int)RecruitingMode.OwnerSelect)
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToDetail(id);
 
         if (activity.EventDate <= DateTime.Now)
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToDetail(id);
 
-        var relation = activity.ActivityUsers.FirstOrDefault(au =>
-            au.UserId == userId && (au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked));
+        var relation = TryFindParticipantRelation(activity, userId);
 
         if (relation == null)
-            return RedirectToAction(nameof(Detail), new { id });
+            return RedirectToDetail(id);
 
         var newRole = relation.Role == ActivityUserRole.Locked
             ? ActivityUserRole.Participant
@@ -395,7 +317,7 @@ public class ActivityController : Controller
         activity.UpdatedAt = DateTime.Now;
         await _activitiesContext.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Detail), new { id });
+        return RedirectToDetail(id);
     }
 
     private static DateTime ToMinutePrecision(DateTime value)
@@ -439,22 +361,27 @@ public class ActivityController : Controller
     [Authorize]
     public async Task UpdateRelation([FromBody] ActIDDTO Data)
     {
-        UserAccount UserAccount = await _userManager.GetUserAsync(User);
-        ActivityRelation? Rels = await _activitiesContext.Relations.Where(rel => rel.UserID == UserAccount.Id && rel.ActID == Data.ActID).FirstOrDefaultAsync();
+        var user = await GetCurrentUserAsync();
+        if (user == null)
+            return;
 
-        if(Rels == null)
+        var relation = await _activitiesContext.Relations
+            .FirstOrDefaultAsync(rel => rel.UserID == user.Id && rel.ActID == Data.ActID);
+
+        if (relation == null)
         {
-            Rels = new ActivityRelation()
+            relation = new ActivityRelation
             {
-                UserID = UserAccount.Id,
+                UserID = user.Id,
                 ActID = Data.ActID,
                 Relation = 1
             };
-            await _activitiesContext.Relations.AddAsync(Rels);
-        } else
+            await _activitiesContext.Relations.AddAsync(relation);
+        }
+        else
         {
-            Rels.Relation ^= 0b1;
-            _activitiesContext.Relations.Entry(Rels);
+            relation.Relation ^= 0b1;
+            _activitiesContext.Relations.Entry(relation);
         }
 
         await _activitiesContext.SaveChangesAsync();
@@ -464,13 +391,141 @@ public class ActivityController : Controller
     [Authorize]
     public async Task<int> FindRelation(Guid ActID)
     {
-        return await _activitiesContext.Relations.Where(rel => rel.ActID == ActID && rel.Relation == 1).CountAsync();
+        return await GetLikeCountAsync(ActID);
     }
 
     [HttpGet("IsLike/{UserID}&{ActID}")]
     [Authorize]
     public async Task<bool> IsLike(Guid UserID, Guid ActID)
     {
-        return await _activitiesContext.Relations.Where(rel => rel.UserID == UserID && rel.ActID == ActID && rel.Relation == 1).FirstOrDefaultAsync() != null;
+        return await IsLikedByUserAsync(UserID, ActID);
+    }
+
+    private async Task<UserAccount?> GetCurrentUserAsync()
+    {
+        return await _userManager.GetUserAsync(User);
+    }
+
+    private async Task<Activity?> LoadActivityForDetailAsync(Guid id)
+    {
+        return await _activitiesContext.Activities
+            .Where(a => a.Id == id)
+            .Include(a => a.ActivityUsers)
+                .ThenInclude(au => au.User)
+            .FirstOrDefaultAsync();
+    }
+
+    private async Task<Activity?> LoadActivityWithUsersAsync(Guid id)
+    {
+        return await _activitiesContext.Activities
+            .Include(a => a.ActivityUsers)
+            .FirstOrDefaultAsync(a => a.Id == id);
+    }
+
+    private static bool IsOwner(Activity activity, Guid userId)
+    {
+        return activity.OwnerId == userId;
+    }
+
+    private static ActivityUser? TryFindParticipantRelation(Activity activity, Guid userId)
+    {
+        return activity.ActivityUsers.FirstOrDefault(au =>
+            au.UserId == userId && (au.Role == ActivityUserRole.Participant || au.Role == ActivityUserRole.Locked));
+    }
+
+    private static bool ShouldFinalizeRandomOnEventDay(Activity activity)
+    {
+        return activity.RecruitingMode == (int)RecruitingMode.RandomOnEventDay && activity.EventDate <= DateTime.Now;
+    }
+
+    private async Task<(string OwnerName, string OwnerImagePath)> GetOwnerDisplayInfoAsync(Guid ownerId)
+    {
+        if (ownerId == Guid.Empty)
+            return (string.Empty, DefaultOwnerImagePath);
+
+        var owner = await _userManager.FindByIdAsync(ownerId.ToString());
+        if (owner == null)
+            return (string.Empty, DefaultOwnerImagePath);
+
+        var ownerName = owner.RealUserName ?? owner.UserName ?? string.Empty;
+        var ownerImagePath = string.IsNullOrWhiteSpace(owner.ImagePath) ? DefaultOwnerImagePath : owner.ImagePath;
+        return (ownerName, ownerImagePath);
+    }
+
+    private void ValidateRecruitingMode(RecruitingMode mode)
+    {
+        if (!Enum.IsDefined(typeof(RecruitingMode), mode))
+            ModelState.AddModelError(nameof(ActivityViewModel.RecruitingMode), "Invalid recruiting mode.");
+    }
+
+    private static string NormalizeKeywords(string? input)
+    {
+        return string.Join(", ", (input ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+            .Select(k => k.Trim())
+            .Where(k => !string.IsNullOrWhiteSpace(k))
+            .Distinct(StringComparer.OrdinalIgnoreCase));
+    }
+
+    private void ApplyModelToActivity(ActivityViewModel model, Activity activity)
+    {
+        activity.Name = model.Name;
+        activity.Description = model.Description;
+        activity.KeywordsText = NormalizeKeywords(model.KeywordInput);
+        activity.MaxPeople = model.MaxPeople;
+        activity.RecruitingMode = (int)model.RecruitingMode;
+        activity.ShowParticipants = model.ShowParticipants;
+        activity.EventDate = ToMinutePrecision(model.EventDate);
+        activity.Location = model.Location;
+        activity.MapUrl = model.MapUrl;
+        activity.UpdatedAt = DateTime.Now;
+    }
+
+    private async Task<bool> UploadActivityImageIfProvidedAsync(IFormFile? file, Activity activity)
+    {
+        if (file == null || !_fileUploader.FileIsExist(file))
+            return false;
+
+        await _fileUploader.Upload(file, activity.Id.ToString());
+        activity.ImageUrl = Path.Combine("image", "UserProfile", activity.Id + _fileUploader.LastExt);
+        return true;
+    }
+
+    private bool IsJoinFullForCurrentMode(Activity activity)
+    {
+        var normalParticipantCount = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Participant);
+        var lockedParticipantCount = activity.ActivityUsers.Count(au => au.Role == ActivityUserRole.Locked);
+        var attendeeCountIncludingOwner = normalParticipantCount + lockedParticipantCount + 1;
+        var guestSlots = Math.Max(0, activity.MaxPeople - 1);
+
+        var mode = (RecruitingMode)activity.RecruitingMode;
+        if (mode == RecruitingMode.FirstComeFirstServe)
+            return attendeeCountIncludingOwner >= activity.MaxPeople;
+
+        if (mode == RecruitingMode.OwnerSelect)
+        {
+            var publicSlots = Math.Max(0, guestSlots - lockedParticipantCount);
+            return normalParticipantCount >= publicSlots;
+        }
+
+        return false;
+    }
+
+    private async Task<int> GetLikeCountAsync(Guid activityId)
+    {
+        return await _activitiesContext.Relations
+            .Where(rel => rel.ActID == activityId && rel.Relation == 1)
+            .CountAsync();
+    }
+
+    private async Task<bool> IsLikedByUserAsync(Guid userId, Guid activityId)
+    {
+        return await _activitiesContext.Relations
+            .AnyAsync(rel => rel.UserID == userId && rel.ActID == activityId && rel.Relation == 1);
+    }
+
+    private IActionResult RedirectToDetail(Guid id)
+    {
+        return RedirectToAction(nameof(Detail), new { id });
     }
 }
