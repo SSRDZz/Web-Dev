@@ -144,13 +144,6 @@ public class HomeController : Controller
         return View(vm);
     }
 
-    [HttpGet]
-    [Authorize]
-    public IActionResult ActivityDetail()
-    {
-        return View();
-    }
-
     public IActionResult Profile()
     {
         return View();
