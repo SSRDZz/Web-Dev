@@ -50,7 +50,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
-builder.Services.AddHostedService<ClosedActivityCleanupService>();
+//builder.Services.AddHostedService<ClosedActivityCleanupService>();
 
 var app = builder.Build();
 
