@@ -18,6 +18,8 @@
     border-radius: 14px;
     padding: 16px;
     background: #fff;
+    display: flex;
+    flex-direction: column;
 }
 
 .popular-header {
@@ -36,8 +38,10 @@
 }
 
 .view-btn {
-    display: inline-block;
-    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto;
     background: #ff7061;
     color: #fff;
     border-radius: 10px;
@@ -100,6 +104,9 @@
     color: #fff;
     font-size: 0.85rem;
     margin-bottom: 8px;
+    align-self: flex-start;
+    width: fit-content;
+    white-space: nowrap;
 }
 
 .status-badge.available {
