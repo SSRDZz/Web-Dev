@@ -330,7 +330,7 @@ public class ActivityController : Controller
         if (activity.RecruitingMode != (int)RecruitingMode.RandomOnEventDay)
             return;
 
-        if (activity.EventDate > DateTime.Now)
+        if (activity.EventDate.AddHours(-1) > DateTime.Now)
             return;
 
         var guestSlots = Math.Max(0, activity.MaxPeople - 1);
@@ -435,7 +435,8 @@ public class ActivityController : Controller
 
     private static bool ShouldFinalizeRandomOnEventDay(Activity activity)
     {
-        return activity.RecruitingMode == (int)RecruitingMode.RandomOnEventDay && activity.EventDate <= DateTime.Now;
+        return activity.RecruitingMode == (int)RecruitingMode.RandomOnEventDay
+            && activity.EventDate.AddHours(-1) <= DateTime.Now;
     }
 
     private async Task<(string OwnerName, string OwnerImagePath)> GetOwnerDisplayInfoAsync(Guid ownerId)
