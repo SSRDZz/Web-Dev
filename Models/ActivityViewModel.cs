@@ -15,8 +15,6 @@ public class ActivityViewModel
 
     public string? Description { get; set; }
 
-    public ICollection<ActivityKeyword> Keywords { get; set; } = new List<ActivityKeyword>();
-
     // temporary field for user input; controller should split on commas
     [Display(Name = "Keywords (comma-separated)")]
     public string? KeywordInput { get; set; }
