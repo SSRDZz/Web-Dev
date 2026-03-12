@@ -1,0 +1,115 @@
+.popular-page {
+    display: grid;
+    gap: 28px;
+}
+
+.popular-section h2 {
+    margin-bottom: 14px;
+}
+
+.popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.popular-card {
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    padding: 16px;
+    background: #fff;
+}
+
+.popular-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.owner,
+.likes,
+.desc,
+.popular-card p {
+    margin: 4px 0;
+}
+
+.view-btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: #ff7061;
+    color: #fff;
+    border-radius: 10px;
+    padding: 8px 12px;
+    text-decoration: none;
+}
+
+.view-btn:hover {
+    background: #e85d52;
+    text-decoration: none;
+    color: #fff;
+}
+
+.people-list {
+    display: grid;
+    gap: 10px;
+}
+
+.people-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    background: #fff;
+}
+
+.people-item:hover {
+    background: #f8f8f8;
+    text-decoration: none;
+}
+
+.people-item img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.name {
+    font-weight: 600;
+}
+
+.score {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.empty-state {
+    color: #777;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 16px;
+    color: #fff;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.status-badge.available {
+    background: #4caf50;
+}
+
+.status-badge.full {
+    background: #ff9800;
+}
+
+.status-badge.closed {
+    background: #9e9e9e;
+}
